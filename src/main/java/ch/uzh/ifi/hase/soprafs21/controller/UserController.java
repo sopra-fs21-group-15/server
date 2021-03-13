@@ -54,17 +54,47 @@ public class UserController {
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
     }
 
-    @PutMapping("/users")
+    @PutMapping("/login")          //Put Mapping to update user profile
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public UserGetDTO requestLogin(@RequestBody UserPostDTO userPostDTO) {
         // convert API user to internal representation
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
-        //ask userService if userInput exists
+        //ask userService if login request is allowed
         User userLogin = userService.login_request(userInput);
 
         // convert internal representation of user back to API
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userLogin);
     }
+
+    @GetMapping("/users/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public UserGetDTO getUserByID(@PathVariable Long id) {
+        User user = userService.getUser(id);
+        // convert internal representation of user back to API
+        UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+        return userGetDTO;
+    }
+
+    @PutMapping("/users/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public void editCurrentUser(@PathVariable Long id, @RequestBody UserPostDTO userEditDTO) {
+        // convert API user to internal representation
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userEditDTO);
+        userService.update_user(id, userInput);
+
+    }
+
+    @PutMapping("/logout/{id}")          //Put Mapping to logout user profile
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public void userLogout (@PathVariable Long id) {
+
+        userService.logout(id);
+    }
+
 }
+

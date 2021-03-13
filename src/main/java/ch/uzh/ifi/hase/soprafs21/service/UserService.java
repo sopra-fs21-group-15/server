@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs21.service;
 import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.UserPostDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,27 +44,28 @@ public class UserService {
 
     public User createUser(User newUser) {
         newUser.setToken(UUID.randomUUID().toString());
-        newUser.setStatus(UserStatus.OFFLINE);
-        newUser.setCreation_date(getDate()); //set the creation date
+        newUser.setStatus(UserStatus.ONLINE);
+        newUser.setCreation_date(getDate()); //get the creation date with the current date
 
         checkIfUserExists(newUser);
 
         // saves the given entity but data is only persisted in the database once flush() is called
+
         newUser = userRepository.save(newUser);
         userRepository.flush();
 
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
-
-    public User getUser(User oldUser) {
+// changed getUser argument from username to user id!
+    public User getUser(Long user_id) {
 
         //get all users
         List<User> all_users = this.userRepository.findAll();
 
         User user_found = null;
         for (User i : all_users) {
-            if (oldUser.getUsername() == i.getUsername()) {
+            if (user_id == i.getId()) {
                 user_found = i;
             }
         }
@@ -87,14 +89,10 @@ public class UserService {
 
         String entered_password = userToBeCreated.getPassword();
 
-        String taken_username_error = "The %s provided %s already taken. Please choose an other username!";
-        String empty_password_error = "You have not entered a password yet. Please enter one to register.";
+        String taken_username_error = "The %s %s already taken. Please choose an other username!";
 
         if (userByUsername != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(taken_username_error, "username", "is"));
-        }
-        else if (entered_password == "") {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(empty_password_error));
         }
     }
 
@@ -109,6 +107,13 @@ public class UserService {
     public User login_request(User requesting_user) {
 
         User userByUsername = userRepository.findByUsername(requesting_user.getUsername());
+
+        List<User> allUsers = this.userRepository.findAll();
+
+        //set all other users to Offline
+        for (User user : allUsers) {
+            user.setStatus(UserStatus.OFFLINE);
+        }
 
         //If you don't find the user. Tell him to register first.
         String nonexisting_user = "This username is not registered yet. Please register first or enter an existing username.";
@@ -126,14 +131,52 @@ public class UserService {
         if (!userByPassword.equals(user_typed_password)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(wrong_password));
         }
-        // save the data (copied from above)... Maybe useful for later
 
+        userByUsername.setStatus(UserStatus.ONLINE);
         User updatedUser = userRepository.save(userByUsername);
         userRepository.flush();
 
-        return userByUsername;
+
+        return updatedUser;
     }
 
+    public void update_user(Long userId, User userChange){
 
+        List<User> allusers = this.userRepository.findAll();
+
+        User usertoupdate = null;
+
+        for(User i: allusers){
+            if(userId == i.getId()){
+                usertoupdate = i;
+            }
+        }
+
+        if (userChange.getBirth_date() != null){
+            usertoupdate.setBirth_date(userChange.getBirth_date());
+        }
+
+        if (userChange.getUsername() != null){
+            checkIfUserExists(userChange);
+            usertoupdate.setUsername(userChange.getUsername());
+        }
+        userRepository.save(usertoupdate);
+        userRepository.flush();
+        }
+
+    public void logout(Long userId){
+        List<User> allusers = this.userRepository.findAll();
+
+        User leaving_user = null;
+
+        for(User i: allusers){
+            if(userId.equals(i.getId())){
+                leaving_user = i;
+            }
+        }
+        leaving_user.setStatus(UserStatus.OFFLINE);
+        userRepository.save(leaving_user);
+        userRepository.flush();
+    }
 
 }

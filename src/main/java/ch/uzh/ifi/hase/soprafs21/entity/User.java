@@ -34,8 +34,12 @@ public class User implements Serializable {
     @Column(nullable = false) //creation date for the data base
     private String creation_date;
 
+    @Column(nullable = true) //birth date for the data base
+    private  String birth_date;
+
     @Column(nullable = false)
     private UserStatus status;
+
 
     public Long getId() {
         return id;
@@ -69,7 +73,11 @@ public class User implements Serializable {
 
     public String getCreation_date() {return  creation_date; }      //get the creation date
 
-    public void setCreation_date(String creationDate) {this.creation_date = creationDate; } // set the creation date and save it for the object
+    public void setCreation_date(String creationDate) {this.creation_date = creationDate; } // set the creation date
+
+    public String getBirth_date() {return  birth_date; }      //get the birth date
+
+    public void setBirth_date(String birthDate) {this.birth_date = birthDate; } // set the birth date
 
     public UserStatus getStatus() {
         return status;

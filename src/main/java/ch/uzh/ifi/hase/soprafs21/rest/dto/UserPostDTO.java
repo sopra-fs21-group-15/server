@@ -6,6 +6,8 @@ public class UserPostDTO {
 
     private String username;
 
+    private String birth_date;
+
     public String getPassword() {
         return password;
     }
@@ -21,4 +23,8 @@ public class UserPostDTO {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public String getBirth_date() {return birth_date; }
+
+    public void setBirth_date(String birth_date) {this.birth_date = birth_date; }
 }
