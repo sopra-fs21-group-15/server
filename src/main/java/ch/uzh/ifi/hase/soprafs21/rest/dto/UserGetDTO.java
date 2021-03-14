@@ -7,6 +7,7 @@ public class UserGetDTO {
     private Long id;
     private String password;
     private String username;
+    // added creation & birth date
     private String creation_date;
     private String birth_date;
     private UserStatus status;
@@ -36,16 +37,20 @@ public class UserGetDTO {
         this.username = username;
     }
 
+    // get creation date
     public String getCreation_date() {
         return creation_date;
-    } // get creation date for REST
+    }
 
-    public void setCreation_date(String creation_date) { this.creation_date = creation_date; } // is this necessary?
+    // set creation date
+    public void setCreation_date(String creation_date) { this.creation_date = creation_date; }
 
+    // get birth date
     public String getBirth_date() {
         return birth_date;
-    } // get creation date for REST
+    }
 
+    // set birth date
     public void setBirth_date(String birth_date) { this.birth_date = birth_date; }
 
     public UserStatus getStatus() {

@@ -42,6 +42,7 @@ public class UserService {
         return this.userRepository.findAll();
     }
 
+    // create the user
     public User createUser(User newUser) {
         newUser.setToken(UUID.randomUUID().toString());
         newUser.setStatus(UserStatus.ONLINE);
@@ -57,7 +58,7 @@ public class UserService {
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
-// changed getUser argument from username to user id!
+    // changed getUser argument from username to user id! To get it by the username.
     public User getUser(Long user_id) {
 
         //get all users
@@ -72,7 +73,9 @@ public class UserService {
 
         //if not found
         String nonexisting_user = "This user does not exist. Please search for an existing user!";
-        if (user_found == null) new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_user));
+        if (user_found == null) {
+            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_user));
+        }
         return user_found;
 
     }
@@ -86,6 +89,8 @@ public class UserService {
      * @throws org.springframework.web.server.ResponseStatusException
      * @see User
      */
+
+    // Check if the user Exists
     private void checkIfUserExists(User userToBeCreated) {
         User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
 
@@ -136,6 +141,7 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(wrong_password));
         }
 
+        //Set the Status on Online and update the repository
         userByUsername.setStatus(UserStatus.ONLINE);
         User updatedUser = userRepository.save(userByUsername);
         userRepository.flush();
@@ -144,6 +150,7 @@ public class UserService {
         return updatedUser;
     }
 
+    // update the user after the edit
     public void update_user(Long userId, User userChange){
 
         List<User> allusers = this.userRepository.findAll();
@@ -161,13 +168,16 @@ public class UserService {
         }
 
         if (userChange.getUsername() != null){
+            //If user exists already you cannot change the name!
             checkIfUserExists(userChange);
             usertoupdate.setUsername(userChange.getUsername());
         }
+        // save into the repository
         userRepository.save(usertoupdate);
         userRepository.flush();
         }
 
+    // set the user offline
     public void logout(Long userId){
         List<User> allusers = this.userRepository.findAll();
 

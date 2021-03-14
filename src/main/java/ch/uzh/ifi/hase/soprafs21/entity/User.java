@@ -31,10 +31,12 @@ public class User implements Serializable {
     @Column(nullable = false, unique = true)
     private String token;
 
-    @Column(nullable = false) //creation date for the data base
+    //creation date for the data base
+    @Column(nullable = false)
     private String creation_date;
 
-    @Column(nullable = true) //birth date for the data base
+    //birth date for the data base
+    @Column(nullable = true)
     private String birth_date;
 
     @Column(nullable = false)
@@ -73,21 +75,25 @@ public class User implements Serializable {
         this.token = token;
     }
 
+    //get the creation date
     public String getCreation_date() {
         return creation_date;
-    }      //get the creation date
+    }
 
+    // set the creation date
     public void setCreation_date(String creationDate) {
         this.creation_date = creationDate;
-    } // set the creation date
+    }
 
+    //get the birth date
     public String getBirth_date() {
         return birth_date;
-    }      //get the birth date
+    }
 
+    // set the birth date
     public void setBirth_date(String birthDate) {
         this.birth_date = birthDate;
-    } // set the birth date
+    }
 
     public UserStatus getStatus() {
         return status;

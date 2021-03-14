@@ -25,6 +25,8 @@ public class UserController {
         this.userService = userService;
     }
 
+    // Get mapping to /users to fetch all users to the frontend
+
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -40,6 +42,8 @@ public class UserController {
         return userGetDTOs;
     }
 
+    // Post mapping to /users to create a new user and save it
+
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -54,7 +58,9 @@ public class UserController {
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
     }
 
-    @PutMapping("/login")          //Put Mapping to update user profile
+    //Put Mapping to /login to compare the given input to the saved user
+
+    @PutMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public UserGetDTO requestLogin(@RequestBody UserPostDTO userPostDTO) {
@@ -68,6 +74,8 @@ public class UserController {
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userLogin);
     }
 
+    // Get mapping to /users/{userId} to get the user by its Id
+
     @GetMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -77,6 +85,8 @@ public class UserController {
         UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
         return userGetDTO;
     }
+
+    // Put mapping to /users/{userId} to update the user in the data bank with its changes
 
     @PutMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -88,7 +98,9 @@ public class UserController {
 
     }
 
-    @PutMapping("/logout/{userId}")          //Put Mapping to logout user profile
+    // Put Mapping to put the logged-out user on OFFLINE
+
+    @PutMapping("/logout/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void userLogout (@PathVariable Long userId) {
