@@ -86,7 +86,7 @@ public class UserController {
         return userGetDTO;
     }
 
-    // Put mapping to /users/{userId} to update the user in the data bank with its changes
+    // Put mapping to /users/{userId} to update the user in the repository with its changes
 
     @PutMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
