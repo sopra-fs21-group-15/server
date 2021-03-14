@@ -69,6 +69,10 @@ public class UserService {
                 user_found = i;
             }
         }
+
+        //if not found
+        String nonexisting_user = "This user does not exist. Please search for an existing user!";
+        if (user_found == null) new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_user));
         return user_found;
 
     }
@@ -92,7 +96,7 @@ public class UserService {
         String taken_username_error = "The %s %s already taken. Please choose an other username!";
 
         if (userByUsername != null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(taken_username_error, "username", "is"));
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(taken_username_error, "username", "is"));
         }
     }
 
@@ -118,7 +122,7 @@ public class UserService {
         //If you don't find the user. Tell him to register first.
         String nonexisting_user = "This username is not registered yet. Please register first or enter an existing username.";
         if (userByUsername == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(nonexisting_user));
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format(nonexisting_user));
         }
 
         //Now since the user exists. Get the saved password and the typed password
