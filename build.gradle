@@ -89,8 +89,8 @@ if (secretPropsFile.exists()) {
 
 sonarqube {
     properties {
-        property "sonar.projectKey", "<your-sonar-project-key>"
-        property "sonar.organization", "<your-sonar-organization>"
+        property "sonar.projectKey", "sopra-fs21-group-15_server"
+        property "sonar.organization", "sopra-fs21-group-15"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.coverage.jacoco.xmlReportPaths", ["$buildDir/jacocoReportDir/test/jacocoTestReport.xml"]
         property "sonar.cpd.exclusions", "**/entity/*.java,**/rest/dto/*.java"
