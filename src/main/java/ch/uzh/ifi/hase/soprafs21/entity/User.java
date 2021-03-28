@@ -23,7 +23,7 @@ public class User implements Serializable {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String password;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -31,8 +31,17 @@ public class User implements Serializable {
     @Column(nullable = false, unique = true)
     private String token;
 
+    //creation date for the data base
+    @Column(nullable = false)
+    private String creation_date;
+
+    //birth date for the data base
+    @Column(nullable = true)
+    private String birth_date;
+
     @Column(nullable = false)
     private UserStatus status;
+
 
     public Long getId() {
         return id;
@@ -42,12 +51,12 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getPassword() {
+        return password;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getUsername() {
@@ -64,6 +73,26 @@ public class User implements Serializable {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    //get the creation date
+    public String getCreation_date() {
+        return creation_date;
+    }
+
+    // set the creation date
+    public void setCreation_date(String creationDate) {
+        this.creation_date = creationDate;
+    }
+
+    //get the birth date
+    public String getBirth_date() {
+        return birth_date;
+    }
+
+    // set the birth date
+    public void setBirth_date(String birthDate) {
+        this.birth_date = birthDate;
     }
 
     public UserStatus getStatus() {

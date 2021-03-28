@@ -25,6 +25,8 @@ public class UserController {
         this.userService = userService;
     }
 
+    // Get mapping to /users to fetch all users to the frontend
+
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -40,6 +42,8 @@ public class UserController {
         return userGetDTOs;
     }
 
+    // Post mapping to /users to create a new user and save it
+
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -53,4 +57,56 @@ public class UserController {
         // convert internal representation of user back to API
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
     }
+
+    //Put Mapping to /login to compare the given input to the saved user
+
+    @PutMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public UserGetDTO requestLogin(@RequestBody UserPostDTO userPostDTO) {
+        // convert API user to internal representation
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+
+        //ask userService if login request is allowed
+        User userLogin = userService.login_request(userInput);
+
+        // convert internal representation of user back to API
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userLogin);
+    }
+
+    // Get mapping to /users/{userId} to get the user by its Id
+
+    @GetMapping("/users/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public UserGetDTO getUserByID(@PathVariable Long userId) {
+        User user = userService.getUser(userId);
+        // convert internal representation of user back to API
+        UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+        return userGetDTO;
+    }
+
+    // Put mapping to /users/{userId} to update the user in the repository with its changes
+
+    @PutMapping("/users/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public void editCurrentUser(@PathVariable Long userId, @RequestBody UserPostDTO userEditDTO) {
+        // convert API user to internal representation
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userEditDTO);
+        userService.update_user(userId, userInput);
+
+    }
+
+    // Put Mapping to put the logged-out user on OFFLINE
+
+    @PutMapping("/logout/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public void userLogout (@PathVariable Long userId) {
+
+        userService.logout(userId);
+    }
+
 }
+
