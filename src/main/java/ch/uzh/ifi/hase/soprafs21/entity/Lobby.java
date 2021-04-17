@@ -1,20 +1,21 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
-import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * Internal User Representation
- * This class composes the internal representation of the user and defines how the user is stored in the database.
+ * Internal Lobby Representation
+ * This class composes the internal representation of the lobby and defines how the lobby is stored in the database.
  * Every variable will be mapped into a database field with the @Column annotation
  * - nullable = false -> this cannot be left empty
  * - unique = true -> this value must be unqiue across the database -> composes the primary key
  */
 @Entity
-@Table(name = "USER")
-public class User implements Serializable {
+@Table(name = "LOBBY")
+
+public class Lobby implements  Serializable{
 
     private static final long serialVersionUID = 1L;
 
@@ -22,11 +23,11 @@ public class User implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String lobbyname;
 
     @Column(nullable = false, unique = true)
     private String token;
@@ -35,15 +36,11 @@ public class User implements Serializable {
     @Column(nullable = false)
     private String creation_date;
 
-    //birth date for the data base
-    @Column(nullable = true)
-    private String birth_date;
-
     @Column(nullable = false)
-    private UserStatus status;
+    private LobbyStatus status;
 
     @Column(nullable = true)
-    private String user_tag;
+    private String lobby_tag;
 
 
     public Long getId() {
@@ -62,12 +59,12 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
+    public String getLobbyname() {
+        return lobbyname;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setLobbyname(String lobbyname) {
+        this.lobbyname = lobbyname;
     }
 
     public String getToken() {
@@ -88,27 +85,19 @@ public class User implements Serializable {
         this.creation_date = creationDate;
     }
 
-    //get the birth date
-    public String getBirth_date() {
-        return birth_date;
-    }
-
-    // set the birth date
-    public void setBirth_date(String birthDate) {
-        this.birth_date = birthDate;
-    }
-
-    public UserStatus getStatus() {
+    public LobbyStatus getStatus() {
         return status;
     }
 
-    public void setStatus(UserStatus status) {
+    public void setStatus(LobbyStatus status) {
         this.status = status;
     }
 
-    public String getUser_tag() { return user_tag; }
+    public String getLobby_tag() { return lobby_tag; }
 
-    public void setUser_tag(String userTag) { this.user_tag = userTag; }
+    public void setLobby_tag(String lobbyTag) { this.lobby_tag = lobbyTag; }
 
 
 }
+
+

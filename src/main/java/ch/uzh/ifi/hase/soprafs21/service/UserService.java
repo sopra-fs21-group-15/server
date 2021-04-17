@@ -44,11 +44,11 @@ public class UserService {
 
     // create the user
     public User createUser(User newUser) {
+        checkIfUserExists(newUser);
+
         newUser.setToken(UUID.randomUUID().toString());
         newUser.setStatus(UserStatus.ONLINE);
         newUser.setCreation_date(getDate()); //get the creation date with the current date
-
-        checkIfUserExists(newUser);
 
         // saves the given entity but data is only persisted in the database once flush() is called
 
