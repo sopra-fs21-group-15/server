@@ -2,7 +2,6 @@ package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
-import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.repository.LobbyRepository;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.LobbyPostDTO;
 import org.slf4j.Logger;
@@ -42,6 +41,41 @@ public class LobbyService {
 
     public List<Lobby> getLobbies() {
         return this.lobbyRepository.findAll();
+    }
+
+    // create the lobby
+    public Lobby createLobby(Lobby newLobby) {
+        checkIfLobbyExists(newLobby);
+
+        newLobby.setToken(UUID.randomUUID().toString());
+        newLobby.setStatus(LobbyStatus.WAITING);
+        newLobby.setCreation_date(getDate()); //get the creation date with the current date
+
+        // saves the given entity but data is only persisted in the database once flush() is called
+
+        newLobby = lobbyRepository.save(newLobby);
+        lobbyRepository.flush();
+
+        log.debug("Created Information for Lobby: {}", newLobby);
+        return newLobby;
+    }
+
+    // Check if the lobby exists
+    private void checkIfLobbyExists(Lobby lobbyToBeCreated) {
+        Lobby lobbyByLobbyname = lobbyRepository.findByLobbyname(lobbyToBeCreated.getLobbyname());
+
+        String taken_lobbyname_error = "The %s %s already taken. Please choose an other lobbyname!";
+
+        if (lobbyByLobbyname != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(taken_lobbyname_error, "lobbyname", "is"));
+        }
+    }
+
+    // Save the lobby date
+    private String getDate() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        return dtf.format(now);
     }
 
 }

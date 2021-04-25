@@ -28,7 +28,7 @@ public interface LobbyDTOMapper {
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "password", target = "password")
-    @Mapping(source = "username", target = "username")
+    @Mapping(source = "lobbyname", target = "lobbyname")
     @Mapping(source = "creation_date", target = "creation_date") //map the creation date upwards!
     @Mapping(source = "status", target = "status")
     LobbyGetDTO convertEntityToLobbyGetDTO(Lobby lobby);
