@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 
 import java.time.LocalTime;
 
+// test push successfull after 7th try and an hour wasted x_x
 public class Timer {
 
     // basic fields
