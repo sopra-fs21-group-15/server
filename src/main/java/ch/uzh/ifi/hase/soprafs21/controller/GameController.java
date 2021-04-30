@@ -27,21 +27,20 @@ public class GameController {
 
     GameController(GameService gameService) { this.gameService = gameService; }
 
-    // TODO: finish provisional call by specifying mapping
+    // TODO #29 Create mapping for API-calls for starting a game
     // pass information and settings from the lobby to create a game
     @GetMapping("/lobbies")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public List<LobbyGetDTO> createGame(@RequestBody GamePostDTO gamePostDTO) {
+    public GameGetDTO createGame(@RequestBody GamePostDTO gamePostDTO) {
         // convert information passed down into a usable instance of game
         Game gameInput = GameDTOMapper.INSTANCE.convertGamePostDTOtoEntity(gamePostDTO);
 
-        // create the game for all players
-        //Game createdGame = gameService.createGame(gameInput);
+        // copy the input into a game visible for all players threw the repository
+        Game createdGame = gameService.createGame(gameInput);
 
         // convert internal representation of game back to API for client
-        //return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
-        return null;
+        return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
     }
 
 }

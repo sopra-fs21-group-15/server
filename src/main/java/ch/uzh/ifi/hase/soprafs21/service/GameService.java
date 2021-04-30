@@ -1,6 +1,8 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs21.entity.Round;
+import ch.uzh.ifi.hase.soprafs21.entity.ScoreBoard;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.repository.GameRepository;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +33,7 @@ import java.time.LocalDateTime;
 @Transactional
 public class GameService {
 
-    /*private final Logger log = LoggerFactory.getLogger(GameService.class);
+    private final Logger log = LoggerFactory.getLogger(GameService.class);
 
     private final GameRepository gameRepository;
 
@@ -43,46 +46,63 @@ public class GameService {
         return this.gameRepository.findAll();
     }
 
-    // TODO #29 Create mapping for API-calls for starting a game
+
     // TODO #30 Create function handling the starting of a game
     // create a game with given parameters
     public Game createGame(Game newGame) {
-        newGame.setToken(UUID.randomUUID().toString());
-        newUser.setStatus(UserStatus.ONLINE);
-        newUser.setCreation_date(getDate()); //get the creation date with the current date
+        // initialize the remaining fields and there corresponding fields
+        int n = newGame.getPlayers().size();
 
-        checkIfGameExists(newGame);
+        // the scoreboard
+        ScoreBoard scoreBoard = new ScoreBoard();
+        scoreBoard.setId( newGame.getId() );
+        scoreBoard.setPlayers( newGame.getPlayers() );
+        scoreBoard.setRanking( new int[n] );
+        scoreBoard.setScore( new long[n] );
+        newGame.setScoreBoard(scoreBoard);
 
+        // the roundTracker
+        newGame.setCurrentRound(1);
+
+        // the rounds themselves
+        ArrayList<Round> rounds = new ArrayList<Round>(n);
+        for(int i = 0; i < n; i++) {
+            Round temp = new Round();
+            temp.setup(newGame);
+            rounds.add(temp);
+        }
+        newGame.setRounds(rounds); //get the creation date with the current date
+
+        // TODO: make the gameId unique even with in lobby calls
         // saves the given entity but data is only persisted in the database once flush() is called
-
         newGame = gameRepository.save(newGame);
         gameRepository.flush();
 
-        log.debug("Created Game with given Information: {}", newGame);
+        log.debug("Created and started new game with given information: {}", newGame);
         return newGame;
     }
 
-    // changed getUser argument from username to user id! To get it by the username.
-    public User getUser(Long user_id) {
+    // quality of life method (logging in again after disconnect)
+    public Game getGame(Long game_id) {
 
-        //get all users
-        List<User> all_users = this.userRepository.findAll();
+        //get all games
+        List<Game> all_games = this.gameRepository.findAll();
 
-        User user_found = null;
-        for (User i : all_users) {
-            if (user_id == i.getId()) {
-                user_found = i;
+        Game game_found = null;
+        for (Game i : all_games) {
+            if (game_id == i.getId()) {
+                game_found = i;
             }
         }
 
         //if not found
-        String nonexisting_user = "This user does not exist. Please search for an existing user!";
-        if (user_found == null) {
+        String nonexisting_user = "This game does not exist or has expired. Please search for an existing user!";
+        if (game_found == null) {
             new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_user));
         }
-        return user_found;
 
-    }*/
+        return game_found;
+    }
 
 
     /**

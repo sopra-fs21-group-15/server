@@ -21,5 +21,6 @@ public interface GameDTOMapper {
 
     Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
 
-    GameGetDTO convertEntityToGameDTO(Game game);
+
+    GameGetDTO convertEntityToGameGetDTO(Game game);
 }
