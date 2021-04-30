@@ -37,7 +37,7 @@ public class GameController {
         Game gameInput = GameDTOMapper.INSTANCE.convertGamePostDTOtoEntity(gamePostDTO);
 
         // create the game for all players
-        Game createdGame = gameService.createGame(gameInput);
+        //Game createdGame = gameService.createGame(gameInput);
 
         // convert internal representation of game back to API for client
         //return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
