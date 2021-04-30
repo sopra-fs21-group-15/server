@@ -50,22 +50,18 @@ public class GameService {
     // TODO #30 test and refine function handling the starting of a game
     // create a game with given parameters
     public Game createGame(Game newGame) {
-        // initialize the remaining fields and there corresponding fields
-        int n = newGame.getPlayers().size();
-
-        // the scoreboard
-        ScoreBoard scoreBoard = new ScoreBoard();
-        scoreBoard.setId( newGame.getId() );
-        scoreBoard.setPlayers( newGame.getPlayers() );
-        scoreBoard.setRanking( new int[n] );
-        scoreBoard.setScore( new long[n] );
+        // initialize the remaining fields and there corresponding fields ...
+        // ... the scoreboard
+        ScoreBoard scoreBoard = new ScoreBoard(newGame.getPlayers(), newGame.getId());
         newGame.setScoreBoard(scoreBoard);
 
-        // the roundTracker
+        // ... the roundTracker
         newGame.setCurrentRound(1);
 
-        // the rounds themselves
+        // ... the rounds themselves
+        int n = newGame.getPlayers().size();
         ArrayList<Round> rounds = new ArrayList<Round>(n);
+
         for(int i = 0; i < n; i++) {
             Round temp = new Round();
             temp.setup(newGame);

@@ -99,7 +99,7 @@ public class Round {
                 pictures.add(new Drawing());
                 stopWatch.reset(); // prepare the timer and then start it
                 if(stopWatch.ready()) {
-                    stopWatch.start();
+                    stopWatch.begin();
                 }
             }
             // if the drawing has been set up we can pass the inputs down to the drawing

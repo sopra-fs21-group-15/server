@@ -37,12 +37,16 @@ public class Timer implements Serializable {
     public Long getId() { return this.id; }
     public void setId(Long id) { this.id = id; }
 
+    // access start
+    public LocalTime getStart() { return this.start; }
+    public void setStart(LocalTime start) { this.start = start; }
+
     // access and change time span for this timer (only if not running)
     public int getTimeSpan() { return this.timeSpan; }
     public void setTimeSpan(int newTimeSpan ) { if(this.ready()) { this.timeSpan = newTimeSpan; } }
 
     // start the timer if it isn't already running
-    public void start(){
+    public void begin(){
         if(this.ready()) {
             this.start = LocalTime.now();
         }
