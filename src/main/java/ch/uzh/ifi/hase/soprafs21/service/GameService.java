@@ -47,7 +47,7 @@ public class GameService {
     }
 
 
-    // TODO #30 Create function handling the starting of a game
+    // TODO #30 test and refine function handling the starting of a game
     // create a game with given parameters
     public Game createGame(Game newGame) {
         // initialize the remaining fields and there corresponding fields

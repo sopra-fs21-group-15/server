@@ -27,7 +27,7 @@ public class GameController {
 
     GameController(GameService gameService) { this.gameService = gameService; }
 
-    // TODO #29 Create mapping for API-calls for starting a game
+    // TODO #29 test and refine mapping for API-calls for starting a game
     // pass information and settings from the lobby to create a game
     @GetMapping("/lobbies")
     @ResponseStatus(HttpStatus.CREATED)
