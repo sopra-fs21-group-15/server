@@ -1,29 +1,45 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalTime;
 
-// test push successfull after 7th try and an hour wasted x_x
-public class Timer {
+@Entity
+@Table(name = "TIMER")
+public class Timer implements Serializable {
+
+    private  static final long serialVersionUID = 1L;
 
     // basic fields
-    private double timeSpan;
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false)
+    private int timeSpan;
+
+    @Column(nullable = false)
     private LocalTime start;
 
     // constructor with default values
     public Timer() {
-        long defaultTime = 60;
+        int defaultTime = 60;
         new Timer(defaultTime);
     }
 
     // constructor with options
-    public Timer(long timeSpan){
+    public Timer(int timeSpan){
         this.timeSpan = timeSpan;
         this.start = null;
     }
 
+    // access and change id
+    public Long getId() { return this.id; }
+    public void setId(Long id) { this.id = id; }
+
     // access and change time span for this timer (only if not running)
-    public double getTimeSpan() { return this.timeSpan; }
-    public void setTimeSpan(double newTimeSpan ) { if(this.ready()) { this.timeSpan = newTimeSpan; } }
+    public int getTimeSpan() { return this.timeSpan; }
+    public void setTimeSpan(int newTimeSpan ) { if(this.ready()) { this.timeSpan = newTimeSpan; } }
 
     // start the timer if it isn't already running
     public void start(){
@@ -49,7 +65,7 @@ public class Timer {
         if(this.start != null) {
             LocalTime rightNow = LocalTime.now();
             double tempMilli = Math.floor((rightNow.getNano() - start.getNano()) / Math.pow(10.0,6.0)) / Math.pow(10.0,3.0);
-            double tempSec = rightNow.getSecond() - start.getSecond();
+            double tempSec = ((double) timeSpan) - (rightNow.getSecond() - start.getSecond());
             double value = Math.floor((timeSpan - (tempSec + tempMilli)) * 1000) / 1000;
             if(value >= 0){
                 return value;
