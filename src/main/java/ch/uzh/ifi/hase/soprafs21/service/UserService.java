@@ -175,7 +175,7 @@ public class UserService {
         // save into the repository
         userRepository.save(usertoupdate);
         userRepository.flush();
-        }
+    }
 
     // set the user offline
     public void logout(Long userId){

@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Internal Lobby Representation
@@ -23,6 +24,7 @@ public class Lobby implements  Serializable{
     @GeneratedValue
     private Long id;
 
+    //lobby type in password implicit included. If password = NULL --> lobby = public
     @Column(nullable = true)
     private String password;
 
@@ -32,16 +34,32 @@ public class Lobby implements  Serializable{
     @Column(nullable = false, unique = true)
     private String token;
 
-    //creation date for the data base
+    //lobby size per default 4
     @Column(nullable = false)
-    private String creation_date;
+    private Integer size = 4;
 
+    //number of rounds per default 4
+    @Column(nullable = false)
+    private Integer rounds = 4;
+
+    //time per round per default 60
+    @Column(nullable = false)
+    private Integer timer = 60;
+
+    //lobby members & their corresponding status; first member is automatically the owner
+    @Column(nullable = false)
+    private ArrayList<Long> members = new ArrayList<Long>();
+
+    //lobby status
     @Column(nullable = false)
     private LobbyStatus status;
 
+    //lobby chat
     @Column(nullable = true)
-    private String lobby_tag;
+    private String lobbyChat;
 
+    public Lobby() {
+    }
 
     public Long getId() {
         return id;
@@ -75,16 +93,29 @@ public class Lobby implements  Serializable{
         this.token = token;
     }
 
-    //get the creation date
-    public String getCreation_date() {
-        return creation_date;
-    }
+    //get & set lobby size
+    public  Integer getSize() { return size; }
 
-    // set the creation date
-    public void setCreation_date(String creationDate) {
-        this.creation_date = creationDate;
-    }
+    public void setSize(Integer size) { this.size = size; }
 
+    //get & set number of rounds
+    public Integer getRounds() { return rounds; }
+
+    public void setRounds(Integer rounds) { this.rounds = rounds; }
+
+    //get & set time per rounds
+    public Integer getTimer() { return  timer; }
+
+    public void setTimer(Integer timer) { this.timer = timer; }
+
+    //get & set members & their status
+    public ArrayList<Long> getMembers() { return members; }
+
+    public void setMembers(Long member) { members.add(member); }
+
+    public void deleteMembers(Long member) { members.remove(member); }
+
+    //get & set lobby status
     public LobbyStatus getStatus() {
         return status;
     }
@@ -93,11 +124,10 @@ public class Lobby implements  Serializable{
         this.status = status;
     }
 
-    public String getLobby_tag() { return lobby_tag; }
+    //get & set lobby chat
+    public String getLobbyChat() { return lobbyChat; }
 
-    public void setLobby_tag(String lobbyTag) { this.lobby_tag = lobbyTag; }
-
-
+    public void setLobbyChat(String lobbyChat) { this.lobbyChat = lobbyChat; }
 }
 
 

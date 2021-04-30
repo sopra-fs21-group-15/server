@@ -22,14 +22,23 @@ public interface LobbyDTOMapper {
 
     LobbyDTOMapper INSTANCE = Mappers.getMapper(LobbyDTOMapper.class);
 
+    @Mapping(source = "id", target = "id")
     @Mapping(source = "password", target = "password")
     @Mapping(source = "lobbyname", target = "lobbyname")
+    @Mapping(source = "size", target = "size") //map the lobby size downwards!
+    @Mapping(source = "rounds", target = "rounds") //map the game rounds downwards!
+    @Mapping(source = "timer", target = "timer") //map the timer downwards!
+    @Mapping(source = "lobbyChat", target = "lobbyChat") //map the lobby chat downwards!
     Lobby convertLobbyPostDTOtoEntity(LobbyPostDTO lobbyPostDTO);
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "password", target = "password")
     @Mapping(source = "lobbyname", target = "lobbyname")
-    @Mapping(source = "creation_date", target = "creation_date") //map the creation date upwards!
+    @Mapping(source = "size", target = "size") //map the lobby size upwards!
+    @Mapping(source = "rounds", target = "rounds") //map the game rounds upwards!
+    @Mapping(source = "timer", target = "timer") //map the timer upwards!
+    @Mapping(source = "members", target = "members") //map the members upwards!
+    @Mapping(source = "lobbyChat", target ="lobbyChat") //map the lobby chat upwards!
     @Mapping(source = "status", target = "status")
     LobbyGetDTO convertEntityToLobbyGetDTO(Lobby lobby);
 }
