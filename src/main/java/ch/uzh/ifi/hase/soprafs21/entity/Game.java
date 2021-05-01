@@ -26,19 +26,28 @@ public class Game {
     private int numberOfRounds;
 
     @Column(nullable = false)
-    private int timePerRound;
+    private long timePerRound;
 
     // generated values in the back-end
     private int roundTracker;
 
+    private ArrayList<Round> roundOverview;
+
     private ScoreBoard scoreBoard;
 
-    /**
-     * Basic getter and setter methods for the mapper (needed for front-end)
-     */
+    // TODO: Revert changes for custom made game mapper (not constructor)
+    // class generator
+    public Game(ArrayList<User> players, GameModes gameModes, int numberOfRounds, int timePerRound){
+        this.players = players;
+        this.gameModes = gameModes;
+        this.numberOfRounds = numberOfRounds;
+        this.timePerRound = timePerRound;
+        this.roundTracker = 0;
+    }
+
     // access Id
     public Long getId() {
-        return this.id;
+        return id;
     }
     public void setId(Long id) {
         this.id = id;
@@ -46,48 +55,28 @@ public class Game {
 
     // access Players (User)
     public ArrayList<User> getPlayers() {
-        return this.players;
+        return players;
     }
     public void setPlayers(ArrayList<User> players) {
         this.players = players;
     }
 
-    // access GameMode
-    public GameModes getGameMode() { return this.gameModes; }
-    public void setGameMode(GameModes newMode) { this.gameModes = newMode; }
-
     // access Number of Rounds
     public int getNumberOfRounds() {
-        return this.numberOfRounds;
+        return numberOfRounds;
     }
     public void setNumberOfRounds(int numberOfRounds) {
         this.numberOfRounds = numberOfRounds;
     }
 
-    // access time per Round
-    public int getTimePerRound() { return this.timePerRound; }
-    public void setTimePerRound(int newTimePerRound) { this.timePerRound = newTimePerRound; }
-
     // access current Round
-    public int getCurrentRound() { return this.roundTracker; }
+    public int getCurrentRound() { return roundTracker; }
     public void setCurrentRound(int currentRound) {
         this.roundTracker = currentRound;
     }
 
-    // access Scoreboard
-    public ScoreBoard getScoreBoard() { return this.scoreBoard; }
-    public void setScoreBoard(ScoreBoard newScoreBoard) { this.scoreBoard = newScoreBoard; }
 
-    /**
-     * Back-end specific methods needed for functionality
-     */
-    public void updatePoints(long[] points) {
-        scoreBoard.updateScore(points);
-    }
 
-    /**
-     * Back-end specific methods for quality of life
-     */
     // a simple standardized method to make debugging easier
     public String toString() {
         String value = "";
