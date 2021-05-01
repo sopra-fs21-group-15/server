@@ -1,10 +1,18 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ScoreBoard implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue
+    private Long id;
 
     private ArrayList<User> players;
 

@@ -142,11 +142,6 @@ public class UserService {
 
         List<User> allUsers = this.userRepository.findAll();
 
-        //set all other users to Offline
-        for (User user : allUsers) {
-            user.setStatus(UserStatus.OFFLINE);
-        }
-
         //If you don't find the user. Tell him to register first.
         String nonexisting_user = "This username is not registered yet. Please register first or enter an existing username.";
         if (userByUsername == null) {
@@ -168,7 +163,6 @@ public class UserService {
         userByUsername.setStatus(UserStatus.ONLINE);
         User updatedUser = userRepository.save(userByUsername);
         userRepository.flush();
-
 
         return updatedUser;
     }

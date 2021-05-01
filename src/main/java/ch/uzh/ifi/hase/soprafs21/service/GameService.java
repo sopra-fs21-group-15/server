@@ -70,8 +70,8 @@ public class GameService {
 
         // import information from lobby
         ArrayList<User> players = new ArrayList<User>();
-        for (Long memberId : lobbyToUpdate.getMembers()) {
-            User tempUser = this.userRepository.getOne(memberId);
+        for (String memberName : lobbyToUpdate.getMembers()) {
+            User tempUser = this.userRepository.findByUsername(memberName);
             tempUser.setStatus(UserStatus.INGAME);
             players.add(tempUser);
         }
@@ -95,7 +95,7 @@ public class GameService {
         int n = newGame.getPlayers().size();
         ArrayList<Round> rounds = new ArrayList<Round>(n);
 
-        for(int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             Round temp = new Round();
             temp.setup(newGame);
             rounds.add(temp);
@@ -132,26 +132,4 @@ public class GameService {
 
         return game_found;
     }
-
-
-    /**
-     * This is a helper method that will check the uniqueness criteria of the username and the password
-     * defined in the User entity. The method will do nothing if the input is unique and throw an error otherwise.
-     *
-     * @param gameToBeCreated
-     * @throws org.springframework.web.server.ResponseStatusException
-     * @see User
-     */
-
-    // Check if the game Exists
-    /*private void checkIfGameExists(Game gameToBeCreated) {
-        Game gameByGamename = gameRepository.findById(gameToBeCreated.getId());
-
-        String taken_gamename_error = "The %s %s already taken. Please choose an other gamename!";
-
-        if (gameByGamename != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(taken_gamename_error, "lobbyname", "is"));
-        }
-    }*/
-
 }

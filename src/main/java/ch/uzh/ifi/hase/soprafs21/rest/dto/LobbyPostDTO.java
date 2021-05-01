@@ -13,7 +13,7 @@ public class LobbyPostDTO {
 
     private String rounds;
 
-    private String timer;
+    private String  timer;
 
     private String lobbyChat;
 
@@ -39,13 +39,13 @@ public class LobbyPostDTO {
 
     public String getSize() { return size; }
 
-    public void setSize(String size) { this.size = size; }
+    public void setSize(String  size) { this.size = size; }
 
-    public String getRounds() { return rounds; }
+    public String  getRounds() { return rounds; }
 
-    public void setRounds(String rounds) { this.rounds = rounds; }
+    public void setRounds(String  rounds) { this.rounds = rounds; }
 
-    public String getTimer() { return  timer; }
+    public String  getTimer() { return  timer; }
 
     public void setTimer(String timer) { this.timer = timer; }
 

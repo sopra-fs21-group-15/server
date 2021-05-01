@@ -4,8 +4,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalTime;
 
-@Entity
-@Table(name = "TIMER")
 public class Timer implements Serializable {
 
     private  static final long serialVersionUID = 1L;

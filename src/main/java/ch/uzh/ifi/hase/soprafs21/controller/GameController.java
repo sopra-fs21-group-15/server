@@ -20,6 +20,7 @@ public class GameController {
     // TODO #29 test and refine mapping for API-calls for starting a game
     // TODO get information from lobby directly
     // pass information and settings from the lobby to create a game
+
     @PostMapping("/lobbies/{lobbyId}/start")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
