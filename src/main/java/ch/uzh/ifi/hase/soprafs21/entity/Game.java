@@ -33,8 +33,6 @@ public class Game {
 
     private ScoreBoard scoreBoard;
 
-    private ArrayList<Round> rounds;
-
     /**
      * Basic getter and setter methods for the mapper (needed for front-end)
      */
@@ -80,9 +78,6 @@ public class Game {
     public ScoreBoard getScoreBoard() { return this.scoreBoard; }
     public void setScoreBoard(ScoreBoard newScoreBoard) { this.scoreBoard = newScoreBoard; }
 
-    // access Rounds
-    public ArrayList<Round> getRounds() { return this.rounds; }
-    public void setRounds (ArrayList<Round> rounds) { this.rounds = rounds; }
     /**
      * Back-end specific methods needed for functionality
      */
