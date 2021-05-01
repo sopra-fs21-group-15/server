@@ -121,13 +121,14 @@ public class Round {
         return pictures.get(currentWord-1).getDrawing(timeStamp);
     }
 
+    // TODO: #52 and #56 improve functionality and consistency
     // a guesser has made a guess
-    public void newGuess(long idOfGuesser, String guess) {
+    public void makeGuess(Guess guess) {
         long potPoint = (long) stopWatch.remainingTime() * 1000;
         // check if: correct person, guess is correct, timer still running, has not made a correct guess before
-        if(idOfGuesser != drawerId && guess.equals(words.get(currentWord-1)) && !stopWatch.timeIsUp()) {
+        if(guess.getGuesser_id() != drawerId && guess.getGuess().equals(words.get(currentWord-1)) && !stopWatch.timeIsUp()) {
             for(User potGuesser : players) { //TODO: inefficient way to find wanted user within lobby (change/optimize if enough time left)
-                if(potGuesser.getId() == idOfGuesser) { // if it is the correct user ...
+                if(potGuesser.getId() == guess.getGuesser_id()) { // if it is the correct user ...
                     int i = players.indexOf(potGuesser);
                     int h = currentWord - 1;
                     tempScore[i][h] = Math.max(tempScore[i][h], potPoint); // ... check if he/she already made a better guess and then update accordingly

@@ -105,6 +105,8 @@ public class Game implements Serializable {
 
     public int getLength() { return rounds.get(roundTracker-1).getLength(); }
 
+    public void makeGuess(Guess guess) { rounds.get(roundTracker-1).makeGuess(guess);}
+
     /**
      * Back-end specific methods for quality of life
      */

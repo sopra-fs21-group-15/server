@@ -1,22 +1,15 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
-import ch.uzh.ifi.hase.soprafs21.entity.BrushStroke;
-import ch.uzh.ifi.hase.soprafs21.entity.Drawing;
-import ch.uzh.ifi.hase.soprafs21.entity.Game;
+import ch.uzh.ifi.hase.soprafs21.entity.*;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 
-import ch.uzh.ifi.hase.soprafs21.rest.mapper.BrushStrokeDTOMapper;
-import ch.uzh.ifi.hase.soprafs21.rest.mapper.DrawingDTOMapper;
-import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameDTOMapper;
-import ch.uzh.ifi.hase.soprafs21.rest.mapper.WordCountDTOMapper;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.*;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GameController {
 
@@ -60,21 +53,41 @@ public class GameController {
     @GetMapping("/game/{gameId}/drawing")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public DrawingGetDTO drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable long gameId) {
+    public DrawingGetDTO drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable Long gameId) {
         LocalDateTime timeStamp = DrawingDTOMapper.INSTANCE.convertDrawingPostDTOtoEntity(drawingPostDTO);
         Game game = gameService.getGame(gameId);
         Drawing drawing = game.getDrawing(timeStamp);
         return DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(drawing);
     }
 
-    // TODO #44 add mapping API-call for requesting the letter-count
+    // TODO #44 test and refine mapping API-call for requesting the letter-count
     @GetMapping("/game/{gameId}/length")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public WordCountGetDTO lengthRequest(@PathVariable long gameId) {
+    public WordCountGetDTO lengthRequest(@PathVariable Long gameId) {
         Game game = gameService.getGame(gameId);
         int value = game.getLength();
         return WordCountDTOMapper.INSTANCE.convertEntityToWordCountGetDTO(value);
+    }
+
+    // TODO #51 test and refine mapping API-call for sending a guess of what the word might be
+    @PutMapping("/game/{gameId}/guess")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public void makeGuess(@RequestBody GuessPutDTO guessPutDTO, @PathVariable Long gameId) {
+        Guess guess = GuessDTOMapper.INSTANCE.convertGuessPutDTOToEntity(guessPutDTO);
+        Game game = gameService.getGame(gameId);
+        game.makeGuess(guess);
+    }
+
+    // TODO #53 test and refine the mapping for this API-call requesting the score
+    @GetMapping("/game/{gameId}/score")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ScoreBoardGetDTO getScore(@PathVariable Long gameId) {
+        Game game = gameService.getGame(gameId);
+        ScoreBoard score = game.getScoreBoard();
+        return ScoreBoardDTOMapper.INSTANCE.convertEntityToScoreBoardGetDTO(score);
     }
 
 }
