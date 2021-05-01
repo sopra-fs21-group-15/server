@@ -172,16 +172,22 @@ public class LobbyService {
 
         // check if the password is correct
         String wrong_password = "You entered the wrong password!";
-        if (lobbytoupdate != null && inputPassword == null) {
+        if (lobbytoupdate.getPassword() != null && inputPassword == null) {
+            lobbyRepository.save(lobbytoupdate);
+            lobbyRepository.flush();
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format(wrong_password));
         }
-        else if (lobbytoupdate != null &&!inputPassword.equals(lobbytoupdate.getPassword())) {
+        else if (lobbytoupdate.getPassword() != null &&!inputPassword.equals(lobbytoupdate.getPassword())) {
+            lobbyRepository.save(lobbytoupdate);
+            lobbyRepository.flush();
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format(wrong_password));
         }
 
         // check if the user is already a member
         String player_already_in_lobby = "This user is already a member of the lobby!";
         if (lobbytoupdate.getMembers().contains(userName)) {
+            lobbyRepository.save(lobbytoupdate);
+            lobbyRepository.flush();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(player_already_in_lobby));
         }
         else lobbytoupdate.setMembers(userName);
