@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class GamePostDTO {
 
     private Long id;
-    //private ArrayList<User> players;
+    private ArrayList<User> players;
     private String gameName;
     private GameModes gameModes;
     private int numberOfRounds;
@@ -19,8 +19,8 @@ public class GamePostDTO {
     public void setId(Long id) { this.id = id; }
 
     // access players
-    /*public ArrayList<User> getPlayers() { return players; }
-    public void setPlayers(ArrayList<User> players) { this.players = players; }*/
+    public ArrayList<User> getPlayers() { return players; }
+    public void setPlayers(ArrayList<User> players) { this.players = players; }
 
     // access game name
     public String getGameName() {
