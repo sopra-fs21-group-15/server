@@ -1,23 +1,19 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
-import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
-import ch.uzh.ifi.hase.soprafs21.entity.User;
+import ch.uzh.ifi.hase.soprafs21.entity.BrushStroke;
+import ch.uzh.ifi.hase.soprafs21.entity.Drawing;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.LobbyGetDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.GameGetDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
-import ch.uzh.ifi.hase.soprafs21.rest.mapper.LobbyDTOMapper;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
+
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.BrushStrokeDTOMapper;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.DrawingDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +23,7 @@ public class GameController {
 
     GameController(GameService gameService) { this.gameService = gameService; }
 
-    // TODO #29 Create mapping for API-calls for starting a game
+    // TODO #29 test and refine mapping for API-calls for starting a game
     // pass information and settings from the lobby to create a game
     @GetMapping("/lobbies")
     @ResponseStatus(HttpStatus.CREATED)
@@ -41,6 +37,32 @@ public class GameController {
 
         // convert internal representation of game back to API for client
         return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
+    }
+
+    // TODO #40 test and refine mapping for sending drawing information
+    // pass information to the right picture
+    @PutMapping("/game/{gameId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public void addBrushStrokes(@RequestBody BrushStrokePutDTO brushStrokeEditDTO, @PathVariable long gameId) {
+        // convert API brush stroke to an internal representation
+        BrushStroke brushStroke = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(brushStrokeEditDTO);
+
+        Game game = gameService.getGame(gameId);
+
+        // method checks on the level of the round if it is the right user
+        game.addStroke(brushStrokeEditDTO.getUser_id(), brushStroke);
+    }
+
+    // TODO #42 add mapping for API-calls requesting the drawing
+    @GetMapping("/game/{gameId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public DrawingGetDTO drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable long gameId) {
+        LocalDateTime timeStamp = DrawingDTOMapper.INSTANCE.convertDrawingPostDTOtoEntity(drawingPostDTO);
+        Game game = gameService.getGame(gameId);
+        Drawing drawing = game.getDrawing(timeStamp);
+        return DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(drawing);
     }
 
 }

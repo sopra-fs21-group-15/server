@@ -16,7 +16,7 @@ public class ScoreBoard implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue
+    @Column(nullable = false)
     private Long id;
 
     @Column(nullable = false)
@@ -27,6 +27,21 @@ public class ScoreBoard implements Serializable {
 
     @Column(nullable = false)
     private long[] score;
+
+    public ScoreBoard() {
+        ArrayList<User> players = new ArrayList<>(4);
+        long error = 404;
+        new ScoreBoard(players, error);
+    }
+
+    public ScoreBoard(ArrayList<User> players, long id) {
+        this.id = id;
+
+        int n = players.size();
+        this.players = players;
+        this.ranking = new int[n];
+        this.score = new long[n];
+    }
 
     /**
      * Default methods that have to be made in order to be able

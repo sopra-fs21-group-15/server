@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Game {
@@ -83,12 +84,17 @@ public class Game {
     // access Rounds
     public ArrayList<Round> getRounds() { return this.rounds; }
     public void setRounds (ArrayList<Round> rounds) { this.rounds = rounds; }
+
     /**
      * Back-end specific methods needed for functionality
      */
     public void updatePoints(long[] points) {
         scoreBoard.updateScore(points);
     }
+
+    public void addStroke(long user_id, BrushStroke brushStroke) { this.rounds.get(roundTracker - 1).addStroke(user_id, brushStroke); }
+
+    public Drawing getDrawing(LocalDateTime timeStamp) { return rounds.get(roundTracker-1).getDrawing(timeStamp); }
 
     /**
      * Back-end specific methods for quality of life

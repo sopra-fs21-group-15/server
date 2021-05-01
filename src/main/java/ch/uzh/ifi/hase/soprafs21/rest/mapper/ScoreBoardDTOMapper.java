@@ -14,6 +14,6 @@ public interface ScoreBoardDTOMapper {
     @Mapping(source = "id", target = "id")
     @Mapping(source = "players", target = "players")
     @Mapping(source = "ranking", target = "ranking")
-    @Mapping(source = "score", target = "ranking")
+    @Mapping(source = "score", target = "score")
     ScoreBoardGetDTO convertEntityToScoreBoardGetDTO(ScoreBoard scoreBoard);
 }
