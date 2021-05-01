@@ -1,10 +1,11 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
+import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
+import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.LobbyRepository;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.LobbyPostDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
-
-
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
 
 /**
  * Lobby Service
@@ -35,9 +32,12 @@ public class LobbyService {
 
     private final LobbyRepository lobbyRepository;
 
+    private final UserRepository userRepository;
+
     @Autowired
-    public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository) {
+    public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository, UserRepository userRepository) {
     this.lobbyRepository = lobbyRepository;
+    this.userRepository = userRepository;
     }
 
     public List<Lobby> getLobbies() {
@@ -48,9 +48,20 @@ public class LobbyService {
     public Lobby createLobby(Lobby newLobby, Long userId) {
         checkIfLobbyExists(newLobby);
 
+        //get all users
+        List<User> all_users = this.userRepository.findAll();
+
+        User user_found = null;
+        for (User i : all_users) {
+            if (userId == i.getId()) {
+                user_found = i;
+            }
+        }
+
+        String username = user_found.getUsername();
         newLobby.setToken(UUID.randomUUID().toString());
         newLobby.setStatus(LobbyStatus.OPEN);
-        newLobby.setMembers(userId);
+        newLobby.setMembers(username);
 
         // saves the given entity but data is only persisted in the database once flush() is called
 
@@ -149,8 +160,15 @@ public class LobbyService {
             }
         }
 
-        Long userId = userLobby.getId();
+        String userName = userLobby.getLobbyname();
         String inputPassword = userLobby.getPassword();
+
+        String lobby_is_full = "You cannot enter. The lobby is already full!";
+
+        // check if the lobby is not full
+        if(lobbytoupdate.getStatus() == LobbyStatus.FULL) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(lobby_is_full));
+        }
 
         // check if the password is correct
         String wrong_password = "You entered the wrong password!";
@@ -163,17 +181,21 @@ public class LobbyService {
 
         // check if the user is already a member
         String player_already_in_lobby = "This user is already a member of the lobby!";
-        if (lobbytoupdate.getMembers().contains(userId)) {
+        if (lobbytoupdate.getMembers().contains(userName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(player_already_in_lobby));
         }
-        else lobbytoupdate.setMembers(userId);
+        else lobbytoupdate.setMembers(userName);
 
+        // check if the lobby is full after the new member is added
+        if(lobbytoupdate.getMembers().size() == lobbytoupdate.getSize()) {
+            lobbytoupdate.setStatus(LobbyStatus.FULL);
+        }
         // save into the repository
         lobbyRepository.save(lobbytoupdate);
         lobbyRepository.flush();
     }
 
-    public void remove_lobby_members(Long lobbyId, Long userId) {
+    public void remove_lobby_members(Long lobbyId, String userName) {
 
         List<Lobby> alllobbies = this.lobbyRepository.findAll();
 
@@ -187,10 +209,14 @@ public class LobbyService {
 
         // check if the userId is part of the lobby members
         String player_not_in_lobby = "This user is not a member of the lobby!";
-        if (!lobbytoupdate.getMembers().contains(userId)) {
+        if (!lobbytoupdate.getMembers().contains(userName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(player_not_in_lobby));
         }
-        else lobbytoupdate.deleteMembers(userId);
+        else lobbytoupdate.deleteMembers(userName);
+
+        // set the lobby to OPEN
+        lobbytoupdate.setStatus(LobbyStatus.OPEN);
+
 
         // delete the lobby if there are no more members in the lobby
         if (lobbytoupdate.getMembers().size() == 0) {
