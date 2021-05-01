@@ -98,7 +98,7 @@ public class LobbyController {
     @ResponseBody
     public void removeMember(@PathVariable Long lobbyId, @RequestBody UserPostDTO userPostDTO) {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-        lobbyService.remove_lobby_members(lobbyId, userInput.getId());
+        lobbyService.remove_lobby_members(lobbyId, userInput.getUsername());
     }
 
 }

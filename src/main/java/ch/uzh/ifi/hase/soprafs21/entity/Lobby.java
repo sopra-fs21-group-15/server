@@ -48,7 +48,7 @@ public class Lobby implements Serializable {
 
     //lobby members & their corresponding status; first member is automatically the owner
     @Column(nullable = false)
-    private ArrayList<Long> members = new ArrayList<Long>();
+    private ArrayList<String> members = new ArrayList<String>();
 
     //lobby status
     @Column(nullable = false)
@@ -109,11 +109,11 @@ public class Lobby implements Serializable {
     public void setTimer(Integer timer) { this.timer = timer; }
 
     //get & set members & their status
-    public ArrayList<Long> getMembers() { return members; }
+    public ArrayList<String> getMembers() { return members; }
 
-    public void setMembers(Long member) { members.add(member); }
+    public void setMembers(String member) { members.add(member); }
 
-    public void deleteMembers(Long member) { members.remove(member); }
+    public void deleteMembers(String member) { members.remove(member); }
 
     //get & set lobby status
     public LobbyStatus getStatus() {
