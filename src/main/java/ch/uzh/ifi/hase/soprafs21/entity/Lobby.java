@@ -13,10 +13,10 @@ import java.util.ArrayList;
  * - nullable = false -> this cannot be left empty
  * - unique = true -> this value must be unqiue across the database -> composes the primary key
  */
+
 @Entity
 @Table(name = "LOBBY")
-
-public class Lobby implements  Serializable{
+public class Lobby implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

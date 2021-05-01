@@ -2,13 +2,14 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class Game {
+@Entity
+@Table( name = "GAME")
+public class Game implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -18,7 +19,10 @@ public class Game {
 
     // passed values from front-end
     @Column(nullable = false)
-    private ArrayList<User> players;
+    private ArrayList<User> players = new ArrayList<>();
+
+    @Column(nullable = false, unique = true)
+    private String gameName;
 
     @Column(nullable = false)
     private GameModes gameModes;
@@ -34,7 +38,8 @@ public class Game {
 
     private ScoreBoard scoreBoard;
 
-    private ArrayList<Round> rounds;
+    @Column(nullable = false)
+    private ArrayList<Round> rounds = new ArrayList<>();
 
     /**
      * Basic getter and setter methods for the mapper (needed for front-end)
@@ -48,16 +53,20 @@ public class Game {
     }
 
     // access Players (User)
-    public ArrayList<User> getPlayers() {
-        return this.players;
+    public ArrayList<User> getPlayers() { return this.players; }
+    public void setPlayers(ArrayList<User> players) { this.players = players; }
+
+    // access game name
+    public String getGameName() {
+        return this.gameName;
     }
-    public void setPlayers(ArrayList<User> players) {
-        this.players = players;
+    public void setGameName(String gameName) {
+        this.gameName = gameName;
     }
 
     // access GameMode
-    public GameModes getGameMode() { return this.gameModes; }
-    public void setGameMode(GameModes newMode) { this.gameModes = newMode; }
+    public GameModes getGameModes() { return this.gameModes; }
+    public void setGameModes(GameModes newMode) { this.gameModes = newMode; }
 
     // access Number of Rounds
     public int getNumberOfRounds() {
@@ -72,9 +81,9 @@ public class Game {
     public void setTimePerRound(int newTimePerRound) { this.timePerRound = newTimePerRound; }
 
     // access current Round
-    public int getCurrentRound() { return this.roundTracker; }
-    public void setCurrentRound(int currentRound) {
-        this.roundTracker = currentRound;
+    public int getRoundTracker() { return this.roundTracker; }
+    public void setRoundTracker(int currentRound) {
+        this.roundTracker = roundTracker;
     }
 
     // access Scoreboard
@@ -88,13 +97,13 @@ public class Game {
     /**
      * Back-end specific methods needed for functionality
      */
-    public void updatePoints(long[] points) {
-        scoreBoard.updateScore(points);
-    }
+    public void updatePoints(long[] points) { scoreBoard.updateScore(points); }
 
     public void addStroke(long user_id, BrushStroke brushStroke) { this.rounds.get(roundTracker - 1).addStroke(user_id, brushStroke); }
 
     public Drawing getDrawing(LocalDateTime timeStamp) { return rounds.get(roundTracker-1).getDrawing(timeStamp); }
+
+    public int getLength() { return rounds.get(roundTracker-1).getLength(); }
 
     /**
      * Back-end specific methods for quality of life

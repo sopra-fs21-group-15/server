@@ -89,6 +89,10 @@ public class Round {
         this.hasDrawn[r] = true;
         // TODO: part 2 of the above mentioned task, use it to get good words
         this.words = new ArrayList<String>();
+        Words listOfWords = new Words();
+        for(int i = 0; i<players.size(); i++) {
+            words.add(listOfWords.getRandomWord());
+        }
 
     }
 
@@ -130,6 +134,11 @@ public class Round {
                 }
             }
         }
+    }
+
+    // TODO #45 check if the function works properly
+    public int getLength() {
+        return words.get(currentWord - 1).length();
     }
 
     // round has a turning point with new roles or it finishes
