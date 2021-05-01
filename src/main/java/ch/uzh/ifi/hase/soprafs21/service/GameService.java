@@ -1,10 +1,8 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
+import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
-import ch.uzh.ifi.hase.soprafs21.entity.Round;
-import ch.uzh.ifi.hase.soprafs21.entity.ScoreBoard;
-import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.entity.Game;
+import ch.uzh.ifi.hase.soprafs21.entity.*;
 import ch.uzh.ifi.hase.soprafs21.repository.GameRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +15,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
-
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
+import ch.uzh.ifi.hase.soprafs21.repository.*;
 
 /**
  * Game Service
@@ -37,9 +33,15 @@ public class GameService {
 
     private final GameRepository gameRepository;
 
+    private final LobbyRepository lobbyRepository;
+
+    private final UserRepository userRepository;
+
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository) {
         this.gameRepository = gameRepository;
+        this.lobbyRepository = lobbyRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Game> getGames() {
@@ -49,14 +51,45 @@ public class GameService {
 
     // TODO #30 test and refine function handling the starting of a game
     // create a game with given parameters
-    public Game createGame(Game newGame) {
+    public Game createGame(Long lobbyId) {
+
+        List<Lobby> allLobbies = this.lobbyRepository.findAll();
+
+        Lobby lobbyToUpdate = null;
+        for (Lobby i : allLobbies) {
+            if (lobbyId == i.getId()) {
+                lobbyToUpdate = i;
+            }
+        }
+
+        // change status of said lobby
+        lobbyToUpdate.setStatus(LobbyStatus.PLAYING);
+
+        //--------------------------- create the new game -------------------------//
+        Game newGame = new Game();
+
+        // import information from lobby
+        ArrayList<User> players = new ArrayList<User>();
+        for (Long memberId : lobbyToUpdate.getMembers()) {
+            User tempUser = this.userRepository.getOne(memberId);
+            tempUser.setStatus(UserStatus.INGAME);
+            players.add(tempUser);
+        }
+        newGame.setPlayers(players);
+
         // initialize the remaining fields and there corresponding fields ...
+        // ... rounds to numberOfRounds
+        newGame.setRoundTracker(lobbyToUpdate.getRounds());
+
+        // ... timer to timerPerRound
+        newGame.setTimePerRound(lobbyToUpdate.getTimer());
+
         // ... the scoreboard
-        ScoreBoard scoreBoard = new ScoreBoard(newGame.getPlayers(), newGame.getId());
+        ScoreBoard scoreBoard = new ScoreBoard(newGame.getPlayers());
         newGame.setScoreBoard(scoreBoard);
 
         // ... the roundTracker
-        newGame.setCurrentRound(1);
+        newGame.setRoundTracker(1);
 
         // ... the rounds themselves
         int n = newGame.getPlayers().size();
@@ -105,112 +138,20 @@ public class GameService {
      * This is a helper method that will check the uniqueness criteria of the username and the password
      * defined in the User entity. The method will do nothing if the input is unique and throw an error otherwise.
      *
-     * @param userToBeCreated
+     * @param gameToBeCreated
      * @throws org.springframework.web.server.ResponseStatusException
      * @see User
      */
-    /*
-    // Check if the user Exists
-    private void checkIfUserExists(User userToBeCreated) {
-        User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
 
-        //get entered password
+    // Check if the game Exists
+    /*private void checkIfGameExists(Game gameToBeCreated) {
+        Game gameByGamename = gameRepository.findById(gameToBeCreated.getId());
 
-        String entered_password = userToBeCreated.getPassword();
+        String taken_gamename_error = "The %s %s already taken. Please choose an other gamename!";
 
-        String taken_username_error = "The %s %s already taken. Please choose an other username!";
-
-        if (userByUsername != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(taken_username_error, "username", "is"));
+        if (gameByGamename != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(taken_gamename_error, "lobbyname", "is"));
         }
-    }
+    }*/
 
-    // Get the date for the creation date information.
-    private String getDate() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
-    }
-
-    //Handle the log-in
-    public User login_request(User requesting_user) {
-
-        User userByUsername = userRepository.findByUsername(requesting_user.getUsername());
-
-        List<User> allUsers = this.userRepository.findAll();
-
-        //set all other users to Offline
-        for (User user : allUsers) {
-            user.setStatus(UserStatus.OFFLINE);
-        }
-
-        //If you don't find the user. Tell him to register first.
-        String nonexisting_user = "This username is not registered yet. Please register first or enter an existing username.";
-        if (userByUsername == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format(nonexisting_user));
-        }
-
-        //Now since the user exists. Get the saved password and the typed password
-
-        String userByPassword = userByUsername.getPassword();
-        String user_typed_password = requesting_user.getPassword();
-
-        //If the given password and the saved password are not the same, tell the user.
-        String wrong_password = "You entered the wrong password. Maybe caps lock is activated.";
-        if (!userByPassword.equals(user_typed_password)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(wrong_password));
-        }
-
-        //Set the Status on Online and update the repository
-        userByUsername.setStatus(UserStatus.ONLINE);
-        User updatedUser = userRepository.save(userByUsername);
-        userRepository.flush();
-
-
-        return updatedUser;
-    }
-
-    // update the user after the edit
-    public void update_user(Long userId, User userChange){
-
-        List<User> allusers = this.userRepository.findAll();
-
-        User usertoupdate = null;
-
-        for(User i: allusers){
-            if(userId == i.getId()){
-                usertoupdate = i;
-            }
-        }
-
-        if (userChange.getBirth_date() != null){
-            usertoupdate.setBirth_date(userChange.getBirth_date());
-        }
-
-        if (userChange.getUsername() != null){
-            //If user exists already you cannot change the name!
-            checkIfUserExists(userChange);
-            usertoupdate.setUsername(userChange.getUsername());
-        }
-        // save into the repository
-        userRepository.save(usertoupdate);
-        userRepository.flush();
-    }
-
-    // set the user offline
-    public void logout(Long userId){
-        List<User> allusers = this.userRepository.findAll();
-
-        User leaving_user = null;
-
-        for(User i: allusers){
-            if(userId.equals(i.getId())){
-                leaving_user = i;
-            }
-        }
-        leaving_user.setStatus(UserStatus.OFFLINE);
-        userRepository.save(leaving_user);
-        userRepository.flush();
-    }
-    */
 }

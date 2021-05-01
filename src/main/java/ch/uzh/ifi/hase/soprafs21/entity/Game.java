@@ -2,12 +2,12 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+@Entity
+@Table(name = "GAME")
 public class Game {
 
     private static final long serialVersionUID = 1L;
@@ -72,8 +72,8 @@ public class Game {
     public void setTimePerRound(int newTimePerRound) { this.timePerRound = newTimePerRound; }
 
     // access current Round
-    public int getCurrentRound() { return this.roundTracker; }
-    public void setCurrentRound(int currentRound) {
+    public int getRoundTracker() { return this.roundTracker; }
+    public void setRoundTracker(int currentRound) {
         this.roundTracker = currentRound;
     }
 
@@ -95,6 +95,10 @@ public class Game {
     public void addStroke(long user_id, BrushStroke brushStroke) { this.rounds.get(roundTracker - 1).addStroke(user_id, brushStroke); }
 
     public Drawing getDrawing(LocalDateTime timeStamp) { return rounds.get(roundTracker-1).getDrawing(timeStamp); }
+
+    public int getLength() { return rounds.get(roundTracker-1).getLength(); }
+
+    public void makeGuess(Guess guess) { this.rounds.get(roundTracker - 1).makeGuess(guess); }
 
     /**
      * Back-end specific methods for quality of life

@@ -19,8 +19,16 @@ public interface GameDTOMapper {
 
     GameDTOMapper INSTANCE = Mappers.getMapper(GameDTOMapper.class);
 
+    @Mapping(source = "players", target = "players")
+    @Mapping(source = "numberOfRounds", target = "numberOfRounds")
+    @Mapping(source = "timePerRound", target = "timePerRound")
     Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
 
-
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "players", target = "players")
+    @Mapping(source = "numberOfRounds", target = "numberOfRounds")
+    @Mapping(source = "timePerRound", target = "timePerRound")
+    @Mapping(source = "roundTracker", target = "roundTracker")
     GameGetDTO convertEntityToGameGetDTO(Game game);
+
 }

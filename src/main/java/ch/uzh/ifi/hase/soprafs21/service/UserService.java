@@ -58,7 +58,8 @@ public class UserService {
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
-    // changed getUser argument from username to user id! To get it by the username.
+
+    // getUser from user id
     public User getUser(Long user_id) {
 
         //get all users
@@ -67,6 +68,28 @@ public class UserService {
         User user_found = null;
         for (User i : all_users) {
             if (user_id == i.getId()) {
+                user_found = i;
+            }
+        }
+
+        //if not found
+        String nonexisting_user = "This user does not exist. Please search for an existing user!";
+        if (user_found == null) {
+            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_user));
+        }
+        return user_found;
+
+    }
+
+    // getUser from username
+    public User getUser(String username) {
+
+        //get all users
+        List<User> all_users = this.userRepository.findAll();
+
+        User user_found = null;
+        for (User i : all_users) {
+            if (username == i.getUsername()) {
                 user_found = i;
             }
         }

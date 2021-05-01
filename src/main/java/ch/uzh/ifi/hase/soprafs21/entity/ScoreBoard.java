@@ -1,42 +1,23 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-
-// I have no idea what I just did here but it was the only way to make the warning concerning the " 'basic' attribute type should not be a container "
-@SuppressWarnings("JpaAttributeTypeInspection")
-
-@Entity
-@Table(name = "SCOREBOARD")
 public class ScoreBoard implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    @Column(nullable = false)
-    private Long id;
-
-    @Column(nullable = false)
     private ArrayList<User> players;
 
-    @Column(nullable = false)
     private int[] ranking;
 
-    @Column(nullable = false)
     private long[] score;
 
     public ScoreBoard() {
         ArrayList<User> players = new ArrayList<>(4);
-        long error = 404;
-        new ScoreBoard(players, error);
+        new ScoreBoard(players);
     }
 
-    public ScoreBoard(ArrayList<User> players, long id) {
-        this.id = id;
-
+    public ScoreBoard(ArrayList<User> players) {
         int n = players.size();
         this.players = players;
         this.ranking = new int[n];
@@ -47,10 +28,6 @@ public class ScoreBoard implements Serializable {
      * Default methods that have to be made in order to be able
      * to transform this data type and send it to the front-end.
      */
-    // functions for id
-    public Long getId() { return this.id; }
-    public void setId(Long newId) { this.id = newId; }
-
     // functions for the player list (returns sorted by ranking)
     public ArrayList<User> getPlayers() {
         // since we do not just return our list but a sorted one we need to create a new one
