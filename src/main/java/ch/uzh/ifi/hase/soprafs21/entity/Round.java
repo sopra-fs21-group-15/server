@@ -112,6 +112,11 @@ public class Round {
         }
     }
 
+    // TODO: #43 add function to send drawing information to the guessers
+    public Drawing getDrawing(LocalDateTime timeStamp) {
+        return pictures.get(currentWord-1).getDrawing(timeStamp);
+    }
+
     // a guesser has made a guess
     public void newGuess(long idOfGuesser, String guess) {
         long potPoint = (long) stopWatch.remainingTime() * 1000;

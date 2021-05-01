@@ -1,16 +1,19 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
 import ch.uzh.ifi.hase.soprafs21.entity.BrushStroke;
+import ch.uzh.ifi.hase.soprafs21.entity.Drawing;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.BrushStrokeDTOMapper;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.DrawingDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +42,7 @@ public class GameController {
     // TODO #40 test and refine mapping for sending drawing information
     // pass information to the right picture
     @PutMapping("/game/{gameId}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void addBrushStrokes(@RequestBody BrushStrokePutDTO brushStrokeEditDTO, @PathVariable long gameId) {
         // convert API brush stroke to an internal representation
@@ -49,6 +52,17 @@ public class GameController {
 
         // method checks on the level of the round if it is the right user
         game.addStroke(brushStrokeEditDTO.getUser_id(), brushStroke);
+    }
+
+    // TODO #42 add mapping for API-calls requesting the drawing
+    @GetMapping("/game/{gameId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public DrawingGetDTO drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable long gameId) {
+        LocalDateTime timeStamp = DrawingDTOMapper.INSTANCE.convertDrawingPostDTOtoEntity(drawingPostDTO);
+        Game game = gameService.getGame(gameId);
+        Drawing drawing = game.getDrawing(timeStamp);
+        return DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(drawing);
     }
 
 }
