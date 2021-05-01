@@ -54,7 +54,7 @@ public class GameController {
         game.addStroke(brushStrokeEditDTO.getUser_id(), brushStroke);
     }
 
-    // TODO #42 add mapping for API-calls requesting the drawing
+    // TODO #42 test and refine mapping for API-calls requesting the drawing
     @GetMapping("/game/{gameId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -64,5 +64,11 @@ public class GameController {
         Drawing drawing = game.getDrawing(timeStamp);
         return DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(drawing);
     }
+
+    // TODO #44 add mapping API-call for requesting the letter-count
+    /*@GetMapping("/game/{gameId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public letterC*/
 
 }
