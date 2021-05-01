@@ -82,7 +82,9 @@ public class Game implements Serializable {
 
     // access current Round
     public int getRoundTracker() { return this.roundTracker; }
-    public void setRoundTracker(int currentRound) { this.roundTracker = currentRound; }
+    public void setRoundTracker(int currentRound) {
+        this.roundTracker = roundTracker;
+    }
 
     // access Scoreboard
     public ScoreBoard getScoreBoard() { return this.scoreBoard; }
@@ -103,8 +105,7 @@ public class Game implements Serializable {
 
     public int getLength() { return rounds.get(roundTracker-1).getLength(); }
 
-    public void makeGuess(Guess guess) { rounds.get(roundTracker-1).makeGuess(guess); }
-
+    public void makeGuess(Guess guess) { rounds.get(roundTracker-1).makeGuess(guess);}
 
     /**
      * Back-end specific methods for quality of life

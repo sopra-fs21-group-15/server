@@ -19,7 +19,6 @@ public interface GameDTOMapper {
 
     GameDTOMapper INSTANCE = Mappers.getMapper(GameDTOMapper.class);
 
-
     @Mapping(source = "players", target = "players")
     @Mapping(source = "numberOfRounds", target = "numberOfRounds")
     @Mapping(source = "timePerRound", target = "timePerRound")

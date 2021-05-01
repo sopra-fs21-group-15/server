@@ -9,4 +9,3 @@ public class WordCountGetDTO {
     public void setLength(int length) { this.length = length; }
 
 }
-

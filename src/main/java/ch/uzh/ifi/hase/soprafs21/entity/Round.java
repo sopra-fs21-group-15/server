@@ -138,7 +138,9 @@ public class Round {
     }
 
     // TODO #45 check if the function works properly
-    public int getLength() { return words.get(currentWord - 1).length(); }
+    public int getLength() {
+        return words.get(currentWord - 1).length();
+    }
 
     // round has a turning point with new roles or it finishes
     public void check() {
