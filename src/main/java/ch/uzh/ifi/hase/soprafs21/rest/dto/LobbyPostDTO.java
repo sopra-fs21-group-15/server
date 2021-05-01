@@ -9,11 +9,11 @@ public class LobbyPostDTO {
 
     private String lobbyname;
 
-    private Integer size;
+    private String size;
 
-    private Integer rounds;
+    private String rounds;
 
-    private Integer timer;
+    private String  timer;
 
     private String lobbyChat;
 
@@ -37,17 +37,17 @@ public class LobbyPostDTO {
         this.lobbyname = lobbyname;
     }
 
-    public Integer getSize() { return size; }
+    public String getSize() { return size; }
 
-    public void setSize(Integer size) { this.size = size; }
+    public void setSize(String  size) { this.size = size; }
 
-    public Integer getRounds() { return rounds; }
+    public String  getRounds() { return rounds; }
 
-    public void setRounds(Integer rounds) { this.rounds = rounds; }
+    public void setRounds(String  rounds) { this.rounds = rounds; }
 
-    public Integer getTimer() { return  timer; }
+    public String  getTimer() { return  timer; }
 
-    public void setTimer(Integer timer) { this.timer = timer; }
+    public void setTimer(String timer) { this.timer = timer; }
 
     public String getLobbyChat() { return lobbyChat; }
 
