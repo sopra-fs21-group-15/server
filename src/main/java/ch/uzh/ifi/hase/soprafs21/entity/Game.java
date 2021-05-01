@@ -19,7 +19,7 @@ public class Game implements Serializable {
 
     // passed values from front-end
     @Column(nullable = false)
-    private ArrayList<User> players = new ArrayList<User>();
+    private ArrayList<User> players = new ArrayList<>();
 
     @Column(nullable = false, unique = true)
     private String gameName;
@@ -39,7 +39,7 @@ public class Game implements Serializable {
     private ScoreBoard scoreBoard;
 
     @Column(nullable = false)
-    private ArrayList<Round> rounds = new ArrayList<Round>();
+    private ArrayList<Round> rounds = new ArrayList<>();
 
     /**
      * Basic getter and setter methods for the mapper (needed for front-end)
