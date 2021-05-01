@@ -92,9 +92,9 @@ public class GameService {
         }
 
         //if not found
-        String nonexisting_user = "This game does not exist or has expired. Please search for an existing user!";
+        String nonexisting_game = "This game does not exist or has expired. Please search for an existing user!";
         if (game_found == null) {
-            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_user));
+            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_game));
         }
 
         return game_found;

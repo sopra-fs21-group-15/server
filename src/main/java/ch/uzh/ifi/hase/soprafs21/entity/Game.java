@@ -83,12 +83,15 @@ public class Game {
     // access Rounds
     public ArrayList<Round> getRounds() { return this.rounds; }
     public void setRounds (ArrayList<Round> rounds) { this.rounds = rounds; }
+
     /**
      * Back-end specific methods needed for functionality
      */
     public void updatePoints(long[] points) {
         scoreBoard.updateScore(points);
     }
+
+    public void addStroke(long user_id, BrushStroke brushStroke) { this.rounds.get(roundTracker - 1).addStroke(user_id, brushStroke); }
 
     /**
      * Back-end specific methods for quality of life

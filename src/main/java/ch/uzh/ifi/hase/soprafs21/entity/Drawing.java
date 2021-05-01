@@ -19,8 +19,8 @@ public class Drawing {
     public void setBrushStrokes(ArrayList<BrushStroke> brushStrokes) { this.brushStrokes = brushStrokes; };
 
     // one that does it all
-    public void addStroke(int x, int y, LocalDateTime timeStamp, int size, Colours c) {
-        brushStrokes.add(new BrushStroke(x,y,timeStamp,size,c));
+    public void addStroke(BrushStroke brushStroke) {
+        brushStrokes.add(brushStroke);
     }
 
 }

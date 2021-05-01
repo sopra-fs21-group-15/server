@@ -92,8 +92,9 @@ public class Round {
 
     }
 
+    // TODO *41 see if function handling is up to the standarts
     // drawer has drawn (automatically distinguishes between first time drawing and subsequent strokes)
-    public void newStrokes(long idOfDrawer, Integer x, Integer y, LocalDateTime timeStamp, Integer s, Colours c) {
+    public void addStroke(long idOfDrawer, BrushStroke brushStroke) {
         // safety-check if it is coming from the right person
         if(idOfDrawer == drawerId) {
             // now check if it is the first time this person is sending
@@ -106,7 +107,7 @@ public class Round {
             }
             // if the drawing has been set up we can pass the inputs down to the drawing
             if(pictures.size() == currentWord && !stopWatch.timeIsUp()) { // the current picture is being guest and changed
-                pictures.get(currentWord - 1).addStroke(x, y, timeStamp, s, c);
+                pictures.get(currentWord - 1).addStroke(brushStroke);
             }
         }
     }
