@@ -22,7 +22,7 @@ public interface GameDTOMapper {
     @Mapping(source = "id", target = "id")
     //@Mapping(source = "players", target = "players")
     @Mapping(source = "gameName", target = "gameName")
-    @Mapping(source = "gameModes", target = "gameModes")
+    //@Mapping(source = "gameModes", target = "gameModes")
     @Mapping(source = "numberOfRounds", target = "numberOfRounds")
     @Mapping(source = "timePerRound", target = "timePerRound")
     Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
