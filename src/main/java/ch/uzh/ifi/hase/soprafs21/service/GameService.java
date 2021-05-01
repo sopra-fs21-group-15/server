@@ -33,7 +33,7 @@ import java.time.LocalDateTime;
 @Transactional
 public class GameService {
 
-    private final Logger log = LoggerFactory.getLogger(GameService.class);
+    private final Logger log = LoggerFactory.getLogger(ch.uzh.ifi.hase.soprafs21.service.GameService.class);
 
     private final GameRepository gameRepository;
 
@@ -56,7 +56,7 @@ public class GameService {
         newGame.setScoreBoard(scoreBoard);
 
         // ... the roundTracker
-        newGame.setCurrentRound(1);
+        newGame.setRoundTracker(1);
 
         // ... the rounds themselves
         int n = newGame.getPlayers().size();

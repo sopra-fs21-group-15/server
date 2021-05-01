@@ -5,10 +5,11 @@ import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class Game {
+public class Game implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -18,7 +19,7 @@ public class Game {
 
     // passed values from front-end
     @Column(nullable = false)
-    private ArrayList<User> players;
+    private ArrayList<User> players = new ArrayList<User>();
 
     @Column(nullable = false)
     private GameModes gameModes;
@@ -30,8 +31,10 @@ public class Game {
     private int timePerRound;
 
     // generated values in the back-end
+    @GeneratedValue
     private int roundTracker;
 
+    @GeneratedValue
     private ScoreBoard scoreBoard;
 
     private ArrayList<Round> rounds;
@@ -56,8 +59,8 @@ public class Game {
     }
 
     // access GameMode
-    public GameModes getGameMode() { return this.gameModes; }
-    public void setGameMode(GameModes newMode) { this.gameModes = newMode; }
+    public GameModes getGameModes() { return this.gameModes; }
+    public void setGameModes(GameModes newMode) { this.gameModes = newMode; }
 
     // access Number of Rounds
     public int getNumberOfRounds() {
@@ -72,9 +75,9 @@ public class Game {
     public void setTimePerRound(int newTimePerRound) { this.timePerRound = newTimePerRound; }
 
     // access current Round
-    public int getCurrentRound() { return this.roundTracker; }
-    public void setCurrentRound(int currentRound) {
-        this.roundTracker = currentRound;
+    public int getRoundTracker() { return this.roundTracker; }
+    public void setRoundTracker(int currentRound) {
+        this.roundTracker = roundTracker;
     }
 
     // access Scoreboard
