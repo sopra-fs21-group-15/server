@@ -19,7 +19,7 @@ public class Game implements Serializable {
 
     // passed values from front-end
     @Column(nullable = false)
-    private ArrayList<User> players = new ArrayList<User>();
+    private ArrayList<User> players = new ArrayList<>();
 
     @Column(nullable = false, unique = true)
     private String gameName;
@@ -39,7 +39,7 @@ public class Game implements Serializable {
     private ScoreBoard scoreBoard;
 
     @Column(nullable = false)
-    private ArrayList<Round> rounds = new ArrayList<Round>();
+    private ArrayList<Round> rounds = new ArrayList<>();
 
     /**
      * Basic getter and setter methods for the mapper (needed for front-end)
@@ -102,6 +102,8 @@ public class Game implements Serializable {
     public void addStroke(long user_id, BrushStroke brushStroke) { this.rounds.get(roundTracker - 1).addStroke(user_id, brushStroke); }
 
     public Drawing getDrawing(LocalDateTime timeStamp) { return rounds.get(roundTracker-1).getDrawing(timeStamp); }
+
+    public int getLength() { return rounds.get(roundTracker-1).getLength(); }
 
     /**
      * Back-end specific methods for quality of life

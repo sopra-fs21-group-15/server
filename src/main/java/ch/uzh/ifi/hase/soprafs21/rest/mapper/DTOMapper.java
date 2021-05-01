@@ -31,4 +31,5 @@ public interface DTOMapper {
     @Mapping(source = "birth_date", target = "birth_date") //map the birth date upwards!
     @Mapping(source = "status", target = "status")
     UserGetDTO convertEntityToUserGetDTO(User user);
+
 }

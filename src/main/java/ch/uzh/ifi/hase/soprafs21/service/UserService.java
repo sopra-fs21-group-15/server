@@ -58,6 +58,7 @@ public class UserService {
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
+
     // changed getUser argument from username to user id! To get it by the username.
     public User getUser(Long user_id) {
 
@@ -140,7 +141,6 @@ public class UserService {
         userByUsername.setStatus(UserStatus.ONLINE);
         User updatedUser = userRepository.save(userByUsername);
         userRepository.flush();
-
 
         return updatedUser;
     }
