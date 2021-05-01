@@ -2,21 +2,15 @@ package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.util.ArrayList;
-
 public class LobbyGetDTO {
 
     private Long id;
     private String password;
     private String lobbyname;
-    // added creation
-    private Integer size;
-    private Integer rounds;
-    private Integer timer;
-    private ArrayList<Long> members;
+    // added creation & birth date
+    private String creation_date;
     private LobbyStatus status;
-    private String lobbyChat;
+
 
     public Long getId() {
         return id;
@@ -42,27 +36,13 @@ public class LobbyGetDTO {
         this.lobbyname = lobbyname;
     }
 
-    // get & set size
-    public Integer getSize() {
-        return size;
+    // get creation date
+    public String getCreation_date() {
+        return creation_date;
     }
 
-    public void setSize(Integer size) { this.size = size; }
-
-    // get & set rounds
-    public Integer getRounds() { return rounds; }
-
-    public void setRounds(Integer rounds) { this.rounds = rounds; }
-
-    // get & set timer
-    public Integer getTimer() { return  timer; }
-
-    public void setTimer(Integer timer) { this.timer = timer; }
-
-    // get & set members
-    public ArrayList<Long> getMembers() { return  members; }
-
-    public void setMembers(ArrayList<Long> members) { this.members = members; }
+    // set creation date
+    public void setCreation_date(String creation_date) { this.creation_date = creation_date; }
 
     public LobbyStatus getStatus() {
         return status;
@@ -71,9 +51,4 @@ public class LobbyGetDTO {
     public void setStatus(LobbyStatus status) {
         this.status = status;
     }
-
-    // get & set lobbyChat
-    public String getLobbyChat() { return lobbyChat; }
-
-    public void setLobbyChat(String lobbyChat) { this.lobbyChat = lobbyChat; }
 }

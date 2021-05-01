@@ -2,7 +2,6 @@ package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
-import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.repository.LobbyRepository;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.LobbyPostDTO;
 import org.slf4j.Logger;
@@ -45,12 +44,12 @@ public class LobbyService {
     }
 
     // create the lobby
-    public Lobby createLobby(Lobby newLobby, Long userId) {
+    public Lobby createLobby(Lobby newLobby) {
         checkIfLobbyExists(newLobby);
 
         newLobby.setToken(UUID.randomUUID().toString());
-        newLobby.setStatus(LobbyStatus.OPEN);
-        newLobby.setMembers(userId);
+        newLobby.setStatus(LobbyStatus.WAITING);
+        newLobby.setCreation_date(getDate()); //get the creation date with the current date
 
         // saves the given entity but data is only persisted in the database once flush() is called
 
@@ -72,149 +71,11 @@ public class LobbyService {
         }
     }
 
-    // get a requested lobby and compare password if its a private lobby.
-    public Lobby getLobby(Long lobbyId) {
-
-        //get all lobbies
-        List<Lobby> alllobbies = this.lobbyRepository.findAll();
-        Lobby lobbytofind = null;
-
-        for (Lobby i : alllobbies) {
-            if (lobbyId == i.getId()) {
-                lobbytofind = i;
-            }
-        }
-
-        String nonexisting_lobby = "This lobby does not exist. Please search for an existing lobby!";
-        if (lobbytofind == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_lobby));
-        }
-
-        return lobbytofind;
-    }
-
-    // Change lobby settings
-    public void update_lobby(Long lobbyId, Lobby lobbyChange) {
-
-        List<Lobby> alllobbies = this.lobbyRepository.findAll();
-
-        Lobby lobbytoupdate = null;
-
-        for (Lobby i : alllobbies) {
-            if (lobbyId == i.getId()) {
-                lobbytoupdate = i;
-            }
-        }
-
-        // change lobby name
-        if (lobbyChange.getLobbyname() != null) {
-            checkIfLobbyExists(lobbyChange);
-            lobbytoupdate.setLobbyname(lobbyChange.getLobbyname());
-        }
-
-        // change password (private & public)
-        if (lobbyChange.getPassword() != null) {
-            lobbytoupdate.setPassword(lobbyChange.getPassword());
-        }
-
-        // change lobby size
-        if (lobbyChange.getSize() != null) {
-            lobbytoupdate.setSize(lobbyChange.getSize());
-        }
-
-        // change number of rounds
-        if (lobbyChange.getRounds() != null) {
-            lobbytoupdate.setRounds(lobbyChange.getRounds());
-        }
-
-        // change timer
-        if (lobbyChange.getTimer() != null) {
-            lobbytoupdate.setTimer(lobbyChange.getTimer());
-        }
-
-        // save into the repository
-        lobbyRepository.save(lobbytoupdate);
-        lobbyRepository.flush();
-    }
-
-    public void add_lobby_members(Long lobbyId, Lobby userLobby) {
-
-        List<Lobby> alllobbies = this.lobbyRepository.findAll();
-
-        Lobby lobbytoupdate = null;
-
-        for (Lobby i : alllobbies) {
-            if (lobbyId == i.getId()) {
-                lobbytoupdate = i;
-            }
-        }
-
-        Long userId = userLobby.getId();
-        String inputPassword = userLobby.getPassword();
-
-        // check if the password is correct
-        String wrong_password = "You entered the wrong password!";
-        if (lobbytoupdate != null && inputPassword == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format(wrong_password));
-        }
-        else if (lobbytoupdate != null &&!inputPassword.equals(lobbytoupdate.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format(wrong_password));
-        }
-
-        // check if the user is already a member
-        String player_already_in_lobby = "This user is already a member of the lobby!";
-        if (lobbytoupdate.getMembers().contains(userId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(player_already_in_lobby));
-        }
-        else lobbytoupdate.setMembers(userId);
-
-        // save into the repository
-        lobbyRepository.save(lobbytoupdate);
-        lobbyRepository.flush();
-    }
-
-    public void remove_lobby_members(Long lobbyId, Long userId) {
-
-        List<Lobby> alllobbies = this.lobbyRepository.findAll();
-
-        Lobby lobbytoupdate = null;
-
-        for (Lobby i : alllobbies) {
-            if (lobbyId == i.getId()) {
-                lobbytoupdate = i;
-            }
-        }
-
-        // check if the userId is part of the lobby members
-        String player_not_in_lobby = "This user is not a member of the lobby!";
-        if (!lobbytoupdate.getMembers().contains(userId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(player_not_in_lobby));
-        }
-        else lobbytoupdate.deleteMembers(userId);
-
-        // delete the lobby if there are no more members in the lobby
-        if (lobbytoupdate.getMembers().size() == 0) {
-            lobbyRepository.delete(lobbytoupdate);
-            lobbyRepository.flush();
-        }
-        else
-            // save into the repository
-            lobbyRepository.save(lobbytoupdate);
-            lobbyRepository.flush();
-    }
-
-    public void update_lobby_chat(Long lobbyId, String lobbyChatUpdate){
-
-        List<Lobby> alllobbies = this.lobbyRepository.findAll();
-
-        Lobby lobbytoupdate = null;
-
-        for (Lobby i : alllobbies) {
-            if (lobbyId == i.getId()) {
-                lobbytoupdate = i;
-            }
-        }
-
+    // Save the lobby date
+    private String getDate() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        return dtf.format(now);
     }
 
 }
