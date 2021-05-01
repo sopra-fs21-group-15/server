@@ -1,6 +1,8 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.constant.Colours;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -91,7 +93,7 @@ public class Round {
     }
 
     // drawer has drawn (automatically distinguishes between first time drawing and subsequent strokes)
-    public void newStrokes(long idOfDrawer, Integer x, Integer y, Integer s, Colours c) {
+    public void newStrokes(long idOfDrawer, Integer x, Integer y, LocalDateTime timeStamp, Integer s, Colours c) {
         // safety-check if it is coming from the right person
         if(idOfDrawer == drawerId) {
             // now check if it is the first time this person is sending
@@ -104,7 +106,7 @@ public class Round {
             }
             // if the drawing has been set up we can pass the inputs down to the drawing
             if(pictures.size() == currentWord && !stopWatch.timeIsUp()) { // the current picture is being guest and changed
-                pictures.get(currentWord - 1).addStroke(x, y, s, c);
+                pictures.get(currentWord - 1).addStroke(x, y, timeStamp, s, c);
             }
         }
     }
