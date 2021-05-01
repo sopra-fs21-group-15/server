@@ -8,6 +8,7 @@ import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.BrushStrokeDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DrawingDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameDTOMapper;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.WordCountDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 
 import org.springframework.http.HttpStatus;
@@ -42,7 +43,7 @@ public class GameController {
 
     // TODO #40 test and refine mapping for sending drawing information
     // pass information to the right picture
-    @PutMapping("/game/{gameId}")
+    @PutMapping("/game/{gameId}/drawing")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void addBrushStrokes(@RequestBody BrushStrokePutDTO brushStrokeEditDTO, @PathVariable long gameId) {
@@ -56,7 +57,7 @@ public class GameController {
     }
 
     // TODO #42 test and refine mapping for API-calls requesting the drawing
-    @GetMapping("/game/{gameId}")
+    @GetMapping("/game/{gameId}/drawing")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public DrawingGetDTO drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable long gameId) {
@@ -67,9 +68,13 @@ public class GameController {
     }
 
     // TODO #44 add mapping API-call for requesting the letter-count
-    /*@GetMapping("/game/{gameId}")
+    @GetMapping("/game/{gameId}/length")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public letterC*/
+    public WordCountGetDTO lengthRequest(@PathVariable long gameId) {
+        Game game = gameService.getGame(gameId);
+        int value = game.getLength();
+        return WordCountDTOMapper.INSTANCE.convertEntityToWordCountGetDTO(value);
+    }
 
 }

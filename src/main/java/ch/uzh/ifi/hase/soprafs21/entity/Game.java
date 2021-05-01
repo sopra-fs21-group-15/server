@@ -103,6 +103,8 @@ public class Game implements Serializable {
 
     public Drawing getDrawing(LocalDateTime timeStamp) { return rounds.get(roundTracker-1).getDrawing(timeStamp); }
 
+    public int getLength() { return rounds.get(roundTracker-1).getLength(); }
+
     /**
      * Back-end specific methods for quality of life
      */
