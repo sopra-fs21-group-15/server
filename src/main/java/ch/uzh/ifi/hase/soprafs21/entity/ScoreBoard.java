@@ -7,16 +7,12 @@ import java.util.Arrays;
 
 
 // I have no idea what I just did here but it was the only way to make the warning concerning the " 'basic' attribute type should not be a container "
-@SuppressWarnings("JpaAttributeTypeInspection")
-
-@Entity
-@Table(name = "SCOREBOARD")
 public class ScoreBoard implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Column(nullable = false)
+    @GeneratedValue
     private Long id;
 
     @Column(nullable = false)

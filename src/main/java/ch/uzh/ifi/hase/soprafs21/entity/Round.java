@@ -89,6 +89,10 @@ public class Round {
         this.hasDrawn[r] = true;
         // TODO: part 2 of the above mentioned task, use it to get good words
         this.words = new ArrayList<String>();
+        Words listOfWords = new Words();
+        for(int i = 0; i<players.size(); i++) {
+            words.add(listOfWords.getRandomWord());
+        }
 
     }
 

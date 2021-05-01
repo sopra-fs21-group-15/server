@@ -2,13 +2,13 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+@Entity
+@Table( name = "GAME")
 public class Game implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -21,6 +21,9 @@ public class Game implements Serializable {
     @Column(nullable = false)
     private ArrayList<User> players = new ArrayList<User>();
 
+    @Column(nullable = false, unique = true)
+    private String gameName;
+
     @Column(nullable = false)
     private GameModes gameModes;
 
@@ -31,13 +34,12 @@ public class Game implements Serializable {
     private int timePerRound;
 
     // generated values in the back-end
-    @GeneratedValue
     private int roundTracker;
 
-    @GeneratedValue
     private ScoreBoard scoreBoard;
 
-    private ArrayList<Round> rounds;
+    @Column(nullable = false)
+    private ArrayList<Round> rounds = new ArrayList<Round>();
 
     /**
      * Basic getter and setter methods for the mapper (needed for front-end)
@@ -51,11 +53,15 @@ public class Game implements Serializable {
     }
 
     // access Players (User)
-    public ArrayList<User> getPlayers() {
-        return this.players;
+    public ArrayList<User> getPlayers() { return this.players; }
+    public void setPlayers(ArrayList<User> players) { this.players = players; }
+
+    // access game name
+    public String getGameName() {
+        return this.gameName;
     }
-    public void setPlayers(ArrayList<User> players) {
-        this.players = players;
+    public void setGameName(String gameName) {
+        this.gameName = gameName;
     }
 
     // access GameMode
@@ -91,9 +97,7 @@ public class Game implements Serializable {
     /**
      * Back-end specific methods needed for functionality
      */
-    public void updatePoints(long[] points) {
-        scoreBoard.updateScore(points);
-    }
+    public void updatePoints(long[] points) { scoreBoard.updateScore(points); }
 
     public void addStroke(long user_id, BrushStroke brushStroke) { this.rounds.get(roundTracker - 1).addStroke(user_id, brushStroke); }
 

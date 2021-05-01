@@ -1,14 +1,11 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.constant.Colours;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.BrushStrokePutDTO;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "BRUSHSTROKE")
 public class BrushStroke implements Serializable {
 
     @Column(nullable = false)

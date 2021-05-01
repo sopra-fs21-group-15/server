@@ -33,7 +33,7 @@ import java.time.LocalDateTime;
 @Transactional
 public class GameService {
 
-    private final Logger log = LoggerFactory.getLogger(ch.uzh.ifi.hase.soprafs21.service.GameService.class);
+    private final Logger log = LoggerFactory.getLogger(GameService.class);
 
     private final GameRepository gameRepository;
 
@@ -105,26 +105,22 @@ public class GameService {
      * This is a helper method that will check the uniqueness criteria of the username and the password
      * defined in the User entity. The method will do nothing if the input is unique and throw an error otherwise.
      *
-     * @param userToBeCreated
+     * @param gameToBeCreated
      * @throws org.springframework.web.server.ResponseStatusException
      * @see User
      */
-    /*
-    // Check if the user Exists
-    private void checkIfUserExists(User userToBeCreated) {
-        User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
 
-        //get entered password
+    // Check if the game Exists
+    private void checkIfGameExists(Game gameToBeCreated) {
+        Game gameByGamename = gameRepository.findByGameName(gameToBeCreated.getGameName());
 
-        String entered_password = userToBeCreated.getPassword();
+        String taken_gamename_error = "The %s %s already taken. Please choose an other gamename!";
 
-        String taken_username_error = "The %s %s already taken. Please choose an other username!";
-
-        if (userByUsername != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(taken_username_error, "username", "is"));
+        if (gameByGamename != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(taken_gamename_error, "lobbyname", "is"));
         }
     }
-
+    /*
     // Get the date for the creation date information.
     private String getDate() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
