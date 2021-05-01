@@ -14,7 +14,7 @@ public class LobbyGetDTO {
     private Integer size;
     private Integer rounds;
     private Integer timer;
-    private ArrayList<Long> members;
+    private ArrayList<String> members;
     private LobbyStatus status;
     private String lobbyChat;
 
@@ -60,9 +60,9 @@ public class LobbyGetDTO {
     public void setTimer(Integer timer) { this.timer = timer; }
 
     // get & set members
-    public ArrayList<Long> getMembers() { return  members; }
+    public ArrayList<String> getMembers() { return  members; }
 
-    public void setMembers(ArrayList<Long> members) { this.members = members; }
+    public void setMembers(ArrayList<String> members) { this.members = members; }
 
     public LobbyStatus getStatus() {
         return status;
