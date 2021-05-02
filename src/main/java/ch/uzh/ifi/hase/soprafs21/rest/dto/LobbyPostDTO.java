@@ -1,5 +1,9 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
+import ch.uzh.ifi.hase.soprafs21.entity.Chat;
+
+import java.util.ArrayList;
+
 public class LobbyPostDTO {
 
     // added size, rounds, timer, lobbyChat, status to pass down and convert
@@ -15,7 +19,7 @@ public class LobbyPostDTO {
 
     private String  timer;
 
-    private String lobbyChat;
+    private ArrayList<Chat> lobbyChat;
 
     private String status;
 
@@ -49,8 +53,8 @@ public class LobbyPostDTO {
 
     public void setTimer(String timer) { this.timer = timer; }
 
-    public String getLobbyChat() { return lobbyChat; }
+    public ArrayList<Chat> getLobbyChat() { return lobbyChat; }
 
-    public void setLobbyChat(String lobbyChat) { this.lobbyChat = lobbyChat; }
+    public void setLobbyChat(ArrayList<Chat> lobbyChat) { this.lobbyChat = lobbyChat; }
 
 }

@@ -131,6 +131,10 @@ public class Lobby implements Serializable {
     public int getCurrentWord() { return this.currentWord; }
     public void setCurrentWord(int nextCurrentWord) { this.currentWord = nextCurrentWord; }
 
+    public ArrayList<Chat> getLobbyChat() { return lobbyChat; }
+
+    public void setLobbyChat(ArrayList<Chat> lobbyChat) { this.lobbyChat =lobbyChat; }
+
     //get & set lobby chat
     public Chat getLobbyChat(LocalDateTime timeStamp) { return lobbyChat.get(currentWord-1).getChat(timeStamp); }
 

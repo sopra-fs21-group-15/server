@@ -100,7 +100,7 @@ public class LobbyController {
         lobbyService.remove_lobby_members(lobbyId, userInput.getUsername());
     }
 
-
+/*
     //API Call for getting the chat in the lobby
     @GetMapping("/lobbies/{lobbyId}/messages")
     @ResponseStatus(HttpStatus.OK)
@@ -112,6 +112,8 @@ public class LobbyController {
         return ChatDTOMapper.INSTANCE.convertEntityToChatGetDTO(chat);
     }
 
+ */
+/*
     //API Call for posting a message in the lobby
     @PutMapping("/lobbies/{lobbyId}/messages")
     @ResponseStatus(HttpStatus.OK)
@@ -122,4 +124,6 @@ public class LobbyController {
         lobby.setLobbyChat(message);
         return;
     }
+
+ */
 }
