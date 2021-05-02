@@ -1,9 +1,5 @@
 package ch.uzh.ifi.hase.soprafs21.rest.mapper;
 
-import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
-import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.LobbyGetDTO;
@@ -19,43 +15,52 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class LobbyDTOMapperTest {
     @Test
-    public void testCreateLobby_success() {
-        // create UserPostDTO
-        UserPostDTO userPostDTO = new UserPostDTO();
-        userPostDTO.setPassword("password");
-        userPostDTO.setUsername("username");
-        userPostDTO.setBirth_date("01-01-0101");
+    public void testCreateLobby_fromLobbyPostDTO_success() {
+        //create LobbypostDTO
+        LobbyPostDTO lobbyPostDTO = new LobbyPostDTO();
+        lobbyPostDTO.setLobbyname("Test");
+        lobbyPostDTO.setPassword("TestPassword");
+        lobbyPostDTO.setRounds("5");
+        lobbyPostDTO.setSize("4");
+        lobbyPostDTO.setTimer("60");
+
 
         // MAP -> Create user
-        User user = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        Lobby lobby = LobbyDTOMapper.INSTANCE.convertLobbyPostDTOtoEntity(lobbyPostDTO);
+
 
         // check content
-        assertEquals(userPostDTO.getPassword(), user.getPassword());
-        assertEquals(userPostDTO.getUsername(), user.getUsername());
-        assertEquals(userPostDTO.getBirth_date(), user.getBirth_date());
+        assertEquals(lobbyPostDTO.getPassword(), lobby.getPassword());
+        assertEquals(lobbyPostDTO.getLobbyname(), lobby.getLobbyname());
+        assertEquals(lobbyPostDTO.getRounds(), lobby.getRounds().toString());
+        assertEquals(lobbyPostDTO.getSize(), lobby.getSize().toString());
+        assertEquals(lobbyPostDTO.getTimer(), lobby.getTimer().toString());
+
+
     }
 
     @Test
-    public void testGetUser_fromUser_toUserGetDTO_success() {
-        // create User
-        User user = new User();
-        user.setPassword("Firstname Lastname");
-        user.setUsername("firstname@lastname");
-        user.setStatus(UserStatus.OFFLINE);
-        user.setToken("1");
-        user.setBirth_date("01-01-0101");
-        user.setId(1L);
-        user.setCreation_date("");
+    public void testGetLobby_fromLobby_toLobbyGetDTO_success() {
+        // create Lobby
+       Lobby lobby = new Lobby();
+       lobby.setRounds(3);
+       lobby.setSize(4);
+       lobby.setTimer(60);
+       lobby.setLobbyname("Lobby1");
+       lobby.setStatus(LobbyStatus.OPEN);
+       lobby.setPassword("Password1");
+       lobby.setMembers("Anton");
+       lobby.setId(1L);
 
         // MAP -> Create UserGetDTO
-        UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+        LobbyGetDTO lobbyGetDTO= LobbyDTOMapper.INSTANCE.convertEntityToLobbyGetDTO(lobby);
 
         // check content
-        assertEquals(user.getId(), userGetDTO.getId());
-        assertEquals(user.getPassword(), userGetDTO.getPassword());
-        assertEquals(user.getUsername(), userGetDTO.getUsername());
-        assertEquals(user.getStatus(), userGetDTO.getStatus());
-        assertEquals(user.getBirth_date(), userGetDTO.getBirth_date());
-        assertEquals(user.getCreation_date(), userGetDTO.getCreation_date());
+        assertEquals(lobby.getId(), lobbyGetDTO.getId());
+        assertEquals(lobby.getPassword(), lobbyGetDTO.getPassword());
+        assertEquals(lobby.getLobbyname(), lobbyGetDTO.getLobbyname());
+        assertEquals(lobby.getStatus(), lobbyGetDTO.getStatus());
+        assertEquals(lobby.getRounds(), lobbyGetDTO.getRounds());
+        assertEquals(lobby.getTimer(),  lobbyGetDTO.getTimer());
     }
 }
