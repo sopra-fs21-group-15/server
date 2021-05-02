@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
@@ -55,8 +56,11 @@ public class Lobby implements Serializable {
     private LobbyStatus status;
 
     //lobby chat
-    @Column(nullable = true)
-    private String lobbyChat;
+    @Column
+    private ArrayList<Chat> lobbyChat;
+
+    //index for current word
+    private int currentWord; // works as an index for both words and pictures
 
     public Lobby() {
     }
@@ -124,10 +128,26 @@ public class Lobby implements Serializable {
         this.status = status;
     }
 
-    //get & set lobby chat
-    public String getLobbyChat() { return lobbyChat; }
+    public int getCurrentWord() { return this.currentWord; }
+    public void setCurrentWord(int nextCurrentWord) { this.currentWord = nextCurrentWord; }
 
-    public void setLobbyChat(String lobbyChat) { this.lobbyChat = lobbyChat; }
+    public ArrayList<Chat> getLobbyChat() { return lobbyChat; }
+
+    public void setLobbyChat(ArrayList<Chat> lobbyChat) { this.lobbyChat =lobbyChat; }
+
+    //get & set lobby chat
+    public Chat getLobbyChat(LocalDateTime timeStamp) { return lobbyChat.get(currentWord-1).getChat(timeStamp); }
+
+    public void setLobbyChat(Message message) {
+
+        if(lobbyChat.size() < currentWord) {
+            lobbyChat.add(new Chat());
+        }
+        if(lobbyChat.size() == currentWord) {
+            lobbyChat.get(currentWord -1 ).addMessage(message);
+        }
+
+    }
 }
 
 

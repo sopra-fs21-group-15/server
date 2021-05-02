@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
+import ch.uzh.ifi.hase.soprafs21.entity.Chat;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class LobbyGetDTO {
     private Integer timer;
     private ArrayList<String> members;
     private LobbyStatus status;
-    private String lobbyChat;
+    private ArrayList<Chat> lobbyChat;
 
     public Long getId() {
         return id;
@@ -73,7 +74,7 @@ public class LobbyGetDTO {
     }
 
     // get & set lobbyChat
-    public String getLobbyChat() { return lobbyChat; }
+    public ArrayList<Chat> getLobbyChat() { return lobbyChat; }
 
-    public void setLobbyChat(String lobbyChat) { this.lobbyChat = lobbyChat; }
+    public void setLobbyChat(ArrayList<Chat> lobbyChat) { this.lobbyChat = lobbyChat; }
 }
