@@ -116,11 +116,8 @@ public class GameService {
         // ... the roundTracker
         newGame.setRoundTracker(1);
 
-
         // ... the link to the lobby
         newGame.setLobbyId(lobbyId);
-        System.out.println(lobbyId.toString());
-        System.out.println(newGame.getLobbyId().toString());
 
         // ... the rounds themselves
         int n = newGame.getPlayers().size();
@@ -137,9 +134,7 @@ public class GameService {
 
          // saves the given entity but data is only persisted in the database once flush() is called
         newGame = gameRepository.save(newGame);
-        System.out.println(newGame.toString());
         gameRepository.flush();
-        System.out.println("Saved the Game in the repository");
 
         log.debug("Created and started new game with given information: {}", newGame);
         return newGame;
@@ -151,9 +146,13 @@ public class GameService {
         //get all games
         List<Game> all_games = this.gameRepository.findAll();
 
+        long gameIdLong = game_id.longValue();
+        long potGameIdLong = 0;
         Game game_found = null;
+
         for (Game i : all_games) {
-            if (game_id == i.getId()) {
+            potGameIdLong = i.getId().longValue();
+            if ( gameIdLong == potGameIdLong ) {
                 game_found = i;
             }
         }
@@ -164,6 +163,31 @@ public class GameService {
             new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_game));
         }
 
+        //System.out.println(game_id.toString());
+        return game_found;
+    }
+
+    // quality of life method (logging in again after disconnect)
+    public Game getGameFromLobby(Long lobbyId) {
+
+        //get all games
+        List<Game> all_games = this.gameRepository.findAll();
+
+        Game game_found = null;
+
+        for (Game i : all_games) {
+            if ( lobbyId.equals(i.getLobbyId()) ) {
+                game_found = i;
+            }
+        }
+
+        //if not found
+        String nonexisting_game = "This game does not exist or has expired. Please search for an existing user!";
+        if (game_found == null) {
+            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_game));
+        }
+
+        //System.out.println(game_id.toString());
         return game_found;
     }
 }
