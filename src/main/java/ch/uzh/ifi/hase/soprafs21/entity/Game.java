@@ -37,7 +37,7 @@ public class Game implements Serializable {
     @Column(nullable = false)
     private int roundTracker;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private Long lobbyId;
 
     // private ScoreBoard scoreBoard;
@@ -57,10 +57,7 @@ public class Game implements Serializable {
     }
 
     // access Players (User)
-    //public ArrayList<User> getPlayers() { return this.players; }
     public ArrayList<String> getPlayers() { return this.players; }
-
-    //public void setPlayers(ArrayList<User> players) { this.players = players; }
     public void setPlayers(ArrayList<String> players) { this.players = players; }
 
     // access game name

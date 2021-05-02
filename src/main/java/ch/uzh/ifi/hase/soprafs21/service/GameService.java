@@ -104,11 +104,9 @@ public class GameService {
 
         // ... LobbyName to GameName
         newGame.setGameName(lobbyToUpdate.getLobbyname());
-        //System.out.println("Gamename worked");
 
         // ... timer to timerPerRound
         newGame.setTimePerRound(lobbyToUpdate.getTimer());
-        //System.out.println("Timerround worked");
 
         // ... the scoreboard
         //ScoreBoard scoreBoard = new ScoreBoard(newGame.getPlayers());
@@ -117,7 +115,7 @@ public class GameService {
 
         // ... the roundTracker
         newGame.setRoundTracker(1);
-        //System.out.println("RoundTracker worked");
+
 
         // ... the link to the lobby
         newGame.setLobbyId(lobbyId);

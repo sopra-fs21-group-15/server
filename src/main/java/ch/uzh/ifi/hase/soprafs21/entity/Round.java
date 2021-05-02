@@ -100,7 +100,6 @@ public class Round implements Serializable {
         // special randomised initialization
         Random rand = new Random();
         int r = rand.nextInt(players.size());
-        //this.drawerId = players.get(r).getId();
         this.drawerName = players.get(r);
         this.hasDrawn[r] = true;
         // TODO: part 2 of the above mentioned task, use it to get good words
