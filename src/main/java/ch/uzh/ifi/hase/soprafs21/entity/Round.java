@@ -2,6 +2,8 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.constant.Colours;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Random;
@@ -22,6 +24,12 @@ import java.util.Random;
  */
 // TODO: Class was not tested yet due to being so interconnected. Check for bugs and fallacies.
 public class Round {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue
+    private Long id;
 
     private Game partOf;
     private Timer stopWatch;
