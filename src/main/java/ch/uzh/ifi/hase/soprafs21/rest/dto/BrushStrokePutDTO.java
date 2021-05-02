@@ -8,7 +8,7 @@ public class BrushStrokePutDTO {
     private int x;
     private int y;
     private int size;
-    private Colours colour;
+    private String colour;
 
     // methods for userName
     public String getUserName() { return this.userName; }
@@ -27,7 +27,7 @@ public class BrushStrokePutDTO {
     public void setSize(int size) { this.size = size; }
 
     // methods for colour
-    public Colours getColour() { return this.colour; }
-    public void setColour(Colours colour) { this.colour = colour; }
+    public String getColour() { return this.colour; }
+    public void setColour(String colour) { this.colour = colour; }
 
 }

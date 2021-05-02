@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,7 +87,10 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ArrayList<DrawingGetDTO> drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable Long gameId) {
-        LocalDateTime timeStamp = DrawingDTOMapper.INSTANCE.convertDrawingPostDTOtoEntity(drawingPostDTO);
+    //public ArrayList<DrawingGetDTO> drawingRequest(String stringTimeStamp, @PathVariable Long gameId) {
+        NestedString send = DrawingDTOMapper.INSTANCE.convertDrawingPostDTOtoEntity(drawingPostDTO);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime timeStamp = LocalDateTime.parse(send.getTimestamp(),formatter);
         Game game = gameService.getGame(gameId);
         Round round = roundService.getRound(game.getRoundId());
         ArrayList<BrushStroke> drawings = drawingService.getDrawing(round.getPictureId(),timeStamp);
