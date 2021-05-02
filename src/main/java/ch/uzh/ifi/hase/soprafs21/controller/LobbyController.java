@@ -103,27 +103,4 @@ public class LobbyController {
         lobbyService.remove_lobby_members(lobbyId, userInput.getUsername());
     }
 
-    @PostMapping("/lobbies/{lobbyId}/start")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-    public GameGetDTO createGame(@PathVariable Long lobbyId) {
-        // copy the input into a game visible for all players threw the repository
-        Game createdGame = gameService.createGame(lobbyId);
-
-        // convert internal representation of game back to API for client
-        return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
-
-    }
-
-    @GetMapping("/lobbies/{lobbyId}/getGame")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public GameGetDTO findGame(@PathVariable Long lobbyId) {
-        // copy the input into a game visible for all players threw the repository
-        Game foundGame = gameService.getGameFromLobby(lobbyId);
-
-        // convert internal representation of game back to API for client
-        return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(foundGame);
-    }
-
 }

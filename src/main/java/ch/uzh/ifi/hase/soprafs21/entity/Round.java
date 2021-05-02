@@ -2,8 +2,7 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.constant.Colours;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,7 +22,9 @@ import java.util.Random;
  * and send to the game scoreboard. If it was the last round the game ends then and there, if it was not an other round
  * gets queued up.
  */
-// TODO: Class was not tested yet due to being so interconnected. Check for bugs and fallacies.
+
+@Entity
+@Table(name = "ROUND")
 public class Round implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -32,7 +33,9 @@ public class Round implements Serializable {
     @GeneratedValue
     private Long id;
 
-    // private Game partOf;
+    @Column(nullable = false, unique = true)
+    private Game gameId;
+
     private Timer stopWatch;
 
     // private ArrayList<User> players;

@@ -11,11 +11,49 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
+@RestController
 public class GameController {
 
     private final GameService gameService;
 
     GameController(GameService gameService) { this.gameService = gameService; }
+
+    // API call to create a game (requires to be in a lobby first)
+    @PostMapping("/games/{lobbyId}/start")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public GameGetDTO createGame(@PathVariable Long lobbyId) {
+        // copy the input into a game visible for all players threw the repository
+        Game createdGame = gameService.createGame(lobbyId);
+
+        // convert internal representation of game back to API for client
+        return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
+
+    }
+
+    // API call to join a created game (requires to be in a lobby first)
+    @GetMapping("/games/{lobbyId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameGetDTO findGame(@PathVariable Long lobbyId) {
+        // copy the input into a game visible for all players threw the repository
+        Game foundGame = gameService.getGameFromLobby(lobbyId);
+
+        // convert internal representation of game back to API for client
+        return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(foundGame);
+    }
+
+    // API call to get a newer version of the game that you are in
+    @GetMapping("/games/{gameId}/update")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameGetDTO updateGame(@PathVariable Long gameId) {
+        // copy the input into a game visible for all players threw the repository
+        Game foundGame = gameService.getGame(gameId);
+
+        // convert internal representation of game back to API for client
+        return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(foundGame);
+    }
 
     // TODO #40 test and refine mapping for sending drawing information
     // pass information to the right picture

@@ -119,6 +119,10 @@ public class GameService {
         // ... the link to the lobby
         newGame.setLobbyId(lobbyId);
 
+        // ... the link to the round
+        Long test = 404L; // temp to test TODO: initialize properly
+        newGame.setRoundId(test);
+
         // ... the rounds themselves
         int n = newGame.getPlayers().size();
         //ArrayList<Round> rounds = new ArrayList<Round>(n);
