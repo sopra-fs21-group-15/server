@@ -6,7 +6,15 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "BRUSHSTROKE")
 public class BrushStroke implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue
+    private Long id;
 
     @Column(nullable = false)
     private int x;
@@ -14,8 +22,7 @@ public class BrushStroke implements Serializable {
     @Column(nullable = false)
     private int y;
 
-    @Id
-    @GeneratedValue
+    @Column(nullable = false)
     private LocalDateTime timeStamp;
 
     @Column(nullable = false)
@@ -25,6 +32,9 @@ public class BrushStroke implements Serializable {
     private Colours colour;
 
     // generic methods to handle incoming requests
+    public Long getId() { return this.id; }
+    public void setId(Long id) { this.id = id; }
+
     public int getX() { return this.x; }
     public void setX(int x) { this.x = x; }
 

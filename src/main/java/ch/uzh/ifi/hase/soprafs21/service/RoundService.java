@@ -1,23 +1,17 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.entity.*;
+import ch.uzh.ifi.hase.soprafs21.repository.DrawingRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.GameRepository;
-import ch.uzh.ifi.hase.soprafs21.repository.LobbyRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.RoundRepository;
-import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StopWatch;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 
 @Service
 @Transactional
@@ -27,10 +21,13 @@ public class RoundService {
 
     private final RoundRepository roundRepository;
 
+    private final DrawingRepository drawingRepository;
+
     @Autowired
-    public RoundService(@Qualifier("roundRepository") RoundRepository roundRepository, GameRepository gameRepository) {
+    public RoundService(@Qualifier("roundRepository") RoundRepository roundRepository, GameRepository gameRepository, DrawingRepository drawingRepository) {
         this.gameRepository = gameRepository;
         this.roundRepository = roundRepository;
+        this.drawingRepository = drawingRepository;
     }
 
     // get all the games
@@ -84,7 +81,11 @@ public class RoundService {
         Round round = new Round();
         int n = game.getPlayers().size();
 
-        round.setPictureId(404L);
+        Drawing drawing = new Drawing();
+        drawing = drawingRepository.save(drawing);
+        drawingRepository.flush();
+
+        round.setPictureId(drawing.getId());
         round.setStopWatch(new Timer(game.getTimePerRound()));
         round.setPlayers(game.getPlayers());
 

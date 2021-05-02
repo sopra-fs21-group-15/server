@@ -4,19 +4,31 @@ import ch.uzh.ifi.hase.soprafs21.entity.*;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.*;
+import ch.uzh.ifi.hase.soprafs21.service.DrawingService;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 
+import ch.uzh.ifi.hase.soprafs21.service.RoundService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class GameController {
 
     private final GameService gameService;
 
-    GameController(GameService gameService) { this.gameService = gameService; }
+    private final RoundService roundService;
+
+    private final DrawingService drawingService;
+
+    GameController(GameService gameService, RoundService roundService, DrawingService drawingService) {
+        this.gameService = gameService;
+        this.roundService = roundService;
+        this.drawingService = drawingService;
+    }
 
     // API call to create a game from the lobby (requires to be in a lobby first, lobby owner only)
     @PostMapping("/games/{lobbyId}/start")
@@ -63,24 +75,26 @@ public class GameController {
     public void addBrushStrokes(@RequestBody BrushStrokePutDTO brushStrokeEditDTO, @PathVariable long gameId) {
         // convert API brush stroke to an internal representation
         BrushStroke brushStroke = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(brushStrokeEditDTO);
-
+        brushStroke.setTimeStamp( LocalDateTime.now() );
         Game game = gameService.getGame(gameId);
-
-        // method checks on the level of the round if it is the right user
-        // game.addStroke(brushStrokeEditDTO.getUser_id(), brushStroke);
-        // game.addStroke(brushStrokeEditDTO.getUserName(), brushStroke);
+        Round round = roundService.getRound(game.getRoundId());
+        drawingService.addStroke(round.getPictureId(),brushStroke);
     }
 
     // TODO #42 test and refine mapping for API-calls requesting the drawing
     @GetMapping("/games/{gameId}/drawing")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public DrawingGetDTO drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable Long gameId) {
+    public ArrayList<DrawingGetDTO> drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable Long gameId) {
         LocalDateTime timeStamp = DrawingDTOMapper.INSTANCE.convertDrawingPostDTOtoEntity(drawingPostDTO);
         Game game = gameService.getGame(gameId);
-        // Drawing drawing = game.getDrawing(timeStamp);
-        //return DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(drawing);
-        return null;
+        Round round = roundService.getRound(game.getRoundId());
+        ArrayList<BrushStroke> drawings = drawingService.getDrawing(round.getPictureId(),timeStamp);
+        ArrayList<DrawingGetDTO> value = new ArrayList<>();
+        for(BrushStroke i : drawings){
+            value.add(DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(i));
+        }
+        return value;
     }
 
     // TODO #44 test and refine mapping API-call for requesting the letter-count
