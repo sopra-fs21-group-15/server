@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -49,7 +51,43 @@ public class DrawingService {
         return drawingFound;
     }
 
-    // get the latest brush
+    // get all brush strokes
+    public List<BrushStroke> getBrushStroke() { return this.brushStrokeRepository.findAll(); }
+
+    // get a specific brush stroke
+    public BrushStroke getBrushStroke(Long brushStrokeId) {
+        List<BrushStroke> brushStrokes = getBrushStroke();
+
+        BrushStroke brushStrokeFound = null;
+        for (BrushStroke i : brushStrokes) {
+            if (brushStrokeId.equals(i.getId())) {
+                brushStrokeFound = i;
+            }
+        }
+
+        return brushStrokeFound;
+    }
+
+    // get the latest brushStrokes past a certain time
+    public ArrayList<BrushStroke> getDrawing(Long drawingId, LocalDateTime timeStemp) {
+        Drawing drawing = getDrawing(drawingId);
+        int index = 0;
+        //drawing.get(index).getTimeStamp().isBefore(timeStamp)
+        Long brushStrokeId = drawing.getBrushStrokeIds().get(index);
+        BrushStroke brushStroke = getBrushStroke(brushStrokeId);
+        LocalDateTime value = brushStroke.getTimeStamp();
+        while(value.isBefore(timeStemp)) {
+            index++;
+        }
+
+        ArrayList<Long> brushStrokeIds = new ArrayList<Long>(drawing.getBrushStrokeIds().subList( index,drawing.getBrushStrokeIds().size()-1) );
+        ArrayList<BrushStroke> temp = new ArrayList<BrushStroke>();
+        for (Long i : brushStrokeIds) {
+            temp.add(getBrushStroke(i));
+        }
+        return temp;
+
+    }
 
     // get all rounds
     public List<Round> getRounds() {

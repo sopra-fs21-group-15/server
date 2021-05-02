@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class GameController {
@@ -83,12 +85,16 @@ public class GameController {
     @GetMapping("/games/{gameId}/drawing")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public DrawingGetDTO drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable Long gameId) {
+    public ArrayList<DrawingGetDTO> drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable Long gameId) {
         LocalDateTime timeStamp = DrawingDTOMapper.INSTANCE.convertDrawingPostDTOtoEntity(drawingPostDTO);
         Game game = gameService.getGame(gameId);
-        // Drawing drawing = game.getDrawing(timeStamp);
-        //return DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(drawing);
-        return null;
+        Round round = roundService.getRound(game.getRoundId());
+        ArrayList<BrushStroke> drawings = drawingService.getDrawing(round.getPictureId(),timeStamp);
+        ArrayList<DrawingGetDTO> value = new ArrayList<>();
+        for(BrushStroke i : drawings){
+            value.add(DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(i));
+        }
+        return value;
     }
 
     // TODO #44 test and refine mapping API-call for requesting the letter-count
