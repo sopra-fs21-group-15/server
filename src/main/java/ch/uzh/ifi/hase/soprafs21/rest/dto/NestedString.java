@@ -2,10 +2,10 @@ package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
 public class NestedString {
 
-    private String timestamp;
+    private String timeStamp;
 
     // methods to access timestamp
-    public String getTimestamp() { return timestamp; }
-    public void setTimestamp(String timestamp) { this.timestamp = timestamp; }
+    public String getTimeStamp() { return timeStamp; }
+    public void setTimeStamp(String timestamp) { this.timeStamp = timestamp; }
 
 }

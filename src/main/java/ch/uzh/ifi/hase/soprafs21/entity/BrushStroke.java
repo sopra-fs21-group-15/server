@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs21.constant.Colours;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "BRUSHSTROKE")
@@ -23,7 +24,7 @@ public class BrushStroke implements Serializable {
     private int y;
 
     @Column(nullable = false)
-    private LocalDateTime timeStamp;
+    private String timeStamp;
 
     @Column(nullable = false)
     private int size;
@@ -41,8 +42,8 @@ public class BrushStroke implements Serializable {
     public int getY() { return this.y; }
     public void setY(int y) { this.y = y; }
 
-    public LocalDateTime getTimeStamp() { return this.timeStamp; }
-    public void setTimeStamp(LocalDateTime timeStamp) { this.timeStamp = timeStamp; }
+    public String getTimeStamp() { return this.timeStamp; }
+    public void setTimeStamp(String timeStamp) { this.timeStamp = timeStamp; }
 
     public int getSize() { return this.size; }
     public void setSize(int size) { this.y = y; }
@@ -52,11 +53,16 @@ public class BrushStroke implements Serializable {
 
     // constructor for all the setup
     public BrushStroke(int x, int y, int size, String c) {
+        // trivial fields
         this.x = x;
         this.y = y;
-        this.timeStamp = LocalDateTime.now();
         this.size = size;
         this.colour = c;
+
+        // the time it was created
+        LocalDateTime currentTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        this.timeStamp = currentTime.format(formatter);
     }
 
     public BrushStroke() {

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,15 +70,20 @@ public class DrawingService {
     }
 
     // get the latest brushStrokes past a certain time
-    public ArrayList<BrushStroke> getDrawing(Long drawingId, LocalDateTime timeStemp) {
+    public ArrayList<BrushStroke> getDrawing(Long drawingId, LocalDateTime timeStamp) {
         Drawing drawing = getDrawing(drawingId);
         int index = 0;
-        //drawing.get(index).getTimeStamp().isBefore(timeStamp)
+
+        // setting everything up to iterate over the indexes to find index after which the brush strokes are that we have not seen yet
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         Long brushStrokeId = drawing.getBrushStrokeIds().get(index);
         BrushStroke brushStroke = getBrushStroke(brushStrokeId);
-        LocalDateTime value = brushStroke.getTimeStamp();
-        while(value.isBefore(timeStemp)) {
+        LocalDateTime value = LocalDateTime.parse(brushStroke.getTimeStamp(),formatter);
+        while(value.isBefore(timeStamp)) {
             index++;
+            brushStrokeId = drawing.getBrushStrokeIds().get(index);
+            brushStroke = getBrushStroke(brushStrokeId);
+            value = LocalDateTime.parse(brushStroke.getTimeStamp(),formatter);
         }
 
         ArrayList<Long> brushStrokeIds = new ArrayList<Long>(drawing.getBrushStrokeIds().subList( index,drawing.getBrushStrokeIds().size()-1) );

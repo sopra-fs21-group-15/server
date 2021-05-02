@@ -76,7 +76,9 @@ public class GameController {
     public void addBrushStrokes(@RequestBody BrushStrokePutDTO brushStrokeEditDTO, @PathVariable long gameId) {
         // convert API brush stroke to an internal representation
         BrushStroke brushStroke = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(brushStrokeEditDTO);
-        brushStroke.setTimeStamp( LocalDateTime.now() );
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String currentTime = LocalDateTime.now().format(formatter);
+        brushStroke.setTimeStamp(currentTime);
         Game game = gameService.getGame(gameId);
         Round round = roundService.getRound(game.getRoundId());
         drawingService.addStroke(round.getPictureId(),brushStroke);
@@ -90,7 +92,7 @@ public class GameController {
     //public ArrayList<DrawingGetDTO> drawingRequest(String stringTimeStamp, @PathVariable Long gameId) {
         NestedString send = DrawingDTOMapper.INSTANCE.convertDrawingPostDTOtoEntity(drawingPostDTO);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime timeStamp = LocalDateTime.parse(send.getTimestamp(),formatter);
+        LocalDateTime timeStamp = LocalDateTime.parse(send.getTimeStamp(),formatter);
         Game game = gameService.getGame(gameId);
         Round round = roundService.getRound(game.getRoundId());
         ArrayList<BrushStroke> drawings = drawingService.getDrawing(round.getPictureId(),timeStamp);

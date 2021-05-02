@@ -4,10 +4,10 @@ import java.time.LocalDateTime;
 
 public class DrawingPostDTO {
 
-    private String timestamp;
+    private String timeStamp;
 
     // methods to access timestamp
-    public String getTimestamp() { return timestamp; }
-    public void setTimestamp(String timestamp) { this.timestamp = timestamp; }
+    public String getTimeStamp() { return timeStamp; }
+    public void setTimeStamp(String timestamp) { this.timeStamp = timestamp; }
 
 }
