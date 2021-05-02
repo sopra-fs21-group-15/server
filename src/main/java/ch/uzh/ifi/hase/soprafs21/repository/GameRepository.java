@@ -9,5 +9,5 @@ import java.util.Optional;
 // I deleted some unnecessary find functions...
 @Repository("gameRepository")
 public interface GameRepository extends JpaRepository<Game, Long> {
-    Game findByGameName(String gameName);
+
 }
