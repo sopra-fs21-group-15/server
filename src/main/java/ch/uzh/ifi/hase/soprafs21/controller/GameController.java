@@ -89,7 +89,7 @@ public class GameController {
     public ArrayList<DrawingGetDTO> drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable Long gameId) {
     //public ArrayList<DrawingGetDTO> drawingRequest(String stringTimeStamp, @PathVariable Long gameId) {
         NestedString send = DrawingDTOMapper.INSTANCE.convertDrawingPostDTOtoEntity(drawingPostDTO);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime timeStamp = LocalDateTime.parse(send.getTimestamp(),formatter);
         Game game = gameService.getGame(gameId);
         Round round = roundService.getRound(game.getRoundId());
