@@ -18,7 +18,7 @@ public class GameController {
 
     GameController(GameService gameService) { this.gameService = gameService; }
 
-    // API call to create a game (requires to be in a lobby first)
+    // API call to create a game from the lobby (requires to be in a lobby first, lobby owner only)
     @PostMapping("/games/{lobbyId}/start")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -31,11 +31,11 @@ public class GameController {
 
     }
 
-    // API call to join a created game (requires to be in a lobby first)
-    @GetMapping("/games/{lobbyId}")
+    // API call to join a created game from the lobby (requires to be in a lobby first)
+    @GetMapping("/games/{lobbyId}/convert")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public GameGetDTO findGame(@PathVariable Long lobbyId) {
+    public GameGetDTO convertLobbyToGame(@PathVariable Long lobbyId) {
         // copy the input into a game visible for all players threw the repository
         Game foundGame = gameService.getGameFromLobby(lobbyId);
 
@@ -44,10 +44,10 @@ public class GameController {
     }
 
     // API call to get a newer version of the game that you are in
-    @GetMapping("/games/{gameId}/update")
+    @GetMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public GameGetDTO updateGame(@PathVariable Long gameId) {
+    public GameGetDTO getGame(@PathVariable Long gameId) {
         // copy the input into a game visible for all players threw the repository
         Game foundGame = gameService.getGame(gameId);
 

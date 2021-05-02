@@ -36,12 +36,20 @@ public class Round implements Serializable {
     @Column(nullable = false, unique = true)
     private Game gameId;
 
+    @Column(nullable = false)
     private Timer stopWatch;
 
     // private ArrayList<User> players;
+    @Column(nullable = false)
     private ArrayList<String> players;
+
+
     private ArrayList<Drawing> pictures;
+
+
     private ArrayList<String> words;
+
+    @Column(nullable = false)
     private int currentWord; // works as an index for both words and pictures
     private boolean[] hasDrawn;
     private long[][] tempScore;
