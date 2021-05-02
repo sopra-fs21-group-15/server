@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Entity
-@Table( name = "GAME")
+@Table(name = "GAME")
 public class Game implements Serializable {
 
     private static final long serialVersionUID = 1L;

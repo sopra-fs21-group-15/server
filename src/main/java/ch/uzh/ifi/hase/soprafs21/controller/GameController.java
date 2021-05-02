@@ -20,15 +20,13 @@ public class GameController {
     // TODO #29 test and refine mapping for API-calls for starting a game
     // TODO get information from lobby directly
     // pass information and settings from the lobby to create a game
-    @PostMapping("/lobbies/start")
+
+    @PostMapping("/lobbies/{lobbyId}/start")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public GameGetDTO createGame(@RequestBody GamePostDTO gamePostDTO) {
-        // convert information passed down into a usable instance of game
-        Game gameInput = GameDTOMapper.INSTANCE.convertGamePostDTOtoEntity(gamePostDTO);
-
+    public GameGetDTO createGame(@PathVariable Long lobbyId) {
         // copy the input into a game visible for all players threw the repository
-        Game createdGame = gameService.createGame(gameInput);
+        Game createdGame = gameService.createGame(lobbyId);
 
         // convert internal representation of game back to API for client
         return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);

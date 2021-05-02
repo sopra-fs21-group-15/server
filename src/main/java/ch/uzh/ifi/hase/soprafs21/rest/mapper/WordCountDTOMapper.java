@@ -8,7 +8,8 @@ public interface WordCountDTOMapper {
 
     WordCountDTOMapper INSTANCE = Mappers.getMapper(WordCountDTOMapper.class);
 
-    @Mapping(source = "length", target = "source")
+
+    @Mapping(source = "length", target = "length")
     WordCountGetDTO convertEntityToWordCountGetDTO(int length);
 
 }

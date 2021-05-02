@@ -11,7 +11,6 @@ public interface ScoreBoardDTOMapper {
 
     ScoreBoardDTOMapper INSTANCE = Mappers.getMapper(ScoreBoardDTOMapper.class);
 
-    @Mapping(source = "id", target = "id")
     @Mapping(source = "players", target = "players")
     @Mapping(source = "ranking", target = "ranking")
     @Mapping(source = "score", target = "score")
