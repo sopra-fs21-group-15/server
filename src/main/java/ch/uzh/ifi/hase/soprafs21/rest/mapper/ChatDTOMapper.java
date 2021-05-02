@@ -15,10 +15,13 @@ public interface ChatDTOMapper {
 
     ChatDTOMapper INSTANCE = Mappers.getMapper(ChatDTOMapper.class);
 
+    @Mapping(source = "writer_name", target = "writer_name")
+    @Mapping(source = "chat_message", target = "chat_message")
     @Mapping(source = "timestamp", target = "timestamp")
-    LocalDateTime convertChatPostDTOtoEntity(ChatPostDTO chatPostDTO);
+    Chat convertChatPostDTOtoEntity(ChatPostDTO chatPostDTO);
 
-    @Mapping(source = "messages", target = "chat")
+    @Mapping(source = "writer_names", target = "writer_names")
+    @Mapping(source = "chat_messages", target = "chat_messages")
     ChatGetDTO convertEntityToChatGetDTO(Chat chat);
 
 }

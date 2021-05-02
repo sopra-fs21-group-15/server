@@ -3,7 +3,9 @@ package ch.uzh.ifi.hase.soprafs21.controller;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
+import ch.uzh.ifi.hase.soprafs21.entity.Chat;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.ChatDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
     import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.LobbyDTOMapper;
@@ -12,6 +14,7 @@ import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,6 +104,18 @@ public class LobbyController {
     public void removeMember(@PathVariable Long lobbyId, @RequestBody UserPostDTO userPostDTO) {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         lobbyService.remove_lobby_members(lobbyId, userInput.getUsername());
+    }
+
+    // Mapping for the lobby chats...
+
+    @GetMapping("/lobbies/{lobbyId}/chats")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ChatGetDTO chatGetDTO(@PathVariable Long lobbyId, @RequestBody ChatPostDTO chatPostDTO) {
+        Lobby lobby = lobbyService.getLobby(lobbyId);
+        Chat chatInput = ChatDTOMapper.INSTANCE.convertChatPostDTOtoEntity(chatPostDTO);
+        Long chatId = lobby.getChat_id();
+        return null;
     }
 
 }

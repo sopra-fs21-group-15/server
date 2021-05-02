@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
+import ch.uzh.ifi.hase.soprafs21.service.ChatService;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -57,10 +58,7 @@ public class Lobby implements Serializable {
 
     //lobby chat
     @Column
-    private ArrayList<Chat> lobbyChat;
-
-    //index for current word
-    private int currentWord; // works as an index for both words and pictures
+    private Long chat_id;
 
     public Lobby() {
     }
@@ -128,26 +126,11 @@ public class Lobby implements Serializable {
         this.status = status;
     }
 
-    public int getCurrentWord() { return this.currentWord; }
-    public void setCurrentWord(int nextCurrentWord) { this.currentWord = nextCurrentWord; }
 
-    public ArrayList<Chat> getLobbyChat() { return lobbyChat; }
+    public Long getChat_id() { return chat_id; }
 
-    public void setLobbyChat(ArrayList<Chat> lobbyChat) { this.lobbyChat =lobbyChat; }
+    public void setChat_id(Long chat_id) { this.chat_id = chat_id; }
 
-    //get & set lobby chat
-    public Chat getLobbyChat(LocalDateTime timeStamp) { return lobbyChat.get(currentWord-1).getChat(timeStamp); }
-
-    public void setLobbyChat(Message message) {
-
-        if(lobbyChat.size() < currentWord) {
-            lobbyChat.add(new Chat());
-        }
-        if(lobbyChat.size() == currentWord) {
-            lobbyChat.get(currentWord -1 ).addMessage(message);
-        }
-
-    }
 }
 
 
