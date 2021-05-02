@@ -53,6 +53,7 @@ public class GameService {
     // create a game with given parameters
     public Game createGame(Long lobbyId) {
 
+
         List<Lobby> allLobbies = this.lobbyRepository.findAll();
 
         Lobby lobbyToUpdate = null;
@@ -62,8 +63,16 @@ public class GameService {
             }
         }
 
+        String nonexisting_lobby = "This lobby does not exist. Please search for an existing lobby!";
+        if (lobbyToUpdate == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_lobby));
+        }
+
         // change status of said lobby
         lobbyToUpdate.setStatus(LobbyStatus.PLAYING);
+        // save into the repository
+        lobbyRepository.save(lobbyToUpdate);
+        lobbyRepository.flush();
 
         //--------------------------- create the new game -------------------------//
         Game newGame = new Game();
@@ -71,9 +80,14 @@ public class GameService {
         // import information from lobby
         ArrayList<User> players = new ArrayList<User>();
         for (String memberName : lobbyToUpdate.getMembers()) {
+            System.out.print(lobbyToUpdate.getMembers());
+            System.out.print(this.userRepository.findByUsername(memberName));
             User tempUser = this.userRepository.findByUsername(memberName);
             tempUser.setStatus(UserStatus.INGAME);
             players.add(tempUser);
+            // save into the repository
+            userRepository.save(tempUser);
+            userRepository.flush();
         }
         newGame.setPlayers(players);
 
@@ -100,10 +114,9 @@ public class GameService {
             temp.setup(newGame);
             rounds.add(temp);
         }
-        newGame.setRounds(rounds); //get the creation date with the current date
+        newGame.setRounds(rounds); //
 
-        // TODO: make the gameId unique even with in lobby calls
-        // saves the given entity but data is only persisted in the database once flush() is called
+         // saves the given entity but data is only persisted in the database once flush() is called
         newGame = gameRepository.save(newGame);
         gameRepository.flush();
 
