@@ -57,7 +57,7 @@ public class GameController {
 
     // TODO #40 test and refine mapping for sending drawing information
     // pass information to the right picture
-    @PutMapping("/game/{gameId}/drawing")
+    @PutMapping("/games/{gameId}/drawing")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void addBrushStrokes(@RequestBody BrushStrokePutDTO brushStrokeEditDTO, @PathVariable long gameId) {
@@ -72,7 +72,7 @@ public class GameController {
     }
 
     // TODO #42 test and refine mapping for API-calls requesting the drawing
-    @GetMapping("/game/{gameId}/drawing")
+    @GetMapping("/games/{gameId}/drawing")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public DrawingGetDTO drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable Long gameId) {
@@ -84,7 +84,7 @@ public class GameController {
     }
 
     // TODO #44 test and refine mapping API-call for requesting the letter-count
-    @GetMapping("/game/{gameId}/length")
+    @GetMapping("/games/{gameId}/length")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public WordCountGetDTO lengthRequest(@PathVariable Long gameId) {
@@ -95,7 +95,7 @@ public class GameController {
     }
 /*
     // TODO #51 test and refine mapping API-call for sending a guess of what the word might be
-    @PutMapping("/game/{gameId}/guess")
+    @PutMapping("/games/{gameId}/guess")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void makeGuess(@RequestBody GuessPutDTO guessPutDTO, @PathVariable Long gameId) {
@@ -105,7 +105,7 @@ public class GameController {
     }
 */
     // TODO #53 test and refine the mapping for this API-call requesting the score
-    @GetMapping("/game/{gameId}/score")
+    @GetMapping("/games/{gameId}/score")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ScoreBoardGetDTO getScore(@PathVariable Long gameId) {

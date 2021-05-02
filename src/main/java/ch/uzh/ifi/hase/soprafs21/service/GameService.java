@@ -37,11 +37,14 @@ public class GameService {
 
     private final UserRepository userRepository;
 
+    private final RoundService roundService;
+
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository, RoundService roundService) {
         this.gameRepository = gameRepository;
         this.lobbyRepository = lobbyRepository;
         this.userRepository = userRepository;
+        this.roundService = roundService;
     }
 
     public List<Game> getGames() {
@@ -119,24 +122,17 @@ public class GameService {
         // ... the link to the lobby
         newGame.setLobbyId(lobbyId);
 
-        // ... the link to the round
-        Long test = 404L; // temp to test TODO: initialize properly
-        newGame.setRoundId(test);
-
-        // ... the rounds themselves
-        int n = newGame.getPlayers().size();
-        //ArrayList<Round> rounds = new ArrayList<Round>(n);
-
-        //for (int i = 0; i < n; i++) {
-            Round temp = new Round();
-            temp.setup(newGame);
-            //rounds.add(temp);
-        //}
-        //newGame.setRounds(rounds);
-        //newGame.setRounds(temp);
-        //System.out.println("RoundsArray worked");
+        // ... the link to a round
+        newGame.setRoundId(404L);
 
          // saves the given entity but data is only persisted in the database once flush() is called
+        newGame = gameRepository.save(newGame);
+        gameRepository.flush();
+
+        // ... the link to a proper round
+        Round round = roundService.createRound(newGame.getId());
+        newGame.setRoundId(round.getId());
+
         newGame = gameRepository.save(newGame);
         gameRepository.flush();
 
