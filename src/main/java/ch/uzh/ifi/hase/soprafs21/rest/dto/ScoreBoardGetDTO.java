@@ -7,7 +7,8 @@ import java.util.ArrayList;
 public class ScoreBoardGetDTO {
 
     private Long id;
-    private ArrayList<User> players;
+    //private ArrayList<User> players;
+    private ArrayList<String> players;
     private int[] ranking;
     private long[] score;
 
@@ -16,8 +17,10 @@ public class ScoreBoardGetDTO {
     public void setId(Long id) { this.id = id; }
 
     // methods for players
-    public ArrayList<User> getPlayers() { return players; }
-    public void setPlayers(ArrayList<User> players) { this.players = players;}
+    // public ArrayList<User> getPlayers() { return players; }
+    public ArrayList<String> getPlayers() { return players; }
+    // public void setPlayers(ArrayList<User> players) { this.players = players;}
+    public void setPlayers(ArrayList<String> players) { this.players = players;}
 
     // methods for ranking
     public int[] getRanking() { return ranking; }

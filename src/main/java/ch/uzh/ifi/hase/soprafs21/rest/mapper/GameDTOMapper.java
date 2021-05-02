@@ -2,7 +2,6 @@ package ch.uzh.ifi.hase.soprafs21.rest.mapper;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GameGetDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.GamePostDTO;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -19,16 +18,12 @@ public interface GameDTOMapper {
 
     GameDTOMapper INSTANCE = Mappers.getMapper(GameDTOMapper.class);
 
-    @Mapping(source = "players", target = "players")
-    @Mapping(source = "numberOfRounds", target = "numberOfRounds")
-    @Mapping(source = "timePerRound", target = "timePerRound")
-    Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
-
     @Mapping(source = "id", target = "id")
     @Mapping(source = "players", target = "players")
     @Mapping(source = "numberOfRounds", target = "numberOfRounds")
     @Mapping(source = "timePerRound", target = "timePerRound")
     @Mapping(source = "roundTracker", target = "roundTracker")
+    @Mapping(source = "lobbyId", target = "lobbyId")
     GameGetDTO convertEntityToGameGetDTO(Game game);
 
 }

@@ -1,14 +1,14 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
+import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.LobbyGetDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.LobbyPostDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
+    import ch.uzh.ifi.hase.soprafs21.rest.mapper.GameDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.LobbyDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.service.LobbyService;
+import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +19,11 @@ import java.util.List;
 public class LobbyController {
 
     private final LobbyService lobbyService;
+    private final GameService gameService;
 
-    LobbyController(LobbyService lobbyService) {
+    LobbyController(LobbyService lobbyService, GameService gameService) {
             this.lobbyService = lobbyService;
+            this.gameService = gameService;
         }
 
     // Get mapping to /lobbies to fetch all lobbies to the frontend
@@ -99,6 +101,18 @@ public class LobbyController {
     public void removeMember(@PathVariable Long lobbyId, @RequestBody UserPostDTO userPostDTO) {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         lobbyService.remove_lobby_members(lobbyId, userInput.getUsername());
+    }
+
+    @PostMapping("/lobbies/{lobbyId}/start")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public GameGetDTO createGame(@PathVariable Long lobbyId) {
+        // copy the input into a game visible for all players threw the repository
+        Game createdGame = gameService.createGame(lobbyId);
+
+        // convert internal representation of game back to API for client
+        return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
+
     }
 
 }

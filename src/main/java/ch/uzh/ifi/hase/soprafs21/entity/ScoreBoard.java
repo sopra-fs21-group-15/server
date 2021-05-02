@@ -15,18 +15,21 @@ public class ScoreBoard implements Serializable {
     @GeneratedValue
     private Long id;
 
-    private ArrayList<User> players;
+    // private ArrayList<User> players;
+    private ArrayList<String> players;
 
     private int[] ranking;
 
     private long[] score;
 
     public ScoreBoard() {
-        ArrayList<User> players = new ArrayList<>(4);
+        //ArrayList<User> players = new ArrayList<>(4);
+        ArrayList<String> players = new ArrayList<String>(4);
         new ScoreBoard(players);
     }
 
-    public ScoreBoard(ArrayList<User> players) {
+    //public ScoreBoard(ArrayList<User> players) {
+    public ScoreBoard(ArrayList<String> players) {
         int n = players.size();
         this.players = players;
         this.ranking = new int[n];
@@ -38,9 +41,11 @@ public class ScoreBoard implements Serializable {
      * to transform this data type and send it to the front-end.
      */
     // functions for the player list (returns sorted by ranking)
-    public ArrayList<User> getPlayers() {
+    // public ArrayList<User> getPlayers() {
+    public ArrayList<String> getPlayers() {
         // since we do not just return our list but a sorted one we need to create a new one
-        ArrayList<User> value = new ArrayList<User>();
+        // ArrayList<User> value = new ArrayList<User>();
+        ArrayList<String> value = new ArrayList<String>();
 
         // inefficient but working loop to get the right order of the ranking
         for(int position = 0; position < players.size(); position++) {
@@ -53,7 +58,8 @@ public class ScoreBoard implements Serializable {
         return value;
     }
 
-    public void setPlayers(ArrayList<User> newPlayers) {
+    // public void setPlayers(ArrayList<User> newPlayers) {
+    public void setPlayers(ArrayList<String> newPlayers) {
         this.players = newPlayers;
         this.ranking = new int[newPlayers.size()]; // reset the ranking
         this.score = new long[newPlayers.size()]; // and resetting the scores
@@ -152,12 +158,14 @@ public class ScoreBoard implements Serializable {
         value += "Position  | Player          | Points       \n";
         value += "-------------------------------------------\n";
 
-        ArrayList<User> sortPlayers = this.getPlayers();
+        //ArrayList<User> sortPlayers = this.getPlayers();
+        ArrayList<String> sortPlayers = this.getPlayers();
         long[] sortScore = this.getScore();
         int[] sortRanking = this.getRanking();
 
         for(int i = 0; i < players.size(); i++) {
-            value += "" + (sortRanking[i] + 1) + ".        | " + sortPlayers.get(i).getUsername();
+            //value += "" + (sortRanking[i] + 1) + ".        | " + sortPlayers.get(i).getUsername();
+            value += "" + (sortRanking[i] + 1) + ".        | " + sortPlayers.get(i);
             value += "\t\t| " + sortScore[i];
             value += "             \n";
         }

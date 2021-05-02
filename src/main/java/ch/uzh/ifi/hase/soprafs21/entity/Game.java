@@ -4,7 +4,6 @@ import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Entity
@@ -19,13 +18,13 @@ public class Game implements Serializable {
 
     // passed values from front-end
     @Column(nullable = false)
-    private ArrayList<User> players = new ArrayList<>();
+    private ArrayList<String> players = new ArrayList<String>();
 
     @Column(nullable = false, unique = true)
     private String gameName;
 
     @Column(nullable = false)
-    private GameModes gameModes;
+    private GameModes gameModes = GameModes.CLASSIC;
 
     @Column(nullable = false)
     private int numberOfRounds;
@@ -34,12 +33,17 @@ public class Game implements Serializable {
     private int timePerRound;
 
     // generated values in the back-end
-    private int roundTracker;
-
-    private ScoreBoard scoreBoard;
 
     @Column(nullable = false)
-    private ArrayList<Round> rounds = new ArrayList<>();
+    private int roundTracker;
+
+    @Column(nullable = false, unique = true)
+    private Long lobbyId;
+
+    // private ScoreBoard scoreBoard;
+
+    //private ArrayList<Round> rounds = new ArrayList<>();
+    // private Round rounds = new Round();
 
     /**
      * Basic getter and setter methods for the mapper (needed for front-end)
@@ -53,8 +57,8 @@ public class Game implements Serializable {
     }
 
     // access Players (User)
-    public ArrayList<User> getPlayers() { return this.players; }
-    public void setPlayers(ArrayList<User> players) { this.players = players; }
+    public ArrayList<String> getPlayers() { return this.players; }
+    public void setPlayers(ArrayList<String> players) { this.players = players; }
 
     // access game name
     public String getGameName() {
@@ -86,26 +90,37 @@ public class Game implements Serializable {
         this.roundTracker = roundTracker;
     }
 
+    // access Lobby
+    public Long getLobbyId() { return this.lobbyId; }
+    public void setLobbyId(Long lobbyId) { this.lobbyId = lobbyId; }
+
     // access Scoreboard
-    public ScoreBoard getScoreBoard() { return this.scoreBoard; }
-    public void setScoreBoard(ScoreBoard newScoreBoard) { this.scoreBoard = newScoreBoard; }
+    // public ScoreBoard getScoreBoard() { return this.scoreBoard; }
+    // public void setScoreBoard(ScoreBoard newScoreBoard) { this.scoreBoard = newScoreBoard; }
 
     // access Rounds
-    public ArrayList<Round> getRounds() { return this.rounds; }
-    public void setRounds (ArrayList<Round> rounds) { this.rounds = rounds; }
+    // public ArrayList<Round> getRounds() { return this.rounds; }
+    //public Round getRounds() { return this.rounds; }
+    // public void setRounds (ArrayList<Round> rounds) { this.rounds = rounds; }
+    //public void setRounds (Round rounds) { this.rounds = rounds; }
 
     /**
      * Back-end specific methods needed for functionality
      */
-    public void updatePoints(long[] points) { scoreBoard.updateScore(points); }
+    //public void updatePoints(long[] points) { scoreBoard.updateScore(points); }
 
-    public void addStroke(long user_id, BrushStroke brushStroke) { this.rounds.get(roundTracker - 1).addStroke(user_id, brushStroke); }
+    //public void addStroke(long user_id, BrushStroke brushStroke) { this.rounds.get(roundTracker - 1).addStroke(user_id, brushStroke); }
+    // public void addStroke(String userName, BrushStroke brushStroke) { this.rounds.get(roundTracker - 1).addStroke(userName, brushStroke); }
+    //public void addStroke(String userName, BrushStroke brushStroke) { this.rounds.addStroke(userName, brushStroke); }
 
-    public Drawing getDrawing(LocalDateTime timeStamp) { return rounds.get(roundTracker-1).getDrawing(timeStamp); }
+    //public Drawing getDrawing(LocalDateTime timeStamp) { return rounds.get(roundTracker-1).getDrawing(timeStamp); }
+    //public Drawing getDrawing(LocalDateTime timeStamp) { return rounds.getDrawing(timeStamp); }
 
-    public int getLength() { return rounds.get(roundTracker-1).getLength(); }
+    //public int getLength() { return rounds.get(roundTracker-1).getLength(); }
+    // public int getLength() { return rounds.getLength(); }
 
-    public void makeGuess(Guess guess) { rounds.get(roundTracker-1).makeGuess(guess);}
+    //public void makeGuess(Guess guess) { rounds.get(roundTracker-1).makeGuess(guess);}
+    // public void makeGuess(Guess guess) { rounds.makeGuess(guess);}
 
     /**
      * Back-end specific methods for quality of life
@@ -114,11 +129,12 @@ public class Game implements Serializable {
     public String toString() {
         String value = "";
         // get game Id
-        value += "GameId =  " + getId() +"\n";
+        value += "GameId =  " + getId().intValue() +"\n";
         // get a list of all the player names
         value += "Players = [ ";
         for(int i = 0; i<players.size(); i++){
-            value += "" + players.get(i).getUsername() + "";
+            //value += "" + players.get(i).getUsername() + "";
+            value += "" + players.get(i) + "";
             if(i<players.size()-1){ // not last player
                 value += ",";
             }
