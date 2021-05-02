@@ -119,6 +119,11 @@ public class GameService {
         newGame.setRoundTracker(1);
         //System.out.println("RoundTracker worked");
 
+        // ... the link to the lobby
+        newGame.setLobbyId(lobbyId);
+        System.out.println(lobbyId.toString());
+        System.out.println(newGame.getLobbyId().toString());
+
         // ... the rounds themselves
         int n = newGame.getPlayers().size();
         //ArrayList<Round> rounds = new ArrayList<Round>(n);

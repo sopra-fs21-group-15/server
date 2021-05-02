@@ -29,6 +29,7 @@ public interface GameDTOMapper {
     @Mapping(source = "numberOfRounds", target = "numberOfRounds")
     @Mapping(source = "timePerRound", target = "timePerRound")
     @Mapping(source = "roundTracker", target = "roundTracker")
+    @Mapping(source = "lobbyId", target = "lobbyId")
     GameGetDTO convertEntityToGameGetDTO(Game game);
 
 }

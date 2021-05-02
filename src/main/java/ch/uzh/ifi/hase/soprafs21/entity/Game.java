@@ -4,7 +4,6 @@ import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 @Entity
@@ -35,7 +34,11 @@ public class Game implements Serializable {
 
     // generated values in the back-end
 
+    @Column(nullable = false)
     private int roundTracker;
+
+    @Column(nullable = false)
+    private Long lobbyId;
 
     // private ScoreBoard scoreBoard;
 
@@ -89,6 +92,10 @@ public class Game implements Serializable {
     public void setRoundTracker(int currentRound) {
         this.roundTracker = roundTracker;
     }
+
+    // access Lobby
+    public Long getLobbyId() { return this.lobbyId; }
+    public void setLobbyId(Long lobbyId) { this.lobbyId = lobbyId; }
 
     // access Scoreboard
     // public ScoreBoard getScoreBoard() { return this.scoreBoard; }
