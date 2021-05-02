@@ -29,7 +29,7 @@ public class BrushStroke implements Serializable {
     private int size;
 
     @Column(nullable = false)
-    private Colours colour;
+    private String colour;
 
     // generic methods to handle incoming requests
     public Long getId() { return this.id; }
@@ -47,11 +47,11 @@ public class BrushStroke implements Serializable {
     public int getSize() { return this.size; }
     public void setSize(int size) { this.y = y; }
 
-    public Colours getColour() { return this.colour; }
-    public void setColour(Colours colour) { this.colour = colour; }
+    public String getColour() { return this.colour; }
+    public void setColour(String colour) { this.colour = colour; }
 
     // constructor for all the setup
-    public BrushStroke(int x, int y, int size, Colours c) {
+    public BrushStroke(int x, int y, int size, String c) {
         this.x = x;
         this.y = y;
         this.timeStamp = LocalDateTime.now();
@@ -60,7 +60,7 @@ public class BrushStroke implements Serializable {
     }
 
     public BrushStroke() {
-        new BrushStroke(0,0,0,Colours.BLACK);
+        new BrushStroke(0,0,0,"");
     }
 
 }

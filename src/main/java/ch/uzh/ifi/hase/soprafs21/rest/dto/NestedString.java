@@ -1,8 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
-import java.time.LocalDateTime;
-
-public class DrawingPostDTO {
+public class NestedString {
 
     private String timestamp;
 
