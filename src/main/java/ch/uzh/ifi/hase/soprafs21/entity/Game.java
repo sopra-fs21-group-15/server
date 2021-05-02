@@ -5,6 +5,9 @@ import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.PriorityQueue;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "GAME")
@@ -19,6 +22,8 @@ public class Game implements Serializable {
     // passed values from front-end
     @Column(nullable = false)
     private ArrayList<String> players = new ArrayList<String>();
+
+    private ArrayList<DrawInstruction> drawInstructions = new ArrayList<DrawInstruction>();
 
     @Column(nullable = false, unique = true)
     private String gameName;
@@ -62,6 +67,25 @@ public class Game implements Serializable {
     // access Players (User)
     public ArrayList<String> getPlayers() { return this.players; }
     public void setPlayers(ArrayList<String> players) { this.players = players; }
+
+    public void appendDrawInstruction(DrawInstruction instr) {
+      System.out.println(instr);
+      this.drawInstructions.add(instr);
+    }
+
+    public ArrayList<DrawInstruction> getDrawInstructions(LocalDateTime since) {
+      int since_i = -1; // Stores index from which on to return draw instructions
+      for(int i = 0; i < this.drawInstructions.size(); i++) {
+        if(this.drawInstructions.get(i).getTimeStamp().compareTo(since) > 0) {
+          since_i = i;
+          break;
+        }
+      }
+      if(since_i == -1)
+        return new ArrayList(); // Return empty list
+
+      return (ArrayList) this.drawInstructions.subList(since_i, this.drawInstructions.size() -1);
+    }
 
     // access game name
     public String getGameName() {

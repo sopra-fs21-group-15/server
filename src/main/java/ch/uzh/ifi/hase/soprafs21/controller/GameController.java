@@ -60,9 +60,13 @@ public class GameController {
     @PutMapping("/game/{gameId}/drawing")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    public void addBrushStrokes(@RequestBody BrushStrokePutDTO brushStrokeEditDTO, @PathVariable long gameId) {
+    public void addBrushStrokes(@RequestBody DrawInstructionPutDTO drawInstructionEditDTO, @PathVariable long gameId) {
         // convert API brush stroke to an internal representation
-        BrushStroke brushStroke = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(brushStrokeEditDTO);
+        //BrushStroke brushStroke = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(brushStrokeEditDTO);
+
+        System.out.println("Input");
+        System.out.println(drawInstructionEditDTO);
+        DrawInstruction drawInstruction = DrawInstructionDTOMapper.INSTANCE.convertDrawInstructionPutDTOtoEntity(drawInstructionEditDTO);
 
         Game game = gameService.getGame(gameId);
 
