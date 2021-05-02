@@ -58,6 +58,12 @@ public class LobbyService {
             }
         }
 
+        //if not found
+        String nonexisting_user = "This user does not exist!";
+        if (user_found == null) {
+            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_user));
+        }
+
         String username = user_found.getUsername();
         newLobby.setToken(UUID.randomUUID().toString());
         newLobby.setStatus(LobbyStatus.OPEN);
@@ -173,21 +179,15 @@ public class LobbyService {
         // check if the password is correct
         String wrong_password = "You entered the wrong password!";
         if (lobbytoupdate.getPassword() != null && inputPassword == null) {
-            lobbyRepository.save(lobbytoupdate);
-            lobbyRepository.flush();
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format(wrong_password));
         }
         else if (lobbytoupdate.getPassword() != null &&!inputPassword.equals(lobbytoupdate.getPassword())) {
-            lobbyRepository.save(lobbytoupdate);
-            lobbyRepository.flush();
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format(wrong_password));
         }
 
         // check if the user is already a member
         String player_already_in_lobby = "This user is already a member of the lobby!";
         if (lobbytoupdate.getMembers().contains(userName)) {
-            lobbyRepository.save(lobbytoupdate);
-            lobbyRepository.flush();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(player_already_in_lobby));
         }
         else lobbytoupdate.setMembers(userName);
@@ -196,6 +196,7 @@ public class LobbyService {
         if(lobbytoupdate.getMembers().size() == lobbytoupdate.getSize()) {
             lobbytoupdate.setStatus(LobbyStatus.FULL);
         }
+        System.out.println();
         // save into the repository
         lobbyRepository.save(lobbytoupdate);
         lobbyRepository.flush();

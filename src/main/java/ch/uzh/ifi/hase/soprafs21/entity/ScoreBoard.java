@@ -1,12 +1,12 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
-import javax.persistence.*;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 
-// I have no idea what I just did here but it was the only way to make the warning concerning the " 'basic' attribute type should not be a container "
 public class ScoreBoard implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -15,24 +15,21 @@ public class ScoreBoard implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
-    private ArrayList<User> players;
+    // private ArrayList<User> players;
+    private ArrayList<String> players;
 
-    @Column(nullable = false)
     private int[] ranking;
 
-    @Column(nullable = false)
     private long[] score;
 
     public ScoreBoard() {
-        ArrayList<User> players = new ArrayList<>(4);
-        long error = 404;
-        new ScoreBoard(players, error);
+        //ArrayList<User> players = new ArrayList<>(4);
+        ArrayList<String> players = new ArrayList<String>(4);
+        new ScoreBoard(players);
     }
 
-    public ScoreBoard(ArrayList<User> players, long id) {
-        this.id = id;
-
+    //public ScoreBoard(ArrayList<User> players) {
+    public ScoreBoard(ArrayList<String> players) {
         int n = players.size();
         this.players = players;
         this.ranking = new int[n];
@@ -43,14 +40,12 @@ public class ScoreBoard implements Serializable {
      * Default methods that have to be made in order to be able
      * to transform this data type and send it to the front-end.
      */
-    // functions for id
-    public Long getId() { return this.id; }
-    public void setId(Long newId) { this.id = newId; }
-
     // functions for the player list (returns sorted by ranking)
-    public ArrayList<User> getPlayers() {
+    // public ArrayList<User> getPlayers() {
+    public ArrayList<String> getPlayers() {
         // since we do not just return our list but a sorted one we need to create a new one
-        ArrayList<User> value = new ArrayList<User>();
+        // ArrayList<User> value = new ArrayList<User>();
+        ArrayList<String> value = new ArrayList<String>();
 
         // inefficient but working loop to get the right order of the ranking
         for(int position = 0; position < players.size(); position++) {
@@ -63,7 +58,8 @@ public class ScoreBoard implements Serializable {
         return value;
     }
 
-    public void setPlayers(ArrayList<User> newPlayers) {
+    // public void setPlayers(ArrayList<User> newPlayers) {
+    public void setPlayers(ArrayList<String> newPlayers) {
         this.players = newPlayers;
         this.ranking = new int[newPlayers.size()]; // reset the ranking
         this.score = new long[newPlayers.size()]; // and resetting the scores
@@ -162,12 +158,14 @@ public class ScoreBoard implements Serializable {
         value += "Position  | Player          | Points       \n";
         value += "-------------------------------------------\n";
 
-        ArrayList<User> sortPlayers = this.getPlayers();
+        //ArrayList<User> sortPlayers = this.getPlayers();
+        ArrayList<String> sortPlayers = this.getPlayers();
         long[] sortScore = this.getScore();
         int[] sortRanking = this.getRanking();
 
         for(int i = 0; i < players.size(); i++) {
-            value += "" + (sortRanking[i] + 1) + ".        | " + sortPlayers.get(i).getUsername();
+            //value += "" + (sortRanking[i] + 1) + ".        | " + sortPlayers.get(i).getUsername();
+            value += "" + (sortRanking[i] + 1) + ".        | " + sortPlayers.get(i);
             value += "\t\t| " + sortScore[i];
             value += "             \n";
         }

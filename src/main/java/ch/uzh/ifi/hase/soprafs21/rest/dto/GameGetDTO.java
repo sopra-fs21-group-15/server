@@ -9,33 +9,26 @@ import java.util.ArrayList;
 public class GameGetDTO {
 
     private Long id;
-    //private ArrayList<User> players;
-    private String gameName;
-    private GameModes gameModes;
+    private ArrayList<String> players;
+    // private GameModes gameModes;
     private int numberOfRounds;
     private int timePerRound;
     private int roundTracker;
-    private ScoreBoard scoreBoard;
+    private Long lobbyId;
+    private Long roundId;
+    //private ScoreBoard scoreBoard;
 
     // access id
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     // access players
-    /*public ArrayList<User> getPlayers() { return players; }
-    public void setPlayers(ArrayList<User> players) { this.players = players; }*/
-
-    // access game name
-    public String getGameName() {
-        return this.gameName;
-    }
-    public void setGameName(String gameName) {
-        this.gameName = gameName;
-    }
+    public ArrayList<String> getPlayers() { return players; }
+    public void setPlayers(ArrayList<String> players) { this.players = players; }
 
     // access game modes
-    public GameModes getGameModes() { return gameModes; }
-    public void setGameModes(GameModes gameModes) { this.gameModes = gameModes; }
+    /*public GameModes getGameModes() { return gameModes; }
+    public void setGameModes(GameModes gameModes) { this.gameModes = gameModes; }*/
 
     // access number of rounds
     public int getNumberOfRounds() { return numberOfRounds; }
@@ -50,7 +43,14 @@ public class GameGetDTO {
     public void setRoundTracker(int roundTracker) { this.roundTracker = roundTracker; }
 
     // access the scoreboard
-    public ScoreBoard getScoreBoard() { return scoreBoard; }
-    public void setScoreBoard(ScoreBoard scoreBoard) { this.scoreBoard = scoreBoard; }
+    // public ScoreBoard getScoreBoard() { return scoreBoard; }
+    // public void setScoreBoard(ScoreBoard scoreBoard) { this.scoreBoard = scoreBoard; }
+
+    // access the lobby
+    public Long getLobbyId() { return lobbyId; }
+    public void setLobbyId(Long lobbyId) { this.lobbyId = lobbyId; }
+
+    public Long getRoundId() { return roundId; }
+    public void setRoundId(Long roundId) { this.roundId = roundId; }
 
 }
