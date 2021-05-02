@@ -40,6 +40,9 @@ public class Game implements Serializable {
     @Column(nullable = false, unique = true)
     private Long lobbyId;
 
+    @Column(nullable = false, unique = true)
+    private Long roundId;
+
     // private ScoreBoard scoreBoard;
 
     //private ArrayList<Round> rounds = new ArrayList<>();
@@ -103,6 +106,10 @@ public class Game implements Serializable {
     //public Round getRounds() { return this.rounds; }
     // public void setRounds (ArrayList<Round> rounds) { this.rounds = rounds; }
     //public void setRounds (Round rounds) { this.rounds = rounds; }
+
+    // access the current round
+    public Long getRoundId() { return this.roundId; }
+    public void setRoundId(Long roundId) { this.roundId = roundId; }
 
     /**
      * Back-end specific methods needed for functionality

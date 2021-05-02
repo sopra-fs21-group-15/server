@@ -15,6 +15,7 @@ public class GameGetDTO {
     private int timePerRound;
     private int roundTracker;
     private Long lobbyId;
+    private Long roundId;
     //private ScoreBoard scoreBoard;
 
     // access id
@@ -48,5 +49,8 @@ public class GameGetDTO {
     // access the lobby
     public Long getLobbyId() { return lobbyId; }
     public void setLobbyId(Long lobbyId) { this.lobbyId = lobbyId; }
+
+    public Long getRoundId() { return roundId; }
+    public void setRoundId(Long roundId) { this.roundId = roundId; }
 
 }
