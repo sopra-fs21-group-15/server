@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 @RestController
 public class GameController {
@@ -64,11 +65,12 @@ public class GameController {
         // convert API brush stroke to an internal representation
         //BrushStroke brushStroke = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(brushStrokeEditDTO);
 
-        System.out.println("Input");
-        System.out.println(drawInstructionEditDTO);
+        // System.out.println("Input");
+        // System.out.println(drawInstructionEditDTO);
         DrawInstruction drawInstruction = DrawInstructionDTOMapper.INSTANCE.convertDrawInstructionPutDTOtoEntity(drawInstructionEditDTO);
 
         Game game = gameService.getGame(gameId);
+        game.appendDrawInstruction(drawInstruction);
 
         // method checks on the level of the round if it is the right user
         // game.addStroke(brushStrokeEditDTO.getUser_id(), brushStroke);
@@ -79,12 +81,22 @@ public class GameController {
     @GetMapping("/game/{gameId}/drawing")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public DrawingGetDTO drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable Long gameId) {
-        LocalDateTime timeStamp = DrawingDTOMapper.INSTANCE.convertDrawingPostDTOtoEntity(drawingPostDTO);
+    public ArrayList<DrawInstruction> drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable Long gameId) {
         Game game = gameService.getGame(gameId);
+        LocalDateTime now = LocalDateTime.now();
+        ArrayList<DrawInstruction> drawInstructions = game.getDrawInstructions(now);
+
+        System.out.println("Sending Draw-Instructions after" + now);
+        System.out.println(drawInstructions);
+        return drawInstructions;
+
+
+
+
+        // LocalDateTime timeStamp = DrawingDTOMapper.INSTANCE.convertDrawingPostDTOtoEntity(drawingPostDTO);
+        // Game game = gameService.getGame(gameId);
         // Drawing drawing = game.getDrawing(timeStamp);
         //return DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(drawing);
-        return null;
     }
 
     // TODO #44 test and refine mapping API-call for requesting the letter-count

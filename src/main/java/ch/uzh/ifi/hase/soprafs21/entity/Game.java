@@ -74,17 +74,18 @@ public class Game implements Serializable {
     }
 
     public ArrayList<DrawInstruction> getDrawInstructions(LocalDateTime since) {
-      int since_i = -1; // Stores index from which on to return draw instructions
-      for(int i = 0; i < this.drawInstructions.size(); i++) {
-        if(this.drawInstructions.get(i).getTimeStamp().compareTo(since) > 0) {
-          since_i = i;
-          break;
-        }
-      }
-      if(since_i == -1)
-        return new ArrayList(); // Return empty list
+      return this.drawInstructions;
+      // int since_i = -1; // Stores index from which on to return draw instructions
+      // for(int i = 0; i < this.drawInstructions.size(); i++) {
+      //   if(this.drawInstructions.get(i).getTimeStamp().compareTo(since) > 0) {
+      //     since_i = i;
+      //     break;
+      //   }
+      // }
+      // if(since_i == -1)
+      //   return new ArrayList(); // Return empty list
 
-      return (ArrayList) this.drawInstructions.subList(since_i, this.drawInstructions.size() -1);
+      // return (ArrayList) this.drawInstructions.subList(since_i, this.drawInstructions.size() -1);
     }
 
     // access game name
