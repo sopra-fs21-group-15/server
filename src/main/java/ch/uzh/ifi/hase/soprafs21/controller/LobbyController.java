@@ -102,7 +102,7 @@ public class LobbyController {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         lobbyService.remove_lobby_members(lobbyId, userInput.getUsername());
     }
-/*
+
     @PostMapping("/lobbies/{lobbyId}/start")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -114,5 +114,5 @@ public class LobbyController {
         return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
 
     }
-*/
+
 }

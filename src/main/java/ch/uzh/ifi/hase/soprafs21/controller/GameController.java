@@ -29,7 +29,8 @@ public class GameController {
         Game game = gameService.getGame(gameId);
 
         // method checks on the level of the round if it is the right user
-        game.addStroke(brushStrokeEditDTO.getUser_id(), brushStroke);
+        // game.addStroke(brushStrokeEditDTO.getUser_id(), brushStroke);
+        // game.addStroke(brushStrokeEditDTO.getUserName(), brushStroke);
     }
 
     // TODO #42 test and refine mapping for API-calls requesting the drawing
@@ -39,8 +40,9 @@ public class GameController {
     public DrawingGetDTO drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable Long gameId) {
         LocalDateTime timeStamp = DrawingDTOMapper.INSTANCE.convertDrawingPostDTOtoEntity(drawingPostDTO);
         Game game = gameService.getGame(gameId);
-        Drawing drawing = game.getDrawing(timeStamp);
-        return DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(drawing);
+        // Drawing drawing = game.getDrawing(timeStamp);
+        //return DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(drawing);
+        return null;
     }
 
     // TODO #44 test and refine mapping API-call for requesting the letter-count
@@ -49,8 +51,9 @@ public class GameController {
     @ResponseBody
     public WordCountGetDTO lengthRequest(@PathVariable Long gameId) {
         Game game = gameService.getGame(gameId);
-        int value = game.getLength();
-        return WordCountDTOMapper.INSTANCE.convertEntityToWordCountGetDTO(value);
+        //int value = game.getLength();
+        //return WordCountDTOMapper.INSTANCE.convertEntityToWordCountGetDTO(value);
+        return null;
     }
 
     // TODO #51 test and refine mapping API-call for sending a guess of what the word might be
@@ -60,7 +63,7 @@ public class GameController {
     public void makeGuess(@RequestBody GuessPutDTO guessPutDTO, @PathVariable Long gameId) {
         Guess guess = GuessDTOMapper.INSTANCE.convertGuessPutDTOToEntity(guessPutDTO);
         Game game = gameService.getGame(gameId);
-        game.makeGuess(guess);
+        //game.makeGuess(guess);
     }
 
     // TODO #53 test and refine the mapping for this API-call requesting the score
@@ -69,8 +72,8 @@ public class GameController {
     @ResponseBody
     public ScoreBoardGetDTO getScore(@PathVariable Long gameId) {
         Game game = gameService.getGame(gameId);
-        ScoreBoard score = game.getScoreBoard();
-        return ScoreBoardDTOMapper.INSTANCE.convertEntityToScoreBoardGetDTO(score);
+        //ScoreBoard score = game.getScoreBoard();
+        return null;//ScoreBoardDTOMapper.INSTANCE.convertEntityToScoreBoardGetDTO(score);
     }
 
 }

@@ -77,48 +77,66 @@ public class GameService {
         //--------------------------- create the new game -------------------------//
         Game newGame = new Game();
 
+        //System.out.println(newGame.toString());
+
         // import information from lobby
-        ArrayList<User> players = new ArrayList<User>();
+        // ArrayList<User> players = new ArrayList<User>();
+        ArrayList<String> players = new ArrayList<String>();
         for (String memberName : lobbyToUpdate.getMembers()) {
-            System.out.print(lobbyToUpdate.getMembers());
-            System.out.print(this.userRepository.findByUsername(memberName));
+            //System.out.print(lobbyToUpdate.getMembers().toString());
+            //System.out.print(this.userRepository.findByUsername(memberName).getUsername());
             User tempUser = this.userRepository.findByUsername(memberName);
             tempUser.setStatus(UserStatus.INGAME);
-            players.add(tempUser);
+            //players.add(tempUser);
+            players.add(memberName);
             // save into the repository
             userRepository.save(tempUser);
             userRepository.flush();
         }
         newGame.setPlayers(players);
 
+        //System.out.println(newGame.toString());
+
         // initialize the remaining fields and there corresponding fields ...
         // ... rounds to numberOfRounds
-        newGame.setRoundTracker(lobbyToUpdate.getRounds());
+        newGame.setNumberOfRounds(lobbyToUpdate.getRounds());
+        //System.out.println("NumberOfRounds worked");
+
+        // ... LobbyName to GameName
+        newGame.setGameName(lobbyToUpdate.getLobbyname());
+        //System.out.println("Gamename worked");
 
         // ... timer to timerPerRound
         newGame.setTimePerRound(lobbyToUpdate.getTimer());
+        //System.out.println("Timerround worked");
 
         // ... the scoreboard
-        ScoreBoard scoreBoard = new ScoreBoard(newGame.getPlayers());
-        newGame.setScoreBoard(scoreBoard);
+        //ScoreBoard scoreBoard = new ScoreBoard(newGame.getPlayers());
+        //newGame.setScoreBoard(scoreBoard);
+        //System.out.println("Scoreboard worked");
 
         // ... the roundTracker
         newGame.setRoundTracker(1);
+        //System.out.println("RoundTracker worked");
 
         // ... the rounds themselves
         int n = newGame.getPlayers().size();
-        ArrayList<Round> rounds = new ArrayList<Round>(n);
+        //ArrayList<Round> rounds = new ArrayList<Round>(n);
 
-        for (int i = 0; i < n; i++) {
+        //for (int i = 0; i < n; i++) {
             Round temp = new Round();
             temp.setup(newGame);
-            rounds.add(temp);
-        }
-        newGame.setRounds(rounds); //
+            //rounds.add(temp);
+        //}
+        //newGame.setRounds(rounds);
+        //newGame.setRounds(temp);
+        //System.out.println("RoundsArray worked");
 
          // saves the given entity but data is only persisted in the database once flush() is called
         newGame = gameRepository.save(newGame);
+        System.out.println(newGame.toString());
         gameRepository.flush();
+        System.out.println("Saved the Game in the repository");
 
         log.debug("Created and started new game with given information: {}", newGame);
         return newGame;

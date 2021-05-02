@@ -4,15 +4,18 @@ import ch.uzh.ifi.hase.soprafs21.constant.Colours;
 
 public class BrushStrokePutDTO {
 
-    private long user_id;
+    // private long user_id;
+    private String userName;
     private int x;
     private int y;
     private int size;
     private Colours colour;
 
     // methods for user_id
-    public long getUser_id() { return this.user_id; }
-    public void setUser_id(long user_id) { this.user_id = user_id; }
+    //public long getUser_id() { return this.user_id; }
+    public String getUserName() { return this.userName; }
+    //public void setUser_id(long user_id) { this.user_id = user_id; }
+    public void setUserName(String userName) { this.userName = userName; }
 
     // methods for x
     public int getX() { return this.x; }

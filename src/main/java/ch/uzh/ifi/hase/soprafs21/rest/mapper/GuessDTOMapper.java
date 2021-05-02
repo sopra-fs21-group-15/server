@@ -9,7 +9,8 @@ public interface GuessDTOMapper {
 
     GuessDTOMapper INSTANCE = Mappers.getMapper(GuessDTOMapper.class);
 
-    @Mapping(source = "guesser_id", target = "guesser_id")
+    // @Mapping(source = "guesser_id", target = "guesser_id")
+    @Mapping(source = "guesserName", target = "guesserName")
     @Mapping(source = "guess", target = "guess")
     Guess convertGuessPutDTOToEntity(GuessPutDTO guessPutDTO);
 

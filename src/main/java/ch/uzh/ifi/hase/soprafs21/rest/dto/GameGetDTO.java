@@ -9,7 +9,8 @@ import java.util.ArrayList;
 public class GameGetDTO {
 
     private Long id;
-    private ArrayList<User> players;
+    //private ArrayList<User> players;
+    private ArrayList<String> players;
     // private GameModes gameModes;
     private int numberOfRounds;
     private int timePerRound;
@@ -21,8 +22,10 @@ public class GameGetDTO {
     public void setId(Long id) { this.id = id; }
 
     // access players
-    public ArrayList<User> getPlayers() { return players; }
-    public void setPlayers(ArrayList<User> players) { this.players = players; }
+    //public ArrayList<User> getPlayers() { return players; }
+    public ArrayList<String> getPlayers() { return players; }
+    //public void setPlayers(ArrayList<User> players) { this.players = players; }
+    public void setPlayers(ArrayList<String> players) { this.players = players; }
 
     // access game modes
     /*public GameModes getGameModes() { return gameModes; }

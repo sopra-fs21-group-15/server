@@ -5,10 +5,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-@SuppressWarnings("JpaAttributeTypeInspection")
 
-@Entity
-@Table(name = "DRAWING")
 public class Drawing implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -17,10 +14,8 @@ public class Drawing implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
     private long drawerId;
 
-    @Column(nullable = false)
     private ArrayList<BrushStroke> brushStrokes = new ArrayList<>();
 
     // generic methods to handle incoming requests

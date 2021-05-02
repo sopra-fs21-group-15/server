@@ -7,13 +7,16 @@ import java.util.ArrayList;
 
 public class GamePostDTO {
 
-    private ArrayList<User> players;
+    //private ArrayList<User> players;
+    private ArrayList<String> players;
     private int numberOfRounds;
     private int timePerRound;
 
     // access players
-    public ArrayList<User> getPlayers() { return players; }
-    public void setPlayers(ArrayList<User> players) { this.players = players; }
+    //public ArrayList<User> getPlayers() { return players; }
+    public ArrayList<String> getPlayers() { return players; }
+    //public void setPlayers(ArrayList<User> players) { this.players = players; }
+    public void setPlayers(ArrayList<String> players) { this.players = players; }
 
     // access number of rounds
     public int getNumberOfRounds() { return numberOfRounds; }
