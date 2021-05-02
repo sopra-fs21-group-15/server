@@ -105,7 +105,13 @@ public class Game implements Serializable {
 
     public int getLength() { return rounds.get(roundTracker-1).getLength(); }
 
-    public void makeGuess(Guess guess) { rounds.get(roundTracker-1).makeGuess(guess);}
+    public Boolean makeGuess(Message message) {
+        Boolean correct = rounds.get(roundTracker-1).makeGuess(message);
+        return correct;
+    }
+    public Chat getChat(LocalDateTime timeStamp) {
+        return rounds.get(roundTracker-1).getChat(timeStamp);
+    }
 
     /**
      * Back-end specific methods for quality of life

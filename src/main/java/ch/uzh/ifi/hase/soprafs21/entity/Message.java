@@ -11,7 +11,7 @@ public class Message implements Serializable {
     private LocalDateTime timeStamp;
 
     @Column(nullable = false)
-    private Long id;
+    private Long writer_id;
 
     @Column(nullable = false)
     private String message;
@@ -20,19 +20,19 @@ public class Message implements Serializable {
     public LocalDateTime getTimeStamp() { return this.timeStamp; }
     public void setTimeStamp(LocalDateTime timeStamp) { this.timeStamp = timeStamp; }
 
-    public Long getId() { return this.id; }
+    public Long getWriter_id() { return this.writer_id; }
 
-    public void setId(Long id) { this.id = id; }
+    public void setWriter_id(Long writer_id) { this.writer_id = writer_id; }
 
     public String getMessage() { return this.message; }
 
     public void setMessage(String message) { this.message = message;    }
 
     // constructor for all the setup
-    public Message(String message, Long id) {
+    public Message(String message, Long writer_id) {
         this.timeStamp = LocalDateTime.now();
         this.message = message;
-        this.id = id;
+        this.writer_id = writer_id;
     }
 
 }

@@ -69,7 +69,7 @@ public class GameController {
         int value = game.getLength();
         return WordCountDTOMapper.INSTANCE.convertEntityToWordCountGetDTO(value);
     }
-
+/*
     // TODO #51 test and refine mapping API-call for sending a guess of what the word might be
     @PutMapping("/game/{gameId}/guess")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -79,7 +79,7 @@ public class GameController {
         Game game = gameService.getGame(gameId);
         game.makeGuess(guess);
     }
-
+*/
     // TODO #53 test and refine the mapping for this API-call requesting the score
     @GetMapping("/game/{gameId}/score")
     @ResponseStatus(HttpStatus.OK)
@@ -90,4 +90,25 @@ public class GameController {
         return ScoreBoardDTOMapper.INSTANCE.convertEntityToScoreBoardGetDTO(score);
     }
 
+    //API Call for getting the chat in the game
+    @GetMapping("/game/{gameId}/messages")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ChatGetDTO getMessages (@PathVariable Long gameId, @RequestBody ChatPostDTO chatPostDTO) {
+        LocalDateTime timeStamp = ChatDTOMapper.INSTANCE.convertChatPostDTOtoEntity(chatPostDTO);
+        Game game = gameService.getGame(gameId);
+        Chat chat = game.getChat(timeStamp);
+        return ChatDTOMapper.INSTANCE.convertEntityToChatGetDTO(chat);
+    }
+
+    //API Call for posting a message in the game
+    @PutMapping("/game/{gameId}/messages")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Boolean guessMessage (@PathVariable Long gameId, @RequestBody MessagePostDTO messagePostDTO) {
+        Message message = MessageDTOMapper.INSTANCE.convertMessagePostDTOtoEntity(messagePostDTO);
+        Game game = gameService.getGame(gameId);
+        Boolean correct = game.makeGuess(message);
+        return correct;
+    }
 }

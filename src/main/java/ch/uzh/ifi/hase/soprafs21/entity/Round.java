@@ -28,6 +28,7 @@ public class Round {
 
     private ArrayList<User> players;
     private ArrayList<Drawing> pictures;
+    private ArrayList<Chat> chats;
     private ArrayList<String> words;
     private int currentWord; // works as an index for both words and pictures
     private boolean[] hasDrawn;
@@ -121,20 +122,27 @@ public class Round {
         return pictures.get(currentWord-1).getDrawing(timeStamp);
     }
 
+    public Chat getChat(LocalDateTime timeStamp) {
+        return chats.get(currentWord-1).getChat(timeStamp);
+    }
+
     // TODO: #52 and #56 improve functionality and consistency
     // a guesser has made a guess
-    public void makeGuess(Guess guess) {
+    public Boolean makeGuess(Message message) {
         long potPoint = (long) stopWatch.remainingTime() * 1000;
+        Boolean correct = false;
         // check if: correct person, guess is correct, timer still running, has not made a correct guess before
-        if(guess.getGuesser_id() != drawerId && guess.getGuess().equals(words.get(currentWord-1)) && !stopWatch.timeIsUp()) {
+        if(message.getWriter_id() != drawerId && message.getMessage().equals(words.get(currentWord-1)) && !stopWatch.timeIsUp()) {
             for(User potGuesser : players) { //TODO: inefficient way to find wanted user within lobby (change/optimize if enough time left)
-                if(potGuesser.getId() == guess.getGuesser_id()) { // if it is the correct user ...
+                if(potGuesser.getId() == message.getWriter_id()) { // if it is the correct user ...
                     int i = players.indexOf(potGuesser);
                     int h = currentWord - 1;
+                    correct = true;
                     tempScore[i][h] = Math.max(tempScore[i][h], potPoint); // ... check if he/she already made a better guess and then update accordingly
                 }
             }
         }
+        return correct;
     }
 
     // TODO #45 check if the function works properly

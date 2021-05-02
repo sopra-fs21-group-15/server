@@ -1,17 +1,16 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
-import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
-import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.LobbyGetDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.LobbyPostDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs21.entity.*;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.ChatDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.LobbyDTOMapper;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.MessageDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.service.LobbyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,4 +100,26 @@ public class LobbyController {
         lobbyService.remove_lobby_members(lobbyId, userInput.getUsername());
     }
 
+
+    //API Call for getting the chat in the lobby
+    @GetMapping("/lobbies/{lobbyId}/messages")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ChatGetDTO getMessages (@PathVariable Long lobbyId, @RequestBody ChatPostDTO chatPostDTO) {
+        LocalDateTime timeStamp = ChatDTOMapper.INSTANCE.convertChatPostDTOtoEntity(chatPostDTO);
+        Lobby lobby = lobbyService.getLobby(lobbyId);
+        Chat chat = lobby.getLobbyChat(timeStamp);
+        return ChatDTOMapper.INSTANCE.convertEntityToChatGetDTO(chat);
+    }
+
+    //API Call for posting a message in the lobby
+    @PutMapping("/lobbies/{lobbyId}/messages")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void Message (@PathVariable Long lobbyId, @RequestBody MessagePostDTO messagePostDTO) {
+        Message message = MessageDTOMapper.INSTANCE.convertMessagePostDTOtoEntity(messagePostDTO);
+        Lobby lobby = lobbyService.getLobby(lobbyId);
+        lobby.setLobbyChat(message);
+        return;
+    }
 }
