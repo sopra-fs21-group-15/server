@@ -17,6 +17,17 @@ public class GameController {
 
     GameController(GameService gameService) { this.gameService = gameService; }
 
+    @GetMapping("/games/{lobbyId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameGetDTO findGame(@PathVariable Long lobbyId) {
+        // copy the input into a game visible for all players threw the repository
+        Game foundGame = gameService.getGameFromLobby(lobbyId);
+
+        // convert internal representation of game back to API for client
+        return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(foundGame);
+    }
+
     // TODO #40 test and refine mapping for sending drawing information
     // pass information to the right picture
     @PutMapping("/game/{gameId}/drawing")
