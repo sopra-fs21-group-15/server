@@ -43,6 +43,18 @@ public class GameController {
         return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(foundGame);
     }
 
+    // API call to get a newer version of the game that you are in
+    @GetMapping("/games/{gameId}/update")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GameGetDTO updateGame(@PathVariable Long gameId) {
+        // copy the input into a game visible for all players threw the repository
+        Game foundGame = gameService.getGame(gameId);
+
+        // convert internal representation of game back to API for client
+        return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(foundGame);
+    }
+
     // TODO #40 test and refine mapping for sending drawing information
     // pass information to the right picture
     @PutMapping("/game/{gameId}/drawing")
