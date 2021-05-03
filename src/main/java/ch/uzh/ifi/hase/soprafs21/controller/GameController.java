@@ -95,7 +95,7 @@ public class GameController {
         LocalDateTime timeStamp = LocalDateTime.parse(send.getTimeStamp(),formatter);
         Game game = gameService.getGame(gameId);
         Round round = roundService.getRound(game.getRoundId());
-        ArrayList<BrushStroke> drawings = drawingService.getDrawing(round.getPictureId(),timeStamp);
+        List<BrushStroke> drawings = drawingService.getDrawing(round.getPictureId(),timeStamp);
         ArrayList<DrawingGetDTO> value = new ArrayList<>();
         for(BrushStroke i : drawings){
             value.add(DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(i));
