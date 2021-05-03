@@ -46,7 +46,7 @@ public class BrushStroke implements Serializable {
     public void setTimeStamp(String timeStamp) { this.timeStamp = timeStamp; }
 
     public int getSize() { return this.size; }
-    public void setSize(int size) { this.y = y; }
+    public void setSize(int size) { this.size = size; }
 
     public String getColour() { return this.colour; }
     public void setColour(String colour) { this.colour = colour; }
