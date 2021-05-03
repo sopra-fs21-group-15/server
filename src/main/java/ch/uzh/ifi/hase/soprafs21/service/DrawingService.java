@@ -70,28 +70,29 @@ public class DrawingService {
     }
 
     // get the latest brushStrokes past a certain time
-    public ArrayList<BrushStroke> getDrawing(Long drawingId, LocalDateTime timeStamp) {
+    public List<BrushStroke> getDrawing(Long drawingId, LocalDateTime timeStamp) {
         Drawing drawing = getDrawing(drawingId);
         int index = 0;
 
         // setting everything up to iterate over the indexes to find index after which the brush strokes are that we have not seen yet
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        Long brushStrokeId = drawing.getBrushStrokeIds().get(index);
-        BrushStroke brushStroke = getBrushStroke(brushStrokeId);
+        //Long brushStrokeId = drawing.getBrushStrokeIds().get(index);
+        //BrushStroke brushStroke = getBrushStroke(brushStrokeId);
+        BrushStroke brushStroke = drawing.getBrushStrokes().get(index);
         LocalDateTime value = LocalDateTime.parse(brushStroke.getTimeStamp(),formatter);
         while(value.isBefore(timeStamp)) {
             index++;
-            brushStrokeId = drawing.getBrushStrokeIds().get(index);
-            brushStroke = getBrushStroke(brushStrokeId);
+            brushStroke = drawing.getBrushStrokes().get(index);
+            //brushStroke = getBrushStroke(brushStrokeId);
             value = LocalDateTime.parse(brushStroke.getTimeStamp(),formatter);
         }
 
-        ArrayList<Long> brushStrokeIds = new ArrayList<Long>(drawing.getBrushStrokeIds().subList( index,drawing.getBrushStrokeIds().size()-1) );
-        ArrayList<BrushStroke> temp = new ArrayList<BrushStroke>();
-        for (Long i : brushStrokeIds) {
-            temp.add(getBrushStroke(i));
-        }
-        return temp;
+        //ArrayList<Long> brushStrokeIds = new ArrayList<Long>(drawing.getBrushStrokeIds().subList( index,drawing.getBrushStrokeIds().size()-1) );
+        //ArrayList<BrushStroke> temp = new ArrayList<BrushStroke>();
+        //for (Long i : brushStrokeIds) {
+        //    temp.add(getBrushStroke(i));
+        //}
+        return drawing.getBrushStrokes().subList(index, drawing.getBrushStrokes().size());
 
     }
 
@@ -121,7 +122,7 @@ public class DrawingService {
         brushStroke = brushStrokeRepository.save(brushStroke);
         brushStrokeRepository.flush();
 
-        drawing.add(brushStroke.getId());
+        drawing.add(brushStroke);
 
         drawing = drawingRepository.save(drawing);
         drawingRepository.flush();
