@@ -197,7 +197,7 @@ public class UserService {
     // set the user offline
     public void logout(Long userId){
         List<User> allusers = this.userRepository.findAll();
-
+        System.out.println(allusers);
         User leaving_user = null;
 
         for(User i: allusers){

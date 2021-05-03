@@ -3,7 +3,6 @@ package ch.uzh.ifi.hase.soprafs21.rest.mapper;
 
 import ch.uzh.ifi.hase.soprafs21.entity.BrushStroke;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.DrawingGetDTO;
-import ch.uzh.ifi.hase.soprafs21.constant.Colours;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.DrawingPostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.NestedString;
 import org.junit.jupiter.api.Test;
