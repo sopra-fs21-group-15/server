@@ -11,7 +11,7 @@ public class DrawingGetDTO {
     private int y;
     private String timeStamp;
     private int size;
-    private Colours colour;
+    private String colour;
 
     // methods for x
     public int getX() { return this.x; }
@@ -30,6 +30,6 @@ public class DrawingGetDTO {
     public void setSize(int size) { this.size = size; }
 
     // methods for colour
-    public Colours getColour() { return this.colour; }
-    public void setColour(Colours colour) { this.colour = colour; }
+    public String getColour() { return this.colour; }
+    public void setColour(String colour) { this.colour = colour; }
 }
