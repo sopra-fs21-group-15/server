@@ -85,7 +85,7 @@ public class GameController {
     }
 
     // TODO #42 test and refine mapping for API-calls requesting the drawing
-    @GetMapping("/games/{gameId}/drawing")
+    @PostMapping("/games/{gameId}/drawing")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ArrayList<DrawingGetDTO> drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable Long gameId) {
