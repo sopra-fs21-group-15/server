@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
+import ch.uzh.ifi.hase.soprafs21.helper.Standard;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -62,7 +64,7 @@ public class BrushStroke implements Serializable, Comparable {
 
         // the time it was created
         LocalDateTime currentTime = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS");
+        DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
         this.timeStamp = currentTime.format(formatter);
     }
 
@@ -93,8 +95,6 @@ public class BrushStroke implements Serializable, Comparable {
             } else {
                 value = 1;
             }
-        } else {
-
         }
 
         return value;
@@ -104,7 +104,7 @@ public class BrushStroke implements Serializable, Comparable {
     public String toString() {
         String value = "BrushStroke ";
 
-        //value += "" + getId().toString() + " : { ";
+        value += "" + getId().toString() + " : { ";
         value += "x = " + getX() + ", ";
         value += "y = " + getY() + ", ";
         value += "time = " + getTimeStamp() + ", ";

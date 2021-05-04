@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 // external API call to generate a random word. not yet working
@@ -33,14 +34,17 @@ public class Round implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private Long pictureId;
+    @OneToOne
+    private Game game;
+
+    @OneToMany
+    private List<Drawing> drawings = new ArrayList<Drawing>();
 
     @Column(nullable = false)
     private Timer stopWatch;
 
     @Column(nullable = false)
-    private ArrayList<String> players;
+    private ArrayList<String> players = new ArrayList<String>();
 
     @Column(nullable = false)
     private ArrayList<String> words;
@@ -52,7 +56,7 @@ public class Round implements Serializable {
     private boolean[] hasDrawn;
 
     @Column(nullable = false)
-    private long[] score;
+    private int[] hasGuessed;
 
     @Column(nullable = false)
     private String drawerName;
@@ -61,14 +65,14 @@ public class Round implements Serializable {
     public Long getId() { return this.id; }
     public void setId(Long id) { this.id = id; }
 
-    public Long getPictureId() { return this.pictureId; }
-    public void setPictureId(Long pictureId) { this.pictureId = pictureId; }
+    public List<Drawing> getDrawings() { return this.drawings; }
+    public void setDrawings(List<Drawing> drawings) { this.drawings = drawings; }
 
     public Timer getStopWatch() { return this.stopWatch; }
     public void setStopWatch(Timer newStopWatch) { this.stopWatch = newStopWatch; }
 
     public ArrayList<String> getPlayers() { return this.players; }
-    public void setPlayers(ArrayList<String> newPlayers) { this.players = newPlayers; }
+    public void setPlayers(ArrayList<String> players) { this.players = players; }
 
     public ArrayList<String> getWords() { return this.words; }
     public void setWords(ArrayList<String> newWords) {this.words = newWords; }
@@ -79,11 +83,14 @@ public class Round implements Serializable {
     public boolean[] getHasDrawn() { return this.hasDrawn; }
     public void setHasDrawn(boolean[] newHasDrawn) { this.hasDrawn = newHasDrawn; }
 
-    public long[] score() { return this.score; }
-    public void setScore(long[] score) { this.score = score; }
+    public int[] getHasGuessed() { return this.hasGuessed; }
+    public void setHasGuessed(int[] hasGuessed) { this.hasGuessed = hasGuessed; }
 
     public String getDrawerName() { return this.drawerName; }
     public void setDrawerName(String newDrawerName) { this.drawerName = newDrawerName; }
+
+    // quality of life methods
+    public Drawing getCurrentDrawing() { return getDrawings().get(index); }
 
 }
 
