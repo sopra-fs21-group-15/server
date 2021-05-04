@@ -34,8 +34,8 @@ public class Round implements Serializable {
     @GeneratedValue
     private Long id;
 
-    @OneToOne
-    private Game game;
+    //@OneToOne
+    //private Game game;
 
     @OneToMany
     private List<Drawing> drawings = new ArrayList<Drawing>();

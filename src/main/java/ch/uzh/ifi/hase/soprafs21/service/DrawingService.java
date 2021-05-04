@@ -10,7 +10,9 @@ import ch.uzh.ifi.hase.soprafs21.repository.RoundRepository;
 import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -38,19 +40,25 @@ public class DrawingService {
     }
 
     // get all the drawings
-    public List<Drawing> getDrawing() {
+    public List<Drawing> getDrawings() {
         return this.drawingRepository.findAll();
     }
 
     // get a specific drawing
     public Drawing getDrawing(Long drawingId) {
-        List<Drawing> drawings = getDrawing();
+        List<Drawing> drawings = getDrawings();
 
         Drawing drawingFound = null;
         for (Drawing i : drawings) {
             if (drawingId.equals(i.getId())) {
                 drawingFound = i;
             }
+        }
+
+        // if we do not find the drawing
+        String nonExistingDrawing = "This drawing does not exist. Please search for an existing drawing.";
+        if (drawingFound == null) {
+            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingDrawing));
         }
 
         return drawingFound;
@@ -105,17 +113,19 @@ public class DrawingService {
     }
 
     /** Add a new brush stroke to an existing drawing while at the same time saving it in the repository
+     * and sorting the list within the drawing just to make sure it did not mix up the order of the brushstrokes.
      *
      * @param drawing = the drawing we would like to add brush stroke to
      * @param brushStroke = the brush stroke we are supposed to add
      */
     public void addStroke(Drawing drawing, BrushStroke brushStroke) {
-        brushStroke = brushStrokeRepository.save(brushStroke);
+        brushStroke = brushStrokeRepository.save(brushStroke); // save in repository
         brushStrokeRepository.flush();
 
-        drawing.add(brushStroke);
+        drawing.getBrushStrokes().add(brushStroke); // add to drawing
+        Collections.sort(drawing.getBrushStrokes()); // sort list within drawing
 
-        drawing = drawingRepository.save(drawing);
+        drawing = drawingRepository.save(drawing); // update the drawing in the repository
         drawingRepository.flush();
     }
 
