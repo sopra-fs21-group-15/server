@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -32,7 +33,10 @@ public class Drawing implements Serializable {
     public void setBrushStrokes(List<BrushStroke> brushStrokes) { this.brushStrokes = brushStrokes; };
 
     // add a new brushStroke
-    public void add(BrushStroke brushStroke) { this.brushStrokes.add(brushStroke); }
+    public void add(BrushStroke brushStroke) {
+        brushStrokes.add(brushStroke); // add the brush stroke
+        Collections.sort(brushStrokes); // make sure it is still sorted
+    }
 
     public Drawing() {
         this.drawerName = "";
