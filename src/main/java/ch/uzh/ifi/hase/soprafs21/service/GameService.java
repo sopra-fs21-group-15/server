@@ -118,7 +118,7 @@ public class GameService {
         //System.out.println("Scoreboard worked");
 
         // ... the roundTracker
-        newGame.setRoundTracker(1);
+        newGame.setRoundTracker(0);
 
         // ... the link to the lobby
         newGame.setLobbyId(lobbyId);
