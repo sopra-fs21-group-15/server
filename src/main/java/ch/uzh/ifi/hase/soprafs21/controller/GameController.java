@@ -91,8 +91,8 @@ public class GameController {
     }
 
     // TODO #42 test and refine mapping for API-calls requesting the drawing
-    @GetMapping("/games/{gameId}/drawing")
-    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/games/{gameId}/drawing")
+    @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public ArrayList<DrawingGetDTO> drawingRequest(@RequestBody TimeStringGetDTO timeStringGetDTO, @PathVariable Long gameId) {
         TimeStamp timeStamp = TimeDTOMapper.INSTANCE.convertTimeStringGeTDTOtoEntity(timeStringGetDTO);
