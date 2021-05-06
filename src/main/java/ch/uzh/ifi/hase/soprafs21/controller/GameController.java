@@ -38,7 +38,7 @@ public class GameController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public GameGetDTO createGame(@PathVariable Long lobbyId) {
-        // copy the input into a game visible for all players threw the repository
+        // copy the input into a game visible for all players through the repository
         Game createdGame = gameService.createGame(lobbyId);
 
         // convert internal representation of game back to API for client
@@ -91,7 +91,7 @@ public class GameController {
     }
 
     // TODO #42 test and refine mapping for API-calls requesting the drawing
-    @PostMapping("/games/{gameId}/drawing")
+    @GetMapping("/games/{gameId}/drawing")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ArrayList<DrawingGetDTO> drawingRequest(@RequestBody TimeStringGetDTO timeStringGetDTO, @PathVariable Long gameId) {

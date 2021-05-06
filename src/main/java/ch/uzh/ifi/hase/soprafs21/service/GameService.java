@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs21.service;
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.*;
+import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import ch.uzh.ifi.hase.soprafs21.repository.GameRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,23 +53,29 @@ public class GameService {
     }
 
 
-    // TODO #30 test and refine function handling the starting of a game
-    // create a game with given parameters
+    /** Huge method to create a game from the lobby id given to us. All the information should be stored and
+     * available over there. First we do a safety check to make sure there are enough players but afterwards
+     * we can go ahead and create the game.
+     *
+     * @param lobbyId = the lobby from where the owner (user) started the game
+     * @return the game the owner (user) asked for with the provided information
+     */
     public Game createGame(Long lobbyId) {
 
-
-        List<Lobby> allLobbies = this.lobbyRepository.findAll();
-
+        // find the right lobby
         Lobby lobbyToUpdate = null;
+        List<Lobby> allLobbies = lobbyRepository.findAll();
+
         for (Lobby i : allLobbies) {
-            if (lobbyId == i.getId()) {
+            if(i.getId().equals(lobbyId)) {
                 lobbyToUpdate = i;
             }
         }
 
-        String nonexisting_lobby = "This lobby does not exist. Please search for an existing lobby!";
-        if (lobbyToUpdate == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_lobby));
+        // check if the lobby has enough players to play a game
+        String notEnoughPlayer = "The lobby you provided does not have enough players. Please add more players and try again.";
+        if (lobbyToUpdate.getMembers().size() < new Standard().getMinNumOfPlayers()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notEnoughPlayer));
         }
 
         // change status of said lobby
@@ -78,32 +85,26 @@ public class GameService {
         lobbyRepository.flush();
 
         //--------------------------- create the new game -------------------------//
+
         Game newGame = new Game();
 
-        //System.out.println(newGame.toString());
-
         // import information from lobby
-        // ArrayList<User> players = new ArrayList<User>();
         ArrayList<String> players = new ArrayList<String>();
         for (String memberName : lobbyToUpdate.getMembers()) {
-            //System.out.print(lobbyToUpdate.getMembers().toString());
-            //System.out.print(this.userRepository.findByUsername(memberName).getUsername());
+            // find the user and change his/her status to in game
             User tempUser = this.userRepository.findByUsername(memberName);
             tempUser.setStatus(UserStatus.INGAME);
-            //players.add(tempUser);
             players.add(memberName);
-            // save into the repository
+            // save changes into the repository
             userRepository.save(tempUser);
             userRepository.flush();
         }
+        // save players in the game
         newGame.setPlayers(players);
-
-        //System.out.println(newGame.toString());
 
         // initialize the remaining fields and there corresponding fields ...
         // ... rounds to numberOfRounds
         newGame.setNumberOfRounds(lobbyToUpdate.getRounds());
-        //System.out.println("NumberOfRounds worked");
 
         // ... LobbyName to GameName
         newGame.setGameName(lobbyToUpdate.getLobbyname());
@@ -117,7 +118,7 @@ public class GameService {
         //System.out.println("Scoreboard worked");
 
         // ... the roundTracker
-        newGame.setRoundTracker(1);
+        newGame.setRoundTracker(0);
 
         // ... the link to the lobby
         newGame.setLobbyId(lobbyId);
@@ -141,29 +142,25 @@ public class GameService {
     }
 
     // quality of life method (logging in again after disconnect)
-    public Game getGame(Long game_id) {
+    public Game getGame(Long gameId) {
 
         //get all games
-        List<Game> all_games = this.gameRepository.findAll();
+        List<Game> allGames = this.gameRepository.findAll();
 
-        long gameIdLong = game_id.longValue();
-        long potGameIdLong = 0;
         Game game_found = null;
 
-        for (Game i : all_games) {
-            potGameIdLong = i.getId().longValue();
-            if ( gameIdLong == potGameIdLong ) {
+        for (Game i : allGames) {
+            if ( gameId.equals(i.getId()) ) {
                 game_found = i;
             }
         }
 
         //if not found
-        String nonexisting_game = "This game does not exist or has expired. Please search for an existing user!";
+        String nonexisting_game = "This game does not exist or has expired. Please search for an existing game!";
         if (game_found == null) {
             new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_game));
         }
 
-        //System.out.println(game_id.toString());
         return game_found;
     }
 

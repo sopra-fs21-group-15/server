@@ -17,7 +17,7 @@ public class Drawing implements Serializable {
     private Long id;
 
     @Column(nullable = false)
-    private String drawerName;
+    private String drawerName = "";
 
     @OneToMany
     private List<BrushStroke> brushStrokes = new ArrayList<>();
@@ -31,15 +31,5 @@ public class Drawing implements Serializable {
 
     public List<BrushStroke> getBrushStrokes() { return this.brushStrokes; }
     public void setBrushStrokes(List<BrushStroke> brushStrokes) { this.brushStrokes = brushStrokes; };
-
-    // add a new brushStroke
-    public void add(BrushStroke brushStroke) {
-        brushStrokes.add(brushStroke); // add the brush stroke
-        Collections.sort(brushStrokes); // make sure it is still sorted
-    }
-
-    public Drawing() {
-        this.drawerName = "";
-    }
 
 }
