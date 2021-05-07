@@ -82,7 +82,7 @@ public class UserService {
 
     }
 
-    // getUser from username
+    // getUser from Id
     public User getUser_id(Long userId) {
         User user;
         Optional<User> optional = userRepository.findById(userId);
