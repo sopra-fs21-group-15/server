@@ -92,22 +92,18 @@ public class LobbyService {
     // get a requested lobby and compare password if its a private lobby.
     public Lobby getLobby(Long lobbyId) {
 
-        //get all lobbies
-        List<Lobby> alllobbies = this.lobbyRepository.findAll();
-        Lobby lobbytofind = null;
+        // get all lobbies
+        Optional<Lobby> potLobby = lobbyRepository.findById(lobbyId);
+        Lobby value = null;
 
-        for (Lobby i : alllobbies) {
-            if (lobbyId == i.getId()) {
-                lobbytofind = i;
-            }
+        if (potLobby.isEmpty()) { // if not found
+            String nonExistingLobby = "This lobby does not exist. Please search for an existing lobby!";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingLobby));
+        } else { // if found
+            value = potLobby.get();
         }
 
-        String nonexisting_lobby = "This lobby does not exist. Please search for an existing lobby!";
-        if (lobbytofind == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_lobby));
-        }
-
-        return lobbytofind;
+        return value;
     }
 
     // Change lobby settings

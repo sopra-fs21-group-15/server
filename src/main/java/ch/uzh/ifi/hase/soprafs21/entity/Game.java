@@ -40,7 +40,7 @@ public class Game implements Serializable {
     @Column(nullable = false, unique = true)
     private Long lobbyId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     private Long roundId;
 
     @OneToOne
