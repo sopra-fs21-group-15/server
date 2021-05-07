@@ -75,24 +75,6 @@ public class UserServiceIntegrationTest {
         // check that an error is thrown
         assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser2));
     }
-    @Test
-    public void logoutUser_validinput(){
-        assertNull(userRepository.findByUsername("testUsername"));
-        User testUser= new User();
-        testUser.setPassword("testPassword");
-        testUser.setUsername("testUsername");
-        testUser.setId(1L);
-        User createdUser = userService.createUser(testUser);
-        assertEquals(UserStatus.ONLINE, testUser.getStatus());
 
-        userService.logout(testUser.getId());
-        assertEquals(testUser.getId(), createdUser.getId());
-        assertEquals(UserStatus.OFFLINE, testUser.getStatus());
-
-
-
-
-
-    }
    
 }

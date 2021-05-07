@@ -3,8 +3,7 @@ package ch.uzh.ifi.hase.soprafs21.rest.mapper;
 
 import ch.uzh.ifi.hase.soprafs21.entity.BrushStroke;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.DrawingGetDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.DrawingPostDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.NestedString;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,19 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * Tests if the mapping between the internal and the external/API representation works.
  */
 public class DrawingDTOMapperTest {
-    @Test
-    //TODO check the Purpose of DrawingPostDTO
-    public void testCreateDrawing_fromDrawingPostDTO_toDrawing_success() {
-        // create DrawingPostDTO
-        DrawingPostDTO drawingPostDTO = new DrawingPostDTO();
-        drawingPostDTO.setTimeStamp("a");
 
-        // MAP -> Create user
-        NestedString nestedString = DrawingDTOMapper.INSTANCE.convertDrawingPostDTOtoEntity(drawingPostDTO);
-
-        // check content
-        assertEquals(nestedString.getTimeStamp(), drawingPostDTO.getTimeStamp());
-    }
 
     @Test
     public void testGetDrawing_fromBrushstroke_toDrawingGetDTO_success() {
