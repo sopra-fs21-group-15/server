@@ -40,12 +40,15 @@ public class GameService {
 
     private final RoundService roundService;
 
+    private final TimerService timerService;
+
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository, RoundService roundService) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository, RoundService roundService, TimerService timerService) {
         this.gameRepository = gameRepository;
         this.lobbyRepository = lobbyRepository;
         this.userRepository = userRepository;
         this.roundService = roundService;
+        this.timerService = timerService;
     }
 
     public List<Game> getGames() {
@@ -109,8 +112,11 @@ public class GameService {
         // ... LobbyName to GameName
         newGame.setGameName(lobbyToUpdate.getLobbyname());
 
-        // ... timer to timerPerRound
-        newGame.setTimePerRound(lobbyToUpdate.getTimer());
+        // ... timer to timerPerRound/timer
+        int timePerRound = lobbyToUpdate.getTimer().intValue();
+        Timer timer = timerService.createTimer(timePerRound);
+        newGame.setTimePerRound(timePerRound);
+        newGame.setTimer(timer);
 
         // ... the scoreboard
         //ScoreBoard scoreBoard = new ScoreBoard(newGame.getPlayers());
@@ -143,48 +149,38 @@ public class GameService {
 
     // quality of life method (logging in again after disconnect)
     public Game getGame(Long gameId) {
+        Optional<Game> potGame = gameRepository.findById(gameId);
+        Game value = null;
 
-        //get all games
-        List<Game> allGames = this.gameRepository.findAll();
-
-        Game game_found = null;
-
-        for (Game i : allGames) {
-            if ( gameId.equals(i.getId()) ) {
-                game_found = i;
-            }
+        if (potGame.isEmpty()) { // if not found
+            String nonExistingGame = "This game does not exist or has expired. Please search for an existing game.";
+            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingGame));
+        } else { // if found
+            value = potGame.get();
         }
 
-        //if not found
-        String nonexisting_game = "This game does not exist or has expired. Please search for an existing game!";
-        if (game_found == null) {
-            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_game));
-        }
-
-        return game_found;
+        return value;
     }
 
     // quality of life method (logging in again after disconnect)
     public Game getGameFromLobby(Long lobbyId) {
+        Optional<Game> potGame = gameRepository.findByLobbyId(lobbyId);
+        Game value = null;
 
-        //get all games
-        List<Game> all_games = this.gameRepository.findAll();
-
-        Game game_found = null;
-
-        for (Game i : all_games) {
-            if ( lobbyId.equals(i.getLobbyId()) ) {
-                game_found = i;
-            }
+        if (potGame.isEmpty()) { // if not found
+            String nonStartedGame = "This lobby has not created a game yet. Please initiate the game before trying to access it.";
+            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonStartedGame));
+        } else { // if found
+            value = potGame.get();
         }
 
-        //if not found
-        String nonexisting_game = "This game does not exist or has expired. Please search for an existing user!";
-        if (game_found == null) {
-            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_game));
-        }
+        return value;
+    }
 
-        //System.out.println(game_id.toString());
-        return game_found;
+    /** core method, this method runs the game in the background
+     *
+     */
+    public void runGame(Game game) {
+
     }
 }

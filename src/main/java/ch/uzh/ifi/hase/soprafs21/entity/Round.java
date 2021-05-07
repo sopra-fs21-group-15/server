@@ -41,9 +41,6 @@ public class Round implements Serializable {
     private List<Drawing> drawings = new ArrayList<Drawing>();
 
     @Column(nullable = false)
-    private Timer stopWatch;
-
-    @Column(nullable = false)
     private ArrayList<String> players = new ArrayList<String>();
 
     @Column(nullable = false)
@@ -67,9 +64,6 @@ public class Round implements Serializable {
 
     public List<Drawing> getDrawings() { return this.drawings; }
     public void setDrawings(List<Drawing> drawings) { this.drawings = drawings; }
-
-    public Timer getStopWatch() { return this.stopWatch; }
-    public void setStopWatch(Timer newStopWatch) { this.stopWatch = newStopWatch; }
 
     public ArrayList<String> getPlayers() { return this.players; }
     public void setPlayers(ArrayList<String> players) { this.players = players; }

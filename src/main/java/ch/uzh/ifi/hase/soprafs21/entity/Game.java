@@ -43,6 +43,9 @@ public class Game implements Serializable {
     @Column(nullable = false, unique = true)
     private Long roundId;
 
+    @OneToOne
+    private Timer timer;
+
     // private ScoreBoard scoreBoard;
 
     //private ArrayList<Round> rounds = new ArrayList<>();
@@ -110,6 +113,10 @@ public class Game implements Serializable {
     // access the current round
     public Long getRoundId() { return this.roundId; }
     public void setRoundId(Long roundId) { this.roundId = roundId; }
+
+    // access to the timer
+    public Timer getTimer() { return this.timer; }
+    public void setTimer(Timer timer) { this.timer = timer; }
 
     /**
      * Back-end specific methods needed for functionality

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -97,9 +96,6 @@ public class RoundService {
         }
         drawingRepository.flush(); // safe the drawings in the repository
         round.setDrawings(drawings); // safe the list of drawings within the round
-
-
-        round.setStopWatch(new Timer(game.getTimePerRound()));
 
         // get all the players (might get updated)
         //List<String> players = new ArrayList<String>();
