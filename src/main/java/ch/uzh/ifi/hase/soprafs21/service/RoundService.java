@@ -1,15 +1,18 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.entity.*;
+import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import ch.uzh.ifi.hase.soprafs21.repository.DrawingRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.RoundRepository;
+import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
@@ -23,11 +26,14 @@ public class RoundService {
 
     private final DrawingRepository drawingRepository;
 
+    private final UserRepository userRepository;
+
     @Autowired
-    public RoundService(@Qualifier("roundRepository") RoundRepository roundRepository, GameRepository gameRepository, DrawingRepository drawingRepository) {
+    public RoundService(@Qualifier("roundRepository") RoundRepository roundRepository, GameRepository gameRepository, DrawingRepository drawingRepository, UserRepository userRepository) {
         this.gameRepository = gameRepository;
         this.roundRepository = roundRepository;
         this.drawingRepository = drawingRepository;
+        this.userRepository = userRepository;
     }
 
     // get all the games
@@ -81,41 +87,57 @@ public class RoundService {
         Round round = new Round();
         int n = game.getPlayers().size();
 
-        Drawing drawing = new Drawing();
-        drawing = drawingRepository.save(drawing);
-        drawingRepository.flush();
+        // prepare multiple drawings for this round
+        List<Drawing> drawings = new ArrayList<Drawing>();
+        Drawing tempDrawing;
+        for(int i = 0; i < n; i++) {
+            tempDrawing = new Drawing();
+            tempDrawing = drawingRepository.save(tempDrawing);
+            drawings.add(tempDrawing);
+        }
+        drawingRepository.flush(); // safe the drawings in the repository
+        round.setDrawings(drawings); // safe the list of drawings within the round
 
-        round.setPictureId(drawing.getId());
+
         round.setStopWatch(new Timer(game.getTimePerRound()));
+
+        // get all the players (might get updated)
+        //List<String> players = new ArrayList<String>();
+        //for (String username : game.getPlayers()) {
+        //    players.add(userRepository.findByUsername(username));
+        //}
         round.setPlayers(game.getPlayers());
 
         // generate words for this round
         ArrayList<String> words = new ArrayList<String>();
         Words wordGenerator = new Words();
-        for (int i = 0; i < n; i++) {
+        int choices = new Standard().getNumberOfChoices();
+        for (int i = 0; i < n * choices; i++) {
             words.add(wordGenerator.getRandomWord());
         }
         round.setWords(words);
 
         // continue with setting the fields in order
-        round.setIndex(1);
-        round.setScore( new long[n] );
+        round.setIndex(0);
+        round.setHasGuessed( new int[n] );
+        round.setHasDrawn( new boolean[n] );
 
         // special randomised initialization to get a random drawer each time
         Random rand = new Random();
         int r = rand.nextInt(n);
         round.setDrawerName(round.getPlayers().get(r));
 
-        // set the drawing array straight
-        boolean[] hasDrawn = new boolean[n];
-        ArrayList<String> players = round.getPlayers();
+        // just now we selected a drawer, hence we need to remember who we pick so that he does not draw again in this round
+        ArrayList<String> usernames = round.getPlayers();
         for(int i = 0; i < n; i++) {
-            if(players.get(i).equals(round.getDrawerName())) {
-                hasDrawn[i] = true;
+            if(usernames.get(i).equals(round.getDrawerName())) {
+                round.getHasDrawn()[i] = true;
             }
         }
-        round.setHasDrawn(hasDrawn);
 
+        //List<User> bla = new LinkedList<User>();
+
+        //bla.
         // last but not least safe it in the repository
         round = roundRepository.save(round);
         roundRepository.flush();

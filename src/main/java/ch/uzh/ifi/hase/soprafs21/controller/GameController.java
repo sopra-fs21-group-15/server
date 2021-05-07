@@ -1,6 +1,8 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
 import ch.uzh.ifi.hase.soprafs21.entity.*;
+import ch.uzh.ifi.hase.soprafs21.helper.Standard;
+import ch.uzh.ifi.hase.soprafs21.helper.TimeStamp;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.*;
@@ -36,7 +38,7 @@ public class GameController {
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public GameGetDTO createGame(@PathVariable Long lobbyId) {
-        // copy the input into a game visible for all players threw the repository
+        // copy the input into a game visible for all players through the repository
         Game createdGame = gameService.createGame(lobbyId);
 
         // convert internal representation of game back to API for client
@@ -76,26 +78,28 @@ public class GameController {
     public void addBrushStrokes(@RequestBody BrushStrokePutDTO brushStrokeEditDTO, @PathVariable long gameId) {
         // convert API brush stroke to an internal representation
         BrushStroke brushStroke = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(brushStrokeEditDTO);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // add the current time to the given brush stroke
+        DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
         String currentTime = LocalDateTime.now().format(formatter);
         brushStroke.setTimeStamp(currentTime);
+
+        // save the newly created brush stroke in the repository and in the drawing
         Game game = gameService.getGame(gameId);
         Round round = roundService.getRound(game.getRoundId());
-        drawingService.addStroke(round.getPictureId(),brushStroke);
+        drawingService.addStroke(round.getCurrentDrawing(),brushStroke);
     }
 
     // TODO #42 test and refine mapping for API-calls requesting the drawing
-    @GetMapping("/games/{gameId}/drawing")
-    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/games/{gameId}/drawing")
+    @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public ArrayList<DrawingGetDTO> drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable Long gameId) {
-    //public ArrayList<DrawingGetDTO> drawingRequest(String stringTimeStamp, @PathVariable Long gameId) {
-        NestedString send = DrawingDTOMapper.INSTANCE.convertDrawingPostDTOtoEntity(drawingPostDTO);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime timeStamp = LocalDateTime.parse(send.getTimeStamp(),formatter);
+    public ArrayList<DrawingGetDTO> drawingRequest(@RequestBody TimeStringGetDTO timeStringGetDTO, @PathVariable Long gameId) {
+        TimeStamp timeStamp = TimeDTOMapper.INSTANCE.convertTimeStringGeTDTOtoEntity(timeStringGetDTO);
+
         Game game = gameService.getGame(gameId);
         Round round = roundService.getRound(game.getRoundId());
-        ArrayList<BrushStroke> drawings = drawingService.getDrawing(round.getPictureId(),timeStamp);
+        List<BrushStroke> drawings = drawingService.getDrawing(round.getCurrentDrawing(),timeStamp.getTimeObject());
         ArrayList<DrawingGetDTO> value = new ArrayList<>();
         for(BrushStroke i : drawings){
             value.add(DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(i));

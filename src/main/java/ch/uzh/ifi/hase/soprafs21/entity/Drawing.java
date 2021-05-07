@@ -3,6 +3,8 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Table(name = "DRAWING")
@@ -15,10 +17,10 @@ public class Drawing implements Serializable {
     private Long id;
 
     @Column(nullable = false)
-    private String drawerName;
+    private String drawerName = "";
 
-    @Column(nullable = false)
-    private ArrayList<Long> brushStrokeIds = new ArrayList<>();
+    @OneToMany
+    private List<BrushStroke> brushStrokes = new ArrayList<>();
 
     // generic methods to handle incoming requests
     public Long getId() { return this.id; }
@@ -27,14 +29,7 @@ public class Drawing implements Serializable {
     public String getDrawerName() { return this.drawerName; }
     public void setDrawerName(String newDrawerName) { this.drawerName = newDrawerName; };
 
-    public ArrayList<Long> getBrushStrokeIds() { return this.brushStrokeIds; }
-    public void setBrushStrokeIds(ArrayList<Long> brushStrokes) { this.brushStrokeIds = brushStrokeIds; };
-
-    // add a new brushStroke
-    public void add(Long brushStrokeId) { this.brushStrokeIds.add(brushStrokeId); }
-
-    public Drawing() {
-        this.drawerName = "";
-    }
+    public List<BrushStroke> getBrushStrokes() { return this.brushStrokes; }
+    public void setBrushStrokes(List<BrushStroke> brushStrokes) { this.brushStrokes = brushStrokes; };
 
 }

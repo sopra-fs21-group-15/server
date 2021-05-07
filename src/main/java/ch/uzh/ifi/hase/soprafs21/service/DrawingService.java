@@ -3,17 +3,23 @@ package ch.uzh.ifi.hase.soprafs21.service;
 import ch.uzh.ifi.hase.soprafs21.entity.BrushStroke;
 import ch.uzh.ifi.hase.soprafs21.entity.Drawing;
 import ch.uzh.ifi.hase.soprafs21.entity.Round;
+import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import ch.uzh.ifi.hase.soprafs21.repository.BrushStrokeRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.DrawingRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.RoundRepository;
+import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -27,26 +33,32 @@ public class DrawingService {
     private final BrushStrokeRepository brushStrokeRepository;
 
     @Autowired
-    public DrawingService(@Qualifier("drawingRepository")DrawingRepository drawingRepository, RoundRepository roundRepository, BrushStrokeRepository brushStrokeRepositroy) {
+    public DrawingService(@Qualifier("drawingRepository")DrawingRepository drawingRepository, RoundRepository roundRepository, BrushStrokeRepository brushStrokeRepository) {
         this.drawingRepository = drawingRepository;
         this.roundRepository = roundRepository;
-        this.brushStrokeRepository = brushStrokeRepositroy;
+        this.brushStrokeRepository = brushStrokeRepository;
     }
 
     // get all the drawings
-    public List<Drawing> getDrawing() {
+    public List<Drawing> getDrawings() {
         return this.drawingRepository.findAll();
     }
 
     // get a specific drawing
     public Drawing getDrawing(Long drawingId) {
-        List<Drawing> drawings = getDrawing();
+        List<Drawing> drawings = getDrawings();
 
         Drawing drawingFound = null;
         for (Drawing i : drawings) {
             if (drawingId.equals(i.getId())) {
                 drawingFound = i;
             }
+        }
+
+        // if we do not find the drawing
+        String nonExistingDrawing = "This drawing does not exist. Please search for an existing drawing.";
+        if (drawingFound == null) {
+            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingDrawing));
         }
 
         return drawingFound;
@@ -69,30 +81,52 @@ public class DrawingService {
         return brushStrokeFound;
     }
 
-    // get the latest brushStrokes past a certain time
-    public ArrayList<BrushStroke> getDrawing(Long drawingId, LocalDateTime timeStamp) {
-        Drawing drawing = getDrawing(drawingId);
-        int index = 0;
+    /** Get the latest brushstrokes of a drawing past a certain time
+     * The method is used to update the picture users see in the front end. They send us the time at which they last
+     * updated and we send them all the information they have missed so far.
+     *
+     * @param drawing = the drawing they would like to see
+     * @param timeStamp = the time from which onward they need the information
+     * @return a sorted list of all the need brush strokes starting from latest to newest
+     */
+    public List<BrushStroke> getDrawing(Drawing drawing, LocalDateTime timeStamp) {
+        int index = 0; // initiate the index
 
-        // setting everything up to iterate over the indexes to find index after which the brush strokes are that we have not seen yet
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        Long brushStrokeId = drawing.getBrushStrokeIds().get(index);
-        BrushStroke brushStroke = getBrushStroke(brushStrokeId);
+        // setting everything up to iterate over the indexes to find the point after which the needed brush strokes are listed
+        DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
+        BrushStroke brushStroke = drawing.getBrushStrokes().get(index);
         LocalDateTime value = LocalDateTime.parse(brushStroke.getTimeStamp(),formatter);
+
+        // iterate over the saved brush strokes in drawing
         while(value.isBefore(timeStamp)) {
             index++;
-            brushStrokeId = drawing.getBrushStrokeIds().get(index);
-            brushStroke = getBrushStroke(brushStrokeId);
+            brushStroke = drawing.getBrushStrokes().get(index);
             value = LocalDateTime.parse(brushStroke.getTimeStamp(),formatter);
         }
 
-        ArrayList<Long> brushStrokeIds = new ArrayList<Long>(drawing.getBrushStrokeIds().subList( index,drawing.getBrushStrokeIds().size()-1) );
-        ArrayList<BrushStroke> temp = new ArrayList<BrushStroke>();
-        for (Long i : brushStrokeIds) {
-            temp.add(getBrushStroke(i));
-        }
-        return temp;
+        // get a sublist past the critical point
+        List<BrushStroke> test = drawing.getBrushStrokes().subList(index, drawing.getBrushStrokes().size());
 
+        // sort the list and then return it
+        Collections.sort(test);
+        return test;
+    }
+
+    /** Add a new brush stroke to an existing drawing while at the same time saving it in the repository
+     * and sorting the list within the drawing just to make sure it did not mix up the order of the brushstrokes.
+     *
+     * @param drawing = the drawing we would like to add brush stroke to
+     * @param brushStroke = the brush stroke we are supposed to add
+     */
+    public void addStroke(Drawing drawing, BrushStroke brushStroke) {
+        brushStroke = brushStrokeRepository.save(brushStroke); // save in repository
+        brushStrokeRepository.flush();
+
+        drawing.getBrushStrokes().add(brushStroke); // add to drawing
+        Collections.sort(drawing.getBrushStrokes()); // sort list within drawing
+
+        drawing = drawingRepository.save(drawing); // update the drawing in the repository
+        drawingRepository.flush();
     }
 
     // get all rounds
@@ -114,18 +148,7 @@ public class DrawingService {
         return roundFound;
     }
 
-    // add a brushstroke to a picture
-    public void addStroke(Long drawingId, BrushStroke brushStroke) {
-        Drawing drawing = getDrawing(drawingId);
 
-        brushStroke = brushStrokeRepository.save(brushStroke);
-        brushStrokeRepository.flush();
-
-        drawing.add(brushStroke.getId());
-
-        drawing = drawingRepository.save(drawing);
-        drawingRepository.flush();
-    }
 
 
     /*
