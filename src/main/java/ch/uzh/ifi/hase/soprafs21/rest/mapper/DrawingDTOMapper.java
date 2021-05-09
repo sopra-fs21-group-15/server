@@ -17,5 +17,4 @@ public interface DrawingDTOMapper {
     @Mapping(source = "size", target = "size")
     @Mapping(source = "colour", target = "colour")
     DrawingGetDTO convertEntityToDrawingGetDTO(BrushStroke brushStroke);
-
 }

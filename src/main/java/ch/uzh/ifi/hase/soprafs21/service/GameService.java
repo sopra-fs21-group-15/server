@@ -1,10 +1,12 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
+import ch.uzh.ifi.hase.soprafs21.constant.RoundStatus;
 import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.*;
 import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import ch.uzh.ifi.hase.soprafs21.repository.GameRepository;
+import net.bytebuddy.asm.Advice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +19,11 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import ch.uzh.ifi.hase.soprafs21.repository.*;
+
+import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  * Game Service
@@ -28,7 +33,7 @@ import ch.uzh.ifi.hase.soprafs21.repository.*;
  */
 @Service
 @Transactional
-public class GameService {
+public class GameService implements Runnable {
 
     private final Logger log = LoggerFactory.getLogger(GameService.class);
 
@@ -41,6 +46,8 @@ public class GameService {
     private final RoundService roundService;
 
     private final TimerService timerService;
+
+    private List<Game> gamesToBeRun = new ArrayList<Game>();
 
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository, RoundService roundService, TimerService timerService) {
@@ -58,7 +65,7 @@ public class GameService {
      * @param lobby = the lobby from where the owner (user) started the game
      * @return the game the owner (user) asked for with the provided information
      */
-    public Game createGame(Lobby lobby) {
+    public Long createGame(Lobby lobby) {
         // check if the lobby has enough players to play a game
         String notEnoughPlayer = "The lobby you provided does not have enough players. Please add more players and try again.";
         if (lobby.getMembers().size() < new Standard().getMinNumOfPlayers()) {
@@ -93,15 +100,25 @@ public class GameService {
         //newGame.setScoreBoard(scoreBoard);
         //System.out.println("Scoreboard worked");
 
-        // ... the roundTracker
+        // general information
         newGame.setRoundTracker(0);
 
          // saves the given entity but data is only persisted in the database once flush() is called
         newGame = gameRepository.save(newGame);
         gameRepository.flush();
 
+        // create a separate thread that runs the game in the background
+        synchronized (gamesToBeRun) {
+            gamesToBeRun.add(newGame);
+            Thread t = new Thread(this);
+            t.start();
+            //gamesToBeRun.remove(newGame);
+        }
+
+        System.out.println("other threads are finishing.");
+
         log.debug("Created and started new game with given information: {}", newGame);
-        return newGame;
+        return newGame.getId();
     }
 
     // quality of life method (logging in again after disconnect)
@@ -134,25 +151,61 @@ public class GameService {
         return value;
     }
 
+    // start the timer for this phase
+    public int startPhase(Game game) {
+        Timer timer = game.getTimer();
+        timerService.begin(timer);
+        return timerService.remainingTime(timer);
+    }
+
+    // end this phase and
+    public void endPhase(Game game) {
+        Timer timer = game.getTimer();
+        timerService.reset(timer);
+        timerService.changePhase(timer);
+    }
+
     /** core method, this method runs the game in the background
      *
      */
-    public void runGame(Game game) {
+    @Override
+    public void run() {
+        Game game = gamesToBeRun.get(0);
         int i = 0, n = game.getNumberOfRounds(); // index and total number of rounds
         int h = 0, m = game.getPlayers().size(); // index and total number of players
+        int waitingTime;
+        int selection = game.getTimer().getSelectTimeSpan() * 1000;
+        int drawing = game.getTimer().getDrawingTimeSpan() * 1000;
         Round round;
 
         while(i < n) { // for each round
-            game.setRoundTracker(i);
+            h = 0;
             round = roundService.createRound(game);
-
+            game.setRoundTracker(i);
             while(h < m) { // for each player
+                // pick a new drawer and select
                 roundService.setNewPainter(round);
-                round.setIndex(h);
-
+                roundService.setRoundIndex(round,h);
+                waitingTime = startPhase(game);
+                // wait for drawer to chose a word
+                try {
+                    TimeUnit.MILLISECONDS.sleep(waitingTime);
+                } catch (InterruptedException e) {
+                        // needs to be implemented -> player has chosen a word before the timer ran out
+                }
+                // needs to be implemented -> select word drawer pick or pick one yourself
+                endPhase(game);
+                // let players draw and guess the word
+                waitingTime = startPhase(game);
+                try {
+                    TimeUnit.MILLISECONDS.sleep(waitingTime);
+                } catch (InterruptedException e) {
+                    // needs to be implemented -> all player have guessed the word correctly before the timer ran out
+                }
+                // finish this round, pass the results
+                endPhase(game);
                 h++;
             }
-
             i++;
         }
 

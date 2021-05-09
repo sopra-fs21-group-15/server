@@ -41,7 +41,8 @@ public class GameController {
     public GameGetDTO createGame(@PathVariable Long lobbyId) {
         // copy the input into a game visible for all players through the repository
         Lobby lobby = lobbyService.getLobby(lobbyId);
-        Game createdGame = gameService.createGame(lobby);
+        Long gameId = gameService.createGame(lobby);
+        Game createdGame = gameService.getGame(gameId);
 
         // convert internal representation of game back to API for client
         return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);

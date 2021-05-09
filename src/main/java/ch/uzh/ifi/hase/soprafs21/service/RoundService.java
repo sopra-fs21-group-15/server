@@ -93,25 +93,12 @@ public class RoundService {
         round.setHasGuessed( new int[n] );
         round.setHasDrawn( new boolean[n] );
 
-        // special randomised initialization to get a random drawer each time
-        Random rand = new Random();
-        int r = rand.nextInt(n);
-        round.setDrawerName(round.getPlayers().get(r));
-
-        // just now we selected a drawer, hence we need to remember who we pick so that he does not draw again in this round
-        ArrayList<String> usernames = round.getPlayers();
-        for(int i = 0; i < n; i++) {
-            if(usernames.get(i).equals(round.getDrawerName())) {
-                round.getHasDrawn()[i] = true;
-            }
-        }
-
-        //List<User> bla = new LinkedList<User>();
-
-        //bla.
-        // last but not least safe it in the repository
+        // last but not least safe it and push it to the repositories
         round = roundRepository.save(round);
         roundRepository.flush();
+        game.setRoundId(round.getId());
+        game.setRoundTracker(game.getRoundTracker() + 1);
+        gameRepository.saveAndFlush(game);
 
         // finally return the created round
         return round;
@@ -127,13 +114,13 @@ public class RoundService {
         int i = rand.nextInt(n), sign = -1, distance = 0;
 
         // if player has already drawn systematically pick an acceptable drawer
-        int value = (i + sign * distance) % n;
+        int value = (i + sign * distance + n) % n;
         while(round.getHasDrawn()[value]) {
             if(sign == -1) {
                 distance++;
             }
             sign *= -1;
-            value = (i + sign * distance) % n;
+            value = (i + sign * distance + n) % n;
         }
 
         // set the new drawer
@@ -144,6 +131,14 @@ public class RoundService {
         boolean[] newHasDrawn = round.getHasDrawn();
         newHasDrawn[value] = true;
         round.setHasDrawn(newHasDrawn);
+    }
+
+    // change index of the round so the API calls go to a different object in the array
+    public void setRoundIndex(Round round, int h) {
+        if(h < round.getPlayers().size()) {
+            round.setIndex(h);
+            roundRepository.saveAndFlush(round);
+        }
     }
 
     // TODO *41 see if function handling is up to the standarts

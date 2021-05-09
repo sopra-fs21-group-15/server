@@ -92,7 +92,7 @@ public class Game implements Serializable {
 
     // access current Round
     public int getRoundTracker() { return this.roundTracker; }
-    public void setRoundTracker(int currentRound) {
+    public void setRoundTracker(int roundTracker) {
         this.roundTracker = roundTracker;
     }
 
@@ -163,6 +163,10 @@ public class Game implements Serializable {
             default:
                 value += "CLASSIC\n";
                 break;
+        }
+        value += "Rounds = " + roundTracker + "/" + numberOfRounds + "\n";
+        if(this.roundId != null) {
+            value += "RoundId = " + this.roundId.toString() + "\n";
         }
         return value;
     }

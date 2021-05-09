@@ -42,6 +42,16 @@ public class TimerService {
         return value;
     }
 
+    // change phase
+    public void changePhase(Timer timer) {
+        if(timer.getIsDrawing()) {
+            timer.setIsDrawing(false);
+        } else {
+            timer.setIsDrawing(true);
+        }
+        timerRepository.saveAndFlush(timer);
+    }
+
     // create a new timer
     public Timer createTimer(int drawingTimeSpan) {
         Timer timer = new Timer(drawingTimeSpan);
@@ -54,6 +64,7 @@ public class TimerService {
     public void begin(Timer timer){
         if(isReady(timer)) {
             timer.setStart(LocalTime.now());
+            timerRepository.saveAndFlush(timer);
         }
     }
 
@@ -61,6 +72,7 @@ public class TimerService {
     public void reset(Timer timer){
         if(!isReady(timer)) {
             timer.setStart(null);
+            timerRepository.saveAndFlush(timer);
         }
     }
 
@@ -77,7 +89,7 @@ public class TimerService {
      *              we would like to know the remaining time
      * @return remaining time in this mode
      */
-    public double remainingTime(Timer timer){
+    public int remainingTime(Timer timer){
         double value = 0, tempMilli, tempSec, time;
         if(!isReady(timer)) {
             if(timer.getIsDrawing()) {
@@ -88,9 +100,9 @@ public class TimerService {
             LocalTime rightNow = LocalTime.now();
             tempMilli = Math.floor((rightNow.getNano() - timer.getStart().getNano()) / Math.pow(10.0,6.0)) / Math.pow(10.0,3.0);
             tempSec = rightNow.getSecond() - timer.getStart().getSecond();
-            value = Math.floor((time - (tempSec + tempMilli)) * 1000) / 1000;
+            value = Math.floor((time - (tempSec + tempMilli)) * 1000);
         }
-        return Math.max(0,value);
+        return (int) Math.max(0,value);
     }
 
 }

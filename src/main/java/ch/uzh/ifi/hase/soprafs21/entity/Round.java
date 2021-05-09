@@ -55,7 +55,7 @@ public class Round implements Serializable {
     @Column(nullable = false)
     private int[] hasGuessed;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String drawerName;
 
     // generic getter and setter methods for the mapper
