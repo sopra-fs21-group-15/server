@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-//I commented this test out, since I could not fix it and it was not required for this milestone!
-/**
 @DataJpaTest
 public class UserRepositoryIntegrationTest {
 
@@ -29,6 +29,7 @@ public class UserRepositoryIntegrationTest {
         user.setUsername("firstname@lastname");
         user.setStatus(UserStatus.OFFLINE);
         user.setToken("1");
+        user.setCreation_date("09.06.1195");
 
         entityManager.persist(user);
         entityManager.flush();
@@ -44,4 +45,33 @@ public class UserRepositoryIntegrationTest {
         assertEquals(found.getStatus(), user.getStatus());
     }
 
-} **/
+
+    @Test
+    public void findUser_byID_success (){
+        User user = new User();
+ 
+        user.setPassword("Firstname Lastname");
+        user.setUsername("firstname@lastname");
+        user.setStatus(UserStatus.OFFLINE);
+        user.setToken("1");
+        user.setCreation_date("09.06.1195");
+
+        entityManager.persist(user);
+        entityManager.flush();
+
+        // when
+        Optional<User> found = userRepository.findById(user.getId());
+
+        // then
+            
+
+          assertEquals(found.get().getPassword(), user.getPassword());
+          assertEquals(found.get().getUsername(), user.getUsername());
+          assertEquals(found.get().getToken(), user.getToken());
+          assertEquals(found.get().getStatus(), user.getStatus());
+
+       
+    }
+
+}
+

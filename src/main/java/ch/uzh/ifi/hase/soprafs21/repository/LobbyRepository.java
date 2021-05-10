@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository("lobbyRepository")
 public interface LobbyRepository extends JpaRepository<Lobby, Long> {
     Lobby findByLobbyname(String lobbyname);
-    Optional<Lobby> findById(Long lobbyId);
+    Optional<Lobby> findById(Long id);
 }

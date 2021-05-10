@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -81,26 +82,18 @@ public class UserService {
 
     }
 
-    // getUser from username
-    public User getUser(String username) {
-
-        //get all users
-        List<User> all_users = this.userRepository.findAll();
-
-        User user_found = null;
-        for (User i : all_users) {
-            if (username == i.getUsername()) {
-                user_found = i;
-            }
+    // getUser from Id
+    public User getUser_id(Long userId) {
+        User user;
+        Optional<User> optional = userRepository.findById(userId);
+        if (optional.isPresent()) {
+            user = optional.get();
+            return user;
         }
-
-        //if not found
-        String nonexisting_user = "This user does not exist. Please search for an existing user!";
-        if (user_found == null) {
-            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_user));
+        else {
+            String nonexisting_user = "This user does not exist. Please search for an existing user!";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_user));
         }
-        return user_found;
-
     }
 
 
@@ -140,7 +133,6 @@ public class UserService {
 
         User userByUsername = userRepository.findByUsername(requesting_user.getUsername());
 
-        List<User> allUsers = this.userRepository.findAll();
 
         //If you don't find the user. Tell him to register first.
         String nonexisting_user = "This username is not registered yet. Please register first or enter an existing username.";
@@ -170,15 +162,7 @@ public class UserService {
     // update the user after the edit
     public void update_user(Long userId, User userChange){
 
-        List<User> allusers = this.userRepository.findAll();
-
-        User usertoupdate = null;
-
-        for(User i: allusers){
-            if(userId == i.getId()){
-                usertoupdate = i;
-            }
-        }
+        User usertoupdate = getUser_id(userId);
 
         if (userChange.getBirth_date() != null){
             usertoupdate.setBirth_date(userChange.getBirth_date());
@@ -196,18 +180,11 @@ public class UserService {
 
     // set the user offline
     public void logout(Long userId){
-        List<User> allusers = this.userRepository.findAll();
 
-        User leaving_user = null;
+        User leaving_user = getUser_id(userId);
 
-        for(User i: allusers){
-            if(userId.equals(i.getId())){
-                leaving_user = i;
-            }
-        }
         leaving_user.setStatus(UserStatus.OFFLINE);
         userRepository.save(leaving_user);
         userRepository.flush();
     }
-
 }
