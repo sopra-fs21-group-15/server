@@ -113,7 +113,7 @@ public class GameController {
         //ScoreBoard score = game.getScoreBoard();
         return null;//ScoreBoardDTOMapper.INSTANCE.convertEntityToScoreBoardGetDTO(score);
     }
-
+/*
     //API Call for getting the chat in the game
     @GetMapping("/game/{gameId}/messages")
     @ResponseStatus(HttpStatus.OK)
@@ -135,4 +135,6 @@ public class GameController {
         Boolean correct = game.makeGuess(message);
         return correct;
     }
+ */
 }
+

@@ -19,7 +19,7 @@ public class LobbyPostDTO {
 
     private String  timer;
 
-    private ArrayList<Chat> lobbyChat;
+    private Integer chatId;
 
     private String status;
 
@@ -53,8 +53,8 @@ public class LobbyPostDTO {
 
     public void setTimer(String timer) { this.timer = timer; }
 
-    public ArrayList<Chat> getLobbyChat() { return lobbyChat; }
+    public Integer getChatId() { return chatId; }
 
-    public void setLobbyChat(ArrayList<Chat> lobbyChat) { this.lobbyChat = lobbyChat; }
+    public void setChatId(Integer chatId) { this.chatId = chatId; }
 
 }

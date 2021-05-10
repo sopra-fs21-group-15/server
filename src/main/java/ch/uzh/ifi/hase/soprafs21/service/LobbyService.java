@@ -235,7 +235,7 @@ public class LobbyService {
             lobbyRepository.save(lobbytoupdate);
             lobbyRepository.flush();
     }
-
+/*
     public void update_lobby_chat(Long lobbyId, String lobbyChatUpdate){
 
         List<Lobby> alllobbies = this.lobbyRepository.findAll();
@@ -249,6 +249,6 @@ public class LobbyService {
         }
 
     }
-
+*/
 }
 

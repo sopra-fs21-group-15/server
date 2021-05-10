@@ -1,11 +1,9 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
-import ch.uzh.ifi.hase.soprafs21.service.ChatService;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
@@ -58,7 +56,7 @@ public class Lobby implements Serializable {
 
     //lobby chat
     @Column
-    private Long chat_id;
+    private Long chatId;
 
     public Lobby() {
     }
@@ -127,9 +125,9 @@ public class Lobby implements Serializable {
     }
 
 
-    public Long getChat_id() { return chat_id; }
+    public Long getChatId() { return chatId; }
 
-    public void setChat_id(Long chat_id) { this.chat_id = chat_id; }
+    public void setChatId(Long chatId) { this.chatId = chatId; }
 
 }
 

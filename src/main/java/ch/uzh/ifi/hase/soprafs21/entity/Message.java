@@ -1,38 +1,49 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
+/*
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+*/
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class Message implements Serializable {
 
     @Id
-    @GeneratedValue
-    private LocalDateTime timeStamp;
-
     @Column(nullable = false)
-    private Long writer_id;
+    @JsonFormat(pattern = "hh:mm:ss")
+    private LocalTime timeStamp;
 
+    @Column
+    private String writerName;
+/*
+    @NotBlank
+    @NotEmpty
+*/
     @Column(nullable = false)
     private String message;
 
-    // generic methods to handle incoming requests
-    public LocalDateTime getTimeStamp() { return this.timeStamp; }
-    public void setTimeStamp(LocalDateTime timeStamp) { this.timeStamp = timeStamp; }
-
-    public Long getWriter_id() { return this.writer_id; }
-
-    public void setWriter_id(Long writer_id) { this.writer_id = writer_id; }
-
-    public String getMessage() { return this.message; }
-
-    public void setMessage(String message) { this.message = message;    }
-
-    // constructor for all the setup
-    public Message(String message, Long writer_id) {
-        this.timeStamp = LocalDateTime.now();
-        this.message = message;
-        this.writer_id = writer_id;
+    public String getWriterName() {
+        return writerName;
+    }
+    public void setWriterName(String writerName) {
+        this.writerName = writerName;
     }
 
+    public String getMessage() {
+        return message;
+    }
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public LocalTime getTimeStamp() {
+        return timeStamp;
+    }
+    public void setTimeStamp(LocalTime timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 }
