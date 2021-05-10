@@ -269,7 +269,7 @@ public class LobbyService {
             lobbyRepository.save(lobbytoupdate);
             lobbyRepository.flush();
     }
-
+/*
     public void update_lobby_chat(Long lobbyId, String lobbyChatUpdate){
         Lobby lobbytoupdate = getLobby(lobbyId);
 
@@ -284,6 +284,6 @@ public class LobbyService {
         //}
         //
     }
-
+*/
 }
 
