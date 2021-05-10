@@ -1,34 +1,51 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
 import ch.uzh.ifi.hase.soprafs21.entity.*;
+import ch.uzh.ifi.hase.soprafs21.helper.Standard;
+import ch.uzh.ifi.hase.soprafs21.helper.TimeStamp;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.*;
+import ch.uzh.ifi.hase.soprafs21.service.DrawingService;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 
+import ch.uzh.ifi.hase.soprafs21.service.LobbyService;
+import ch.uzh.ifi.hase.soprafs21.service.RoundService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class GameController {
 
     private final GameService gameService;
+    private final RoundService roundService;
+    private final DrawingService drawingService;
+    private final LobbyService lobbyService;
 
-    GameController(GameService gameService) { this.gameService = gameService; }
+    GameController(GameService gameService, RoundService roundService, DrawingService drawingService, LobbyService lobbyService) {
+        this.gameService = gameService;
+        this.roundService = roundService;
+        this.drawingService = drawingService;
+        this.lobbyService = lobbyService;
+    }
 
     // API call to create a game from the lobby (requires to be in a lobby first, lobby owner only)
     @PostMapping("/games/{lobbyId}/start")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public GameGetDTO createGame(@PathVariable Long lobbyId) {
-        // copy the input into a game visible for all players threw the repository
-        Game createdGame = gameService.createGame(lobbyId);
+        // copy the input into a game visible for all players through the repository
+        Lobby lobby = lobbyService.getLobby(lobbyId);
+        Long gameId = gameService.createGame(lobby);
+        Game createdGame = gameService.getGame(gameId);
 
         // convert internal representation of game back to API for client
         return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
-
     }
 
     // API call to join a created game from the lobby (requires to be in a lobby first)
@@ -37,7 +54,7 @@ public class GameController {
     @ResponseBody
     public GameGetDTO convertLobbyToGame(@PathVariable Long lobbyId) {
         // copy the input into a game visible for all players threw the repository
-        Game foundGame = gameService.getGameFromLobby(lobbyId);
+        Game foundGame = gameService.getGameFromLobbyId(lobbyId);
 
         // convert internal representation of game back to API for client
         return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(foundGame);
@@ -57,34 +74,43 @@ public class GameController {
 
     // TODO #40 test and refine mapping for sending drawing information
     // pass information to the right picture
-    @PutMapping("/game/{gameId}/drawing")
+    @PutMapping("/games/{gameId}/drawing")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void addBrushStrokes(@RequestBody BrushStrokePutDTO brushStrokeEditDTO, @PathVariable long gameId) {
         // convert API brush stroke to an internal representation
         BrushStroke brushStroke = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(brushStrokeEditDTO);
 
-        Game game = gameService.getGame(gameId);
+        // add the current time to the given brush stroke
+        DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
+        String currentTime = LocalDateTime.now().format(formatter);
+        brushStroke.setTimeStamp(currentTime);
 
-        // method checks on the level of the round if it is the right user
-        // game.addStroke(brushStrokeEditDTO.getUser_id(), brushStroke);
-        // game.addStroke(brushStrokeEditDTO.getUserName(), brushStroke);
+        // save the newly created brush stroke in the repository and in the drawing
+        Game game = gameService.getGame(gameId);
+        Round round = roundService.getRound(game.getRoundId());
+        drawingService.addStroke(round.getCurrentDrawing(),brushStroke);
     }
 
     // TODO #42 test and refine mapping for API-calls requesting the drawing
-    @GetMapping("/game/{gameId}/drawing")
-    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/games/{gameId}/drawing")
+    @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public DrawingGetDTO drawingRequest(@RequestBody DrawingPostDTO drawingPostDTO, @PathVariable Long gameId) {
-        LocalDateTime timeStamp = DrawingDTOMapper.INSTANCE.convertDrawingPostDTOtoEntity(drawingPostDTO);
+    public ArrayList<DrawingGetDTO> drawingRequest(@RequestBody TimeStringGetDTO timeStringGetDTO, @PathVariable Long gameId) {
+        TimeStamp timeStamp = TimeDTOMapper.INSTANCE.convertTimeStringGeTDTOtoEntity(timeStringGetDTO);
+
         Game game = gameService.getGame(gameId);
-        // Drawing drawing = game.getDrawing(timeStamp);
-        //return DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(drawing);
-        return null;
+        Round round = roundService.getRound(game.getRoundId());
+        List<BrushStroke> drawings = drawingService.getDrawing(round.getCurrentDrawing(),timeStamp.getTimeObject());
+        ArrayList<DrawingGetDTO> value = new ArrayList<>();
+        for(BrushStroke i : drawings){
+            value.add(DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(i));
+        }
+        return value;
     }
 
     // TODO #44 test and refine mapping API-call for requesting the letter-count
-    @GetMapping("/game/{gameId}/length")
+    @GetMapping("/games/{gameId}/length")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public WordCountGetDTO lengthRequest(@PathVariable Long gameId) {
@@ -95,7 +121,7 @@ public class GameController {
     }
 /*
     // TODO #51 test and refine mapping API-call for sending a guess of what the word might be
-    @PutMapping("/game/{gameId}/guess")
+    @PutMapping("/games/{gameId}/guess")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public void makeGuess(@RequestBody GuessPutDTO guessPutDTO, @PathVariable Long gameId) {
@@ -105,7 +131,7 @@ public class GameController {
     }
 */
     // TODO #53 test and refine the mapping for this API-call requesting the score
-    @GetMapping("/game/{gameId}/score")
+    @GetMapping("/games/{gameId}/score")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ScoreBoardGetDTO getScore(@PathVariable Long gameId) {
@@ -124,7 +150,8 @@ public class GameController {
         Chat chat = game.getChat(timeStamp);
         return ChatDTOMapper.INSTANCE.convertEntityToChatGetDTO(chat);
     }
-
+*/
+    /*
     //API Call for posting a message in the game
     @PutMapping("/game/{gameId}/messages")
     @ResponseStatus(HttpStatus.OK)
@@ -135,6 +162,8 @@ public class GameController {
         Boolean correct = game.makeGuess(message);
         return correct;
     }
- */
+=======
+
+     */
 }
 

@@ -40,8 +40,11 @@ public class Game implements Serializable {
     @Column(nullable = false, unique = true)
     private Long lobbyId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     private Long roundId;
+
+    @OneToOne
+    private Timer timer;
 
     // private ScoreBoard scoreBoard;
 
@@ -89,7 +92,7 @@ public class Game implements Serializable {
 
     // access current Round
     public int getRoundTracker() { return this.roundTracker; }
-    public void setRoundTracker(int currentRound) {
+    public void setRoundTracker(int roundTracker) {
         this.roundTracker = roundTracker;
     }
 
@@ -110,6 +113,10 @@ public class Game implements Serializable {
     // access the current round
     public Long getRoundId() { return this.roundId; }
     public void setRoundId(Long roundId) { this.roundId = roundId; }
+
+    // access to the timer
+    public Timer getTimer() { return this.timer; }
+    public void setTimer(Timer timer) { this.timer = timer; }
 
     /**
      * Back-end specific methods needed for functionality
@@ -156,6 +163,10 @@ public class Game implements Serializable {
             default:
                 value += "CLASSIC\n";
                 break;
+        }
+        value += "Rounds = " + roundTracker + "/" + numberOfRounds + "\n";
+        if(this.roundId != null) {
+            value += "RoundId = " + this.roundId.toString() + "\n";
         }
         return value;
     }

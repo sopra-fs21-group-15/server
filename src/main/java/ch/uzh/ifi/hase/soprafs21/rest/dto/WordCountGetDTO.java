@@ -5,7 +5,7 @@ public class WordCountGetDTO {
     private int length;
 
     // access length
-    public int getLength() { return length; }
+    public int getLength() { return 5; }
     public void setLength(int length) { this.length = length; }
 
 }

@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs21.entity.Message;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.ChatGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.MessagePostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.MessageGetDTO;
+
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 

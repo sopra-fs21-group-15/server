@@ -6,8 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-// I deleted some unnecessary find functions...
 @Repository("gameRepository")
 public interface GameRepository extends JpaRepository<Game, Long> {
-    Game findByGameName(String gameName);
+    Optional<Game> findById(Long id);
+    Optional<Game> findByLobbyId(Long lobbyId);
 }

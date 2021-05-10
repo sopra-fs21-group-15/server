@@ -2,10 +2,12 @@ package ch.uzh.ifi.hase.soprafs21.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-
+@Entity
+@Table(name = "DRAWING")
 public class Drawing implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -14,32 +16,20 @@ public class Drawing implements Serializable {
     @GeneratedValue
     private Long id;
 
-    private long drawerId;
+    @Column(nullable = false)
+    private String drawerName = "";
 
-    private ArrayList<BrushStroke> brushStrokes = new ArrayList<>();
+    @OneToMany
+    private List<BrushStroke> brushStrokes = new ArrayList<>();
 
     // generic methods to handle incoming requests
-    public long getDrawerId() { return this.drawerId; }
-    public void setDrawerId(long newDrawerId) { this.drawerId = newDrawerId; };
+    public Long getId() { return this.id; }
+    public void setId(Long id) { this.id = id; }
 
-    public ArrayList<BrushStroke> getBrushStrokes() { return this.brushStrokes; }
-    public void setBrushStrokes(ArrayList<BrushStroke> brushStrokes) { this.brushStrokes = brushStrokes; };
+    public String getDrawerName() { return this.drawerName; }
+    public void setDrawerName(String newDrawerName) { this.drawerName = newDrawerName; };
 
-    // one that does it all
-    public void addStroke(BrushStroke brushStroke) {
-        brushStrokes.add(brushStroke);
-    }
-
-    public Drawing getDrawing(LocalDateTime timeStamp) {
-        int index = 0;
-        while(brushStrokes.get(index).getTimeStamp().isBefore(timeStamp)) {
-            index++;
-        }
-        ArrayList<BrushStroke> temp = new ArrayList<BrushStroke>(brushStrokes.subList(index,brushStrokes.size()-1));
-        Drawing value = new Drawing();
-        value.setBrushStrokes(temp);
-        value.setDrawerId(0);
-        return value;
-    }
+    public List<BrushStroke> getBrushStrokes() { return this.brushStrokes; }
+    public void setBrushStrokes(List<BrushStroke> brushStrokes) { this.brushStrokes = brushStrokes; };
 
 }
