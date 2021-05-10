@@ -9,6 +9,7 @@ import ch.uzh.ifi.hase.soprafs21.rest.mapper.*;
 import ch.uzh.ifi.hase.soprafs21.service.DrawingService;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 
+import ch.uzh.ifi.hase.soprafs21.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs21.service.RoundService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,15 +23,15 @@ import java.util.List;
 public class GameController {
 
     private final GameService gameService;
-
     private final RoundService roundService;
-
     private final DrawingService drawingService;
+    private final LobbyService lobbyService;
 
-    GameController(GameService gameService, RoundService roundService, DrawingService drawingService) {
+    GameController(GameService gameService, RoundService roundService, DrawingService drawingService, LobbyService lobbyService) {
         this.gameService = gameService;
         this.roundService = roundService;
         this.drawingService = drawingService;
+        this.lobbyService = lobbyService;
     }
 
     // API call to create a game from the lobby (requires to be in a lobby first, lobby owner only)
@@ -39,11 +40,12 @@ public class GameController {
     @ResponseBody
     public GameGetDTO createGame(@PathVariable Long lobbyId) {
         // copy the input into a game visible for all players through the repository
-        Game createdGame = gameService.createGame(lobbyId);
+        Lobby lobby = lobbyService.getLobby(lobbyId);
+        Long gameId = gameService.createGame(lobby);
+        Game createdGame = gameService.getGame(gameId);
 
         // convert internal representation of game back to API for client
         return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
-
     }
 
     // API call to join a created game from the lobby (requires to be in a lobby first)
@@ -52,7 +54,7 @@ public class GameController {
     @ResponseBody
     public GameGetDTO convertLobbyToGame(@PathVariable Long lobbyId) {
         // copy the input into a game visible for all players threw the repository
-        Game foundGame = gameService.getGameFromLobby(lobbyId);
+        Game foundGame = gameService.getGameFromLobbyId(lobbyId);
 
         // convert internal representation of game back to API for client
         return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(foundGame);

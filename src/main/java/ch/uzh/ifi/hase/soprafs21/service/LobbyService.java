@@ -105,17 +105,18 @@ public class LobbyService {
 
     // get a requested lobby and compare password if its a private lobby.
     public Lobby getLobby(Long lobbyId) {
-        Lobby lobby;
-        Optional<Lobby> lobbyop = lobbyRepository.findById(lobbyId);
-        if (lobbyop.isPresent()) {
-            lobby = lobbyop.get();
-            return lobby;
-        }
-        else {
-            String nonexisting_lobby = "This lobby does not exist. Please search for an existing lobby!";
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_lobby));
+        // get all lobbies
+        Optional<Lobby> potLobby = lobbyRepository.findById(lobbyId);
+        Lobby value = null;
 
+        if (potLobby.isEmpty()) { // if not found
+            String nonExistingLobby = "This lobby does not exist. Please search for an existing lobby!";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingLobby));
+        } else { // if found
+            value = potLobby.get();
         }
+
+        return value;
     }
 
    // public Lobby getLobby(Long lobbyId) {

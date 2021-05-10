@@ -8,12 +8,14 @@ import ch.uzh.ifi.hase.soprafs21.repository.RoundRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -36,42 +38,19 @@ public class RoundService {
         this.userRepository = userRepository;
     }
 
-    // get all the games
-    public List<Game> getGames() {
-        return this.gameRepository.findAll();
-    }
-
-    // get a specific game
-    public Game getGame(Long gameId) {
-        List<Game> games = getGames();
-
-        Game gameFound = null;
-        for (Game i : games) {
-            if (gameId.equals(i.getId())) {
-                gameFound = i;
-            }
-        }
-
-        return gameFound;
-    }
-
-    // get all rounds
-    public List<Round> getRounds() {
-        return this.roundRepository.findAll();
-    }
-
-    // get a specific round
+    // get a specific round quality of life
     public Round getRound(Long roundId) {
-        List<Round> rounds = getRounds();
+        Optional<Round> potRound = roundRepository.findById(roundId);
+        Round value = null;
 
-        Round roundFound = null;
-        for (Round i : rounds) {
-            if (roundId.equals(i.getId())) {
-                roundFound = i;
-            }
+        if (potRound.isEmpty()) { // if not found
+            String nonExistingRound = "This round does not exist, has expired or has not been initialized yet.";
+            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingRound));
+        } else { // if found
+            value = potRound.get();
         }
 
-        return roundFound;
+        return value;
     }
 
 
@@ -80,10 +59,9 @@ public class RoundService {
      * to make the game work.
      */
     // a method to create a new round
-    public Round createRound(Long gameId) {
+    public Round createRound(Game game) {
 
         // find the game this round belongs to and create an empty object
-        Game game = getGame(gameId);
         Round round = new Round();
         int n = game.getPlayers().size();
 
@@ -98,14 +76,7 @@ public class RoundService {
         drawingRepository.flush(); // safe the drawings in the repository
         round.setDrawings(drawings); // safe the list of drawings within the round
 
-
-        round.setStopWatch(new Timer(game.getTimePerRound()));
-
         // get all the players (might get updated)
-        //List<String> players = new ArrayList<String>();
-        //for (String username : game.getPlayers()) {
-        //    players.add(userRepository.findByUsername(username));
-        //}
         round.setPlayers(game.getPlayers());
 
         // generate words for this round
@@ -122,29 +93,52 @@ public class RoundService {
         round.setHasGuessed( new int[n] );
         round.setHasDrawn( new boolean[n] );
 
-        // special randomised initialization to get a random drawer each time
-        Random rand = new Random();
-        int r = rand.nextInt(n);
-        round.setDrawerName(round.getPlayers().get(r));
-
-        // just now we selected a drawer, hence we need to remember who we pick so that he does not draw again in this round
-        ArrayList<String> usernames = round.getPlayers();
-        for(int i = 0; i < n; i++) {
-            if(usernames.get(i).equals(round.getDrawerName())) {
-                round.getHasDrawn()[i] = true;
-            }
-        }
-
-        //List<User> bla = new LinkedList<User>();
-
-        //bla.
-        // last but not least safe it in the repository
+        // last but not least safe it and push it to the repositories
         round = roundRepository.save(round);
         roundRepository.flush();
+        game.setRoundId(round.getId());
+        game.setRoundTracker(game.getRoundTracker() + 1);
+        gameRepository.saveAndFlush(game);
 
         // finally return the created round
         return round;
 
+    }
+
+    // helper method to find a new painter while respecting who has already drawn
+    public void setNewPainter(Round round) {
+        // get a random player
+        Random rand = new Random();
+
+        int n = round.getPlayers().size();
+        int i = rand.nextInt(n), sign = -1, distance = 0;
+
+        // if player has already drawn systematically pick an acceptable drawer
+        int value = (i + sign * distance + n) % n;
+        while(round.getHasDrawn()[value]) {
+            if(sign == -1) {
+                distance++;
+            }
+            sign *= -1;
+            value = (i + sign * distance + n) % n;
+        }
+
+        // set the new drawer
+        String newDrawerName = round.getPlayers().get(value);
+        round.setDrawerName(newDrawerName);
+
+        // save in the array that he/she can not be picked again
+        boolean[] newHasDrawn = round.getHasDrawn();
+        newHasDrawn[value] = true;
+        round.setHasDrawn(newHasDrawn);
+    }
+
+    // change index of the round so the API calls go to a different object in the array
+    public void setRoundIndex(Round round, int h) {
+        if(h < round.getPlayers().size()) {
+            round.setIndex(h);
+            roundRepository.saveAndFlush(round);
+        }
     }
 
     // TODO *41 see if function handling is up to the standarts
@@ -221,27 +215,5 @@ public class RoundService {
 
     }*/
 
-    // helper method to find a new painter
-    /*private void setNewPainter() {
-        // get a random player
-        Random rand = new Random();
 
-        int n = players.size();
-        int i = rand.nextInt(n), sign = -1, distance = 0;
-
-        // if player has already drawn systematically pick an acceptable drawer
-        int value = (i + sign * distance) % n;
-        while(hasDrawn[value]) {
-            if(sign == -1) {
-                distance++;
-            }
-            sign *= -1;
-            value = (i + sign * distance) % n;
-        }
-
-        // set the new drawer
-        //this.drawerId = players.get(value).getId();
-        this.drawerName = players.get(value);
-        hasDrawn[value] = true;
-    }*/
 }
