@@ -14,34 +14,28 @@ public class Chat implements Serializable{
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
-    private long userId;
+    @Column(nullable = true)
+    private ArrayList<String> messageList = new ArrayList<String>();
 
-    @Column(nullable = false)
-    private ArrayList<Message> messages = new ArrayList<Message>();
+    @Column(nullable = true)
+    private ArrayList<String> writerList = new ArrayList<String>();
+
+    @Column(nullable = true)
+    private ArrayList<LocalDateTime> timeStamps = new ArrayList<LocalDateTime>();
 
     // generic methods to handle incoming requests
-    public long getUserId() { return this.userId; }
-    public void setUserId(long userId) { this.userId = userId; };
+    public Long getId() { return this.id; }
+    public void setId(Long id) { this.id = id; }
 
-    public ArrayList<Message> getMessages() { return this.messages; }
-    public void setMessages(ArrayList<Message> messages) { this.messages = messages; };
+    public ArrayList<String> getMessageList() { return this.messageList; }
+    public void setMessageList(ArrayList<String> messsageList) { this.messageList = messageList; }
 
-    // one that does it all
-    public void addMessage(Message message) {
-        messages.add(message);
+    public ArrayList<String> getWriterList() { return this.writerList; }
+    public void setWriterList(ArrayList<String> writerList) { this.writerList = writerList; }
+
+    public ArrayList<LocalDateTime> getTimeStamps() { return this.timeStamps; }
+
+    public void setTimeStamps(ArrayList<LocalDateTime> timeStamps) {
+        this.timeStamps = timeStamps;
     }
-
-    public Chat getChat(LocalDateTime timeStamp) {
-        int index = 0;
-        while(messages.get(index).getTimeStamp().isBefore(timeStamp)) {
-            index++;
-        }
-        ArrayList<Message> temp = new ArrayList<Message>(messages.subList(index,messages.size()-1));
-        Chat value = new Chat();
-        value.setMessages(temp);
-        value.setUserId(0);
-        return value;
-    }
-
 }
