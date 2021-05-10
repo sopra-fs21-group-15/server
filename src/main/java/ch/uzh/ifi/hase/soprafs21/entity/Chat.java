@@ -7,6 +7,7 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -18,13 +19,13 @@ public class Chat implements Serializable{
     private Long lobbyId;
 
     @OneToMany
-    ArrayList<Message> messages = new ArrayList<Message>();
+    List<Message> messages = new ArrayList<Message>();
 
     // generic methods to handle incoming requests
     public Long getLobbyId() { return this.lobbyId; }
     public void setLobbyId(Long lobbyId) { this.lobbyId = lobbyId; }
 
-    public ArrayList<Message> getMessage() { return this.messages; }
+    public List<Message> getMessage() { return this.messages; }
     public void setMessage(Message message) { messages.add(message); }
 
     @Override

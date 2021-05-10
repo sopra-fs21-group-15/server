@@ -4,13 +4,14 @@ import ch.uzh.ifi.hase.soprafs21.entity.Message;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.ChatDTOMapper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ChatGetDTO {
 
 
     private Long lobbyId;
 
-    ArrayList<MessageGetDTO> messages = new ArrayList<>();
+    List<MessageGetDTO> messages = new ArrayList<>();
 
     public Long getLobbyId() {
         return lobbyId;
@@ -20,11 +21,11 @@ public class ChatGetDTO {
         this.lobbyId = lobbyId;
     }
 
-    public ArrayList<MessageGetDTO> getMessages() {
+    public List<MessageGetDTO> getMessages() {
         return messages;
     }
 
-    public void setMessages(ArrayList<Message> messages) {
+    public void setMessages(List<Message> messages) {
         for(Message m : messages) {
             MessageGetDTO messageGetDTO = ChatDTOMapper.INSTANCE.convertEntityToMessageGetDTO(m);
             this.messages.add(messageGetDTO);

@@ -10,7 +10,13 @@ import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.time.LocalTime;
 
+
+@Entity
+@Table(name = "MESSAGE")
 public class Message implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
 
     @Id
     @Column(nullable = false)
