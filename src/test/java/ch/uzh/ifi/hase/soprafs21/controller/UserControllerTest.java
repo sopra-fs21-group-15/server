@@ -266,6 +266,16 @@ public class UserControllerTest {
         mockMvc.perform(putRequest).andExpect(status().isNoContent()); }
 
 
+
+        @Test
+        public void logoutUser_validInput() throws Exception{
+        //userService.logout();
+
+
+
+    }
+
+
     /**
      * Helper Method to convert userPostDTO into a JSON string such that the input can be processed
      * Input will look like this: {"name": "Test User", "userpassword": "testUsername"}
