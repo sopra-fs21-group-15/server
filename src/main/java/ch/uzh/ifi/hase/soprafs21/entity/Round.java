@@ -58,6 +58,9 @@ public class Round implements Serializable {
     @Column(nullable = true)
     private String drawerName;
 
+    @Column(nullable = true)
+    private String word;
+
     // generic getter and setter methods for the mapper
     public Long getId() { return this.id; }
     public void setId(Long id) { this.id = id; }
@@ -82,6 +85,9 @@ public class Round implements Serializable {
 
     public String getDrawerName() { return this.drawerName; }
     public void setDrawerName(String newDrawerName) { this.drawerName = newDrawerName; }
+
+    public String getWord() { return this.word; }
+    public void setWord(String word) { this.word = word; }
 
     // quality of life methods
     public Drawing getCurrentDrawing() { return getDrawings().get(index); }
