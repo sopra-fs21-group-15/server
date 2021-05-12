@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Internal User Representation
@@ -33,18 +34,21 @@ public class User implements Serializable {
 
     //creation date for the data base
     @Column(nullable = false)
-    private String creation_date;
+    private String creationDate;
 
     //birth date for the data base
     @Column(nullable = true)
-    private String birth_date;
+    private String birthDate;
 
     @Column(nullable = false)
     private UserStatus status;
 
     @Column(nullable = true)
-    private String user_tag;
+    private String userTag;
 
+    //the user's friends
+    @Column(nullable = false)
+    private ArrayList<String> friendsList = new ArrayList<String>();
 
     public Long getId() {
         return id;
@@ -79,23 +83,23 @@ public class User implements Serializable {
     }
 
     //get the creation date
-    public String getCreation_date() {
-        return creation_date;
+    public String getCreationDate() {
+        return creationDate;
     }
 
     // set the creation date
-    public void setCreation_date(String creationDate) {
-        this.creation_date = creationDate;
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
     }
 
     //get the birth date
-    public String getBirth_date() {
-        return birth_date;
+    public String getBirthDate() {
+        return birthDate;
     }
 
     // set the birth date
-    public void setBirth_date(String birthDate) {
-        this.birth_date = birthDate;
+    public void setBirthDate(String birthDate) {
+        this.birthDate = birthDate;
     }
 
     public UserStatus getStatus() {
@@ -106,9 +110,15 @@ public class User implements Serializable {
         this.status = status;
     }
 
-    public String getUser_tag() { return user_tag; }
+    public String getUserTag() { return userTag; }
 
-    public void setUser_tag(String userTag) { this.user_tag = userTag; }
+    public void setUserTag(String userTag) { this.userTag = userTag; }
 
+    //get, set & delete friendsList & their status
+    public void setFriendsList(String friend) { friendsList.add(friend); }
+
+    public ArrayList<String> getFriendsList() { return friendsList; }
+
+    public void deleteFriendsList(String friend) { friendsList.remove(friend); }
 
 }

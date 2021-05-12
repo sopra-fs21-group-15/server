@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
+import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
@@ -163,9 +164,17 @@ public class LobbyService {
             lobbytoupdate.setPassword(lobbyChange.getPassword());
         }
 
+
         // change lobby size
         if (lobbyChange.getSize() != null) {
+            String more_members_than_size ="Too many members. Please remove some members, before decreasing the lobby size!";
+            if(lobbytoupdate.getMembers().size() <= lobbyChange.getSize()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(more_members_than_size));
+            }
             lobbytoupdate.setSize(lobbyChange.getSize());
+            if(lobbytoupdate.getMembers().size() == lobbytoupdate.getSize()) {
+                lobbytoupdate.setStatus(LobbyStatus.FULL);
+            }
         }
 
         // change number of rounds
@@ -187,18 +196,9 @@ public class LobbyService {
 
         Lobby lobbytoupdate = getLobby(lobbyId);
 
-        //List<Lobby> alllobbies = this.lobbyRepository.findAll();
-        //
-        //Lobby lobbytoupdate = null;
-        //
-        //for (Lobby i : alllobbies) {
-        //    if (lobbyId == i.getId()) {
-        //        lobbytoupdate = i;
-        //    }
-        //}
-
         String userName = userLobby.getLobbyname();
         String inputPassword = userLobby.getPassword();
+        User user = userRepository.findByUsername(userName);
 
         String lobby_is_full = "You cannot enter. The lobby is already full!";
 
@@ -221,40 +221,32 @@ public class LobbyService {
         if (lobbytoupdate.getMembers().contains(userName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(player_already_in_lobby));
         }
-        else lobbytoupdate.setMembers(userName);
-
+        lobbytoupdate.setMembers(userName);
+        user.setStatus(UserStatus.CHILLING);
         // check if the lobby is full after the new member is added
         if(lobbytoupdate.getMembers().size() == lobbytoupdate.getSize()) {
             lobbytoupdate.setStatus(LobbyStatus.FULL);
         }
-        System.out.println();
         // save into the repository
         lobbyRepository.save(lobbytoupdate);
         lobbyRepository.flush();
+
+        userRepository.save(user);
+        userRepository.flush();
     }
 
     public void remove_lobby_members(Long lobbyId, String userName) {
 
         Lobby lobbytoupdate = getLobby(lobbyId);
-
-        //
-        //List<Lobby> alllobbies = this.lobbyRepository.findAll();
-        //
-        //Lobby lobbytoupdate = null;
-        //
-        //for (Lobby i : alllobbies) {
-        //    if (lobbyId == i.getId()) {
-        //        lobbytoupdate = i;
-        //    }
-        //}
+        User user = userRepository.findByUsername(userName);
 
         // check if the userId is part of the lobby members
         String player_not_in_lobby = "This user is not a member of the lobby!";
         if (!lobbytoupdate.getMembers().contains(userName)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(player_not_in_lobby));
         }
-        else lobbytoupdate.deleteMembers(userName);
-
+        lobbytoupdate.deleteMembers(userName);
+        user.setStatus(UserStatus.ONLINE);
         // set the lobby to OPEN
         lobbytoupdate.setStatus(LobbyStatus.OPEN);
 
@@ -268,6 +260,9 @@ public class LobbyService {
             // save into the repository
             lobbyRepository.save(lobbytoupdate);
             lobbyRepository.flush();
+
+        userRepository.save(user);
+        userRepository.flush();
     }
 /*
     public void update_lobby_chat(Long lobbyId, String lobbyChatUpdate){
