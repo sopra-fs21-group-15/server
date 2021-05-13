@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
+import java.util.ArrayList;
+
 public class UserPostDTO {
 
     // added birth date to pass down and convert
@@ -10,6 +12,14 @@ public class UserPostDTO {
     private String birthDate;
 
     private String userTag;
+
+    private ArrayList<String> friends;
+
+    public void setFriends(ArrayList<String> friends) {
+        this.friends = friends;
+    }
+
+    public ArrayList<String> getFriends(){return friends; }
 
     public String getPassword() {
         return password;

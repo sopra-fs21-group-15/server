@@ -125,7 +125,7 @@ public class UserController {
         return userGetDTO;
     }
 
-    @DeleteMapping("/users/{userId}/friendsList")
+    @PutMapping("/users/{userId}/removeFriendList")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public UserGetDTO removeFriend(@PathVariable Long userId, @RequestBody UserPostDTO userPostDTO) {
