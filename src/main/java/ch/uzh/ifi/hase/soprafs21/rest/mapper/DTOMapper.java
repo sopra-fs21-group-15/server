@@ -21,15 +21,16 @@ public interface DTOMapper {
 
     @Mapping(source = "password", target = "password")
     @Mapping(source = "username", target = "username")
-    @Mapping(source = "birth_date", target = "birth_date") //map the birth date downwards!
+    @Mapping(source = "birthDate", target = "birthDate") //map the birth date downwards!
     User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "password", target = "password")
     @Mapping(source = "username", target = "username")
-    @Mapping(source = "creation_date", target = "creation_date") //map the creation date upwards!
-    @Mapping(source = "birth_date", target = "birth_date") //map the birth date upwards!
+    @Mapping(source = "creationDate", target = "creationDate") //map the creation date upwards!
+    @Mapping(source = "birthDate", target = "birthDate") //map the birth date upwards!
     @Mapping(source = "status", target = "status")
+    @Mapping(source = "friendsList", target = "friendsList") //map the members upwards!
     UserGetDTO convertEntityToUserGetDTO(User user);
 
 }

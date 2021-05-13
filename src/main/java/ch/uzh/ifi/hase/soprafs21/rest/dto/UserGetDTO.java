@@ -2,15 +2,19 @@ package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
 
+import java.util.ArrayList;
+
 public class UserGetDTO {
 
     private Long id;
     private String password;
     private String username;
     // added creation & birth date
-    private String creation_date;
-    private String birth_date;
+    private String creationDate;
+    private String birthDate;
     private UserStatus status;
+    private ArrayList<String> friendsList;
+    private String userTag;
 
 
     public Long getId() {
@@ -38,20 +42,20 @@ public class UserGetDTO {
     }
 
     // get creation date
-    public String getCreation_date() {
-        return creation_date;
+    public String getCreationDate() {
+        return creationDate;
     }
 
     // set creation date
-    public void setCreation_date(String creation_date) { this.creation_date = creation_date; }
+    public void setCreationDate(String creationDate) { this.creationDate = creationDate; }
 
     // get birth date
-    public String getBirth_date() {
-        return birth_date;
+    public String getBirthDate() {
+        return birthDate;
     }
 
     // set birth date
-    public void setBirth_date(String birth_date) { this.birth_date = birth_date; }
+    public void setBirthDate(String birthDate) { this.birthDate = birthDate; }
 
     public UserStatus getStatus() {
         return status;
@@ -60,4 +64,13 @@ public class UserGetDTO {
     public void setStatus(UserStatus status) {
         this.status = status;
     }
+
+    // get & set members
+    public ArrayList<String> getFriendsList() { return  friendsList; }
+
+    public void setFriendsList(ArrayList<String> friends) { this.friendsList = friends; }
+
+    public String getUserTag() { return userTag; }
+
+    public void setUserTag(String userTag) { this.userTag = userTag; }
 }

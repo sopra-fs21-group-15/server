@@ -2,7 +2,6 @@ package ch.uzh.ifi.hase.soprafs21.controller;
 
 import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.exceptions.GlobalExceptionAdvice;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs21.service.UserService;
@@ -216,8 +215,8 @@ public class UserControllerTest {
         User user = new User();
         user.setPassword("Firstname Lastname");
         user.setUsername("firstname@lastname");
-        user.setCreation_date("08-03-2020");
-        user.setBirth_date("01.01.1980");
+        user.setCreationDate("08-03-2020");
+        user.setBirthDate("01.01.1980");
         user.setStatus(UserStatus.OFFLINE);
         user.setId(1L);
 
@@ -228,8 +227,8 @@ public class UserControllerTest {
         mockMvc.perform(getRequest).andExpect(status().isOk())
                 .andExpect(jsonPath("$.password", is(user.getPassword())))
                 .andExpect(jsonPath("$.username", is(user.getUsername())))
-                .andExpect(jsonPath("$.creation_date", is(user.getCreation_date())))
-                .andExpect(jsonPath("$.birth_date", is(user.getBirth_date())))
+                .andExpect(jsonPath("$.creation_date", is(user.getCreationDate())))
+                .andExpect(jsonPath("$.birth_date", is(user.getBirthDate())))
                 .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
     }
 
@@ -254,7 +253,7 @@ public class UserControllerTest {
     public void updateUser_validInput() throws Exception {
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setUsername("username");
-        userPostDTO.setBirth_date("01.01.1980");
+        userPostDTO.setBirthDate("01.01.1980");
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
         doNothing().when(userService).updateUser(1L, userInput);
