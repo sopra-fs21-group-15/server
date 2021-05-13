@@ -36,7 +36,7 @@ public class UserController {
     @ResponseBody
     public List<UserGetDTO> getAllUsers() {
         // fetch all users in the internal representation
-        List<User> users = userService.getUsers();
+        List<User> users = userService.getAllUsers();
         List<UserGetDTO> userGetDTOs = new ArrayList<>();
 
         // convert each user to the API representation
@@ -72,7 +72,7 @@ public class UserController {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
         //ask userService if login request is allowed
-        User userLogin = userService.login_request(userInput);
+        User userLogin = userService.loginRequest(userInput);
 
         // convert internal representation of user back to API
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userLogin);
@@ -84,7 +84,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public UserGetDTO getUserByID(@PathVariable Long userId) {
-        User user = userService.getUser(userId);
+        User user = userService.getUserById(userId);
         // convert internal representation of user back to API
         UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
         return userGetDTO;
@@ -98,7 +98,7 @@ public class UserController {
     public void editCurrentUser(@PathVariable Long userId, @RequestBody UserPostDTO userEditDTO) {
         // convert API user to internal representation
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userEditDTO);
-        userService.update_user(userId, userInput);
+        userService.updateUser(userId, userInput);
 
     }
 
@@ -112,6 +112,7 @@ public class UserController {
         userService.logout(userId);
     }
 
+
     // Put mapping to add a friend to a user
 
     @PutMapping("/users/{userId}/friendsList")
@@ -119,8 +120,8 @@ public class UserController {
     @ResponseBody
     public UserGetDTO addFriend(@PathVariable Long userId, @RequestBody UserPostDTO userPostDTO) {
         User friend = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-        userService.add_user_to_friendsList(userId, friend);
-        User user = userService.getUser(userId);
+        userService.addUserToFriendsList(userId, friend);
+        User user = userService.getUserById(userId);
         UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
         return userGetDTO;
     }
@@ -130,11 +131,10 @@ public class UserController {
     @ResponseBody
     public UserGetDTO removeFriend(@PathVariable Long userId, @RequestBody UserPostDTO userPostDTO) {
         User friend = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-        userService.remove_user_from_friendsList(userId, friend);
-        User user = userService.getUser(userId);
+        userService.removeUserFromFriendsList(userId, friend);
+        User user = userService.getUserById(userId);
         UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
         return userGetDTO;
     }
-
 }
 

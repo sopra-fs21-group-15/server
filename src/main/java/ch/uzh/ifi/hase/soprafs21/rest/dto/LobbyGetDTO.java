@@ -16,7 +16,7 @@ public class LobbyGetDTO {
     private Integer timer;
     private ArrayList<String> members;
     private LobbyStatus status;
-    private Integer chatId;
+   // private Integer chatId;
 
     public Long getId() {
         return id;
@@ -73,7 +73,7 @@ public class LobbyGetDTO {
     }
 
     // get & set lobbyChat
-    public Integer getChatId() { return chatId; }
+ //   public Integer getChatId() { return chatId; }
 
-    public void setChatId(Integer chatId) { this.chatId = chatId; }
+//    public void setChatId(Integer chatId) { this.chatId = chatId; }
 }

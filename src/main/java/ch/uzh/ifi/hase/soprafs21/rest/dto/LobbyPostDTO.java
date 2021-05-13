@@ -19,7 +19,7 @@ public class LobbyPostDTO {
 
     private String  timer;
 
-    private Integer chatId;
+ //   private Integer chatId;
 
     private String status;
 
@@ -53,8 +53,8 @@ public class LobbyPostDTO {
 
     public void setTimer(String timer) { this.timer = timer; }
 
-    public Integer getChatId() { return chatId; }
+ //   public Integer getChatId() { return chatId; }
 
-    public void setChatId(Integer chatId) { this.chatId = chatId; }
+ //   public void setChatId(Integer chatId) { this.chatId = chatId; }
 
 }
