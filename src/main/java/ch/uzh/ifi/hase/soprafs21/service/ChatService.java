@@ -82,6 +82,9 @@ public class ChatService {
             message = chat.getMessage().get(index);
             searchedTime = LocalDateTime.parse(message.getTimeStamp(),formatter);
         }
+        if (index > chat.getMessage().size()) {
+           index--;
+        }
          // send back List of Messages or Chat?
         List<Message> newMessages = new ArrayList<>(chat.getMessage().subList(index, chat.getMessage().size()-1));
         Chat newChat = new Chat();

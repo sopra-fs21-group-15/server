@@ -227,8 +227,8 @@ public class UserControllerTest {
         mockMvc.perform(getRequest).andExpect(status().isOk())
                 .andExpect(jsonPath("$.password", is(user.getPassword())))
                 .andExpect(jsonPath("$.username", is(user.getUsername())))
-                .andExpect(jsonPath("$.creation_date", is(user.getCreationDate())))
-                .andExpect(jsonPath("$.birth_date", is(user.getBirthDate())))
+                .andExpect(jsonPath("$.creationDate", is(user.getCreationDate())))
+                .andExpect(jsonPath("$.birthDate", is(user.getBirthDate())))
                 .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
     }
 
