@@ -1,9 +1,13 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
+import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.LobbyGetDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.LobbyPostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.LobbyDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -106,6 +110,30 @@ public class UserController {
     public void userLogout (@PathVariable Long userId) {
 
         userService.logout(userId);
+    }
+
+    // Put mapping to add a friend to a user
+
+    @PutMapping("/users/{userId}/friendsList")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public UserGetDTO addFriend(@PathVariable Long userId, @RequestBody UserPostDTO userPostDTO) {
+        User friend = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        userService.add_user_to_friendsList(userId, friend);
+        User user = userService.getUser(userId);
+        UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+        return userGetDTO;
+    }
+
+    @PutMapping("/users/{userId}/removeFriendList")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public UserGetDTO removeFriend(@PathVariable Long userId, @RequestBody UserPostDTO userPostDTO) {
+        User friend = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        userService.remove_user_from_friendsList(userId, friend);
+        User user = userService.getUser(userId);
+        UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+        return userGetDTO;
     }
 
 }

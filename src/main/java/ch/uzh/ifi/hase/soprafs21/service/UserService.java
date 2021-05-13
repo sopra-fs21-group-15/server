@@ -1,9 +1,10 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
+import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.UserPostDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ import java.util.UUID;
 
 
 import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
+
 /**
  * User Service
  * This class is the "worker" and responsible for all functionality related to the user
@@ -49,7 +50,7 @@ public class UserService {
 
         newUser.setToken(UUID.randomUUID().toString());
         newUser.setStatus(UserStatus.ONLINE);
-        newUser.setCreation_date(getDate()); //get the creation date with the current date
+        newUser.setCreationDate(getDate()); //get the creation date with the current date
 
         // saves the given entity but data is only persisted in the database once flush() is called
 
@@ -164,8 +165,8 @@ public class UserService {
 
         User usertoupdate = getUser_id(userId);
 
-        if (userChange.getBirth_date() != null){
-            usertoupdate.setBirth_date(userChange.getBirth_date());
+        if (userChange.getBirthDate() != null){
+            usertoupdate.setBirthDate(userChange.getBirthDate());
         }
 
         if (userChange.getUsername() != null){
@@ -187,4 +188,50 @@ public class UserService {
         userRepository.save(leaving_user);
         userRepository.flush();
     }
+
+    public void add_user_to_friendsList(Long userId, User friend) {
+
+        User userToUpdate = getUser(userId);
+
+        String userName = friend.getUsername();
+
+        // check if the user is already a friend
+        String player_already_in_friendsList = "This user is already your friend!";
+        if (userToUpdate.getFriendsList().contains(userName)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(player_already_in_friendsList));
+        }
+        else userToUpdate.setFriendsList(userName);
+
+        // save into the repository
+        userRepository.save(userToUpdate);
+        userRepository.flush();
+    }
+
+    public void remove_user_from_friendsList(Long userId, User friend) {
+        User userToUpdate = getUser(userId);
+
+        String userName = friend.getUsername();
+
+        // check if the user is already a friend
+        String player_already_not_in_friendsList = "This user is already not your friend!";
+        if (!userToUpdate.getFriendsList().contains(userName)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(player_already_not_in_friendsList));
+        }
+        else userToUpdate.deleteFriendsList(userName);
+
+        // save into the repository
+        userRepository.save(userToUpdate);
+        userRepository.flush();
+    }
+
+    // send and accept friend requests?
+    public void send_friend_request(Long userId, User friend) {
+        return;
+    }
+
+    public void accept_friend_request(Long userId, User friend) {
+        return;
+    }
+
+
 }
