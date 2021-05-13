@@ -74,7 +74,7 @@ public class UserServiceTest {
     @Test
     public void getUsers_byID(){
         User createdUser = userService.createUser(testUser);
-        User foundUser = userService.getUser_id(testUser.getId());
+        User foundUser = userService.getUserById(testUser.getId());
 
         Mockito.verify(userRepository, Mockito.times(1)).findById(Mockito.any());
 
@@ -86,11 +86,11 @@ public class UserServiceTest {
     @Test
     public void getUsers_byID_unsuccessfull(){
         User createdUser = userService.createUser(testUser);
-        User foundUser = userService.getUser_id(1000L);
+        User foundUser = userService.getUserById(1000L);
 
         Mockito.when(userRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 
-        assertThrows(ResponseStatusException.class, () -> userService.getUser_id(1L));
+        assertThrows(ResponseStatusException.class, () -> userService.getUserById(1L));
 
     }
 
@@ -116,7 +116,7 @@ public class UserServiceTest {
         assertEquals(UserStatus.OFFLINE, createdUser.getStatus());
         // when --> Setup additional mocks
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
-        User logedinUser = userService.login_request(createdUser);
+        User logedinUser = userService.loginRequest(createdUser);
 
         assertEquals(testUser.getPassword(), logedinUser.getPassword());
         assertEquals(testUser.getUsername(), logedinUser.getUsername());
@@ -132,7 +132,7 @@ public class UserServiceTest {
 
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
 
-        assertThrows(ResponseStatusException.class, () -> userService.login_request(testUser));
+        assertThrows(ResponseStatusException.class, () -> userService.loginRequest(testUser));
     }
     @Test
     public void loginRequest_wrongPassword_throwError(){
@@ -146,7 +146,7 @@ public class UserServiceTest {
 
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(fake_User);
 
-        assertThrows(ResponseStatusException.class, () -> userService.login_request(createdUser));
+        assertThrows(ResponseStatusException.class, () -> userService.loginRequest(createdUser));
         assertEquals(UserStatus.OFFLINE, fake_User.getStatus());
     }
     @Test
@@ -157,7 +157,7 @@ public class UserServiceTest {
 
         assertNotEquals(testUser.getUsername(), userchanges.getUsername());
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
-        userService.update_user(testUser.getId(), userchanges);
+        userService.updateUser(testUser.getId(), userchanges);
 
         assertEquals(testUser.getUsername(), userchanges.getUsername());
         assertEquals(testUser.getBirth_date(), userchanges.getBirth_date());
@@ -177,7 +177,7 @@ public class UserServiceTest {
         assertNotEquals(testUser.getUsername(), userchanges.getUsername());
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(existinguser);
 
-        assertThrows(ResponseStatusException.class, () -> userService.update_user(testUser.getId(),userchanges));
+        assertThrows(ResponseStatusException.class, () -> userService.updateUser(testUser.getId(),userchanges));
         assertEquals(testUser.getUsername(),unchanged);
 
 }}

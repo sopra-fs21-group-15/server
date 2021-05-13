@@ -9,16 +9,16 @@ import java.util.List;
 public class ChatGetDTO {
 
 
-    private Long lobbyId;
+    private Long chatId;
 
     List<MessageGetDTO> messages = new ArrayList<>();
 
     public Long getLobbyId() {
-        return lobbyId;
+        return chatId;
     }
 
-    public void setLobbyId(Long lobbyId) {
-        this.lobbyId = lobbyId;
+    public void setLobbyId(Long chatId) {
+        this.chatId = chatId;
     }
 
     public List<MessageGetDTO> getMessages() {

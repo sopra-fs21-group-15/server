@@ -58,7 +58,7 @@ public class UserControllerTest {
         List<User> allUsers = Collections.singletonList(user);
 
         // this mocks the UserService -> we define above what the userService should return when getUsers() is called
-        given(userService.getUsers()).willReturn(allUsers);
+        given(userService.getAllUsers()).willReturn(allUsers);
 
         // when
         MockHttpServletRequestBuilder getRequest = get("/users").contentType(MediaType.APPLICATION_JSON);
@@ -129,7 +129,7 @@ public class UserControllerTest {
         mockMvc.perform(postRequest)
                 .andExpect(status().isCreated());
 
-        System.out.println(userService.getUsers());
+        System.out.println(userService.getAllUsers());
 
         User created_user = new User();
         created_user.setId(1L);
@@ -170,7 +170,7 @@ public class UserControllerTest {
         userPostDTO.setPassword("Test Password");
         userPostDTO.setUsername("testUsername");
 
-        given(userService.login_request(Mockito.any())).willReturn(user);
+        given(userService.loginRequest(Mockito.any())).willReturn(user);
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder putRequest = put("/login")
@@ -194,7 +194,7 @@ public class UserControllerTest {
         userPostDTO.setPassword("Test Password");
         userPostDTO.setUsername("testUsername");
 
-        given(userService.login_request(Mockito.any())).willThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        given(userService.loginRequest(Mockito.any())).willThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED));
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder putRequest = put("/login")
@@ -221,7 +221,7 @@ public class UserControllerTest {
         user.setStatus(UserStatus.OFFLINE);
         user.setId(1L);
 
-        given(userService.getUser(1L)).willReturn(user);
+        given(userService.getUserById(1L)).willReturn(user);
 
         MockHttpServletRequestBuilder getRequest = get("/users/1").contentType(MediaType.APPLICATION_JSON);
 
@@ -238,7 +238,7 @@ public class UserControllerTest {
     @Test
     public void getUser_notExistingUser() throws Exception {
 
-        given(userService.getUser(Mockito.anyLong())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+        given(userService.getUserById(Mockito.anyLong())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         MockHttpServletRequestBuilder getRequest = get("/users/99")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -257,7 +257,7 @@ public class UserControllerTest {
         userPostDTO.setBirth_date("01.01.1980");
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
-        doNothing().when(userService).update_user(1L, userInput);
+        doNothing().when(userService).updateUser(1L, userInput);
 
         MockHttpServletRequestBuilder putRequest = put("/users/1")
                 .contentType(MediaType.APPLICATION_JSON)

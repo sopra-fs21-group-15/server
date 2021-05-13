@@ -1,8 +1,9 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.entity.*;
+import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import ch.uzh.ifi.hase.soprafs21.repository.ChatRepository;
-import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs21.repository.MessageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +11,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StopWatch;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 @Transactional
@@ -26,42 +26,68 @@ public class ChatService {
     private final Logger log = LoggerFactory.getLogger(ChatService.class);
 
     private final ChatRepository chatRepository;
+    private final MessageRepository messageRepository;
 
     @Autowired
-    public ChatService(@Qualifier("chatRepository") ChatRepository chatRepository) {
+    public ChatService(@Qualifier("chatRepository") ChatRepository chatRepository, MessageRepository messageRepository) {
         this.chatRepository = chatRepository;
+        this.messageRepository = messageRepository;
     }
 
     public Chat getChat(Long chatId) {
         Optional<Chat> optionalChat = chatRepository.findById(chatId);
-        Chat value = null;
+        Chat chat = null;
 
         if (optionalChat.isEmpty()) { // if not found
             String nonExistingChat = "The chat you have been looking for does not exist.";
             new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingChat));
         } else { // if found
-            value = optionalChat.get();
+            chat = optionalChat.get();
         }
 
-        return value;
+        return chat;
     }
-/*
+
+    public void createChat(Long chatId) {
+        Chat chat = new Chat();
+        chat.setChatId(chatId);
+        chatRepository.save(chat);
+        chatRepository.flush();
+    }
+
     public void addNewMessage(Long chatId, Message newMessage) {
         Chat chat = getChat(chatId);
-        chat.addMessage(newMessage);
+        chat.setMessage(newMessage);
+        chatRepository.save(chat);
+        chatRepository.flush();
     }
 
-    public ArrayList<Message> getNewMessages(Long chat_id, LocalDateTime timeStamp) {
-        Chat chat = getChat(chat_id);
+    public Message createMessage(Message newMessage) {
+        newMessage = messageRepository.saveAndFlush(newMessage);
+        return newMessage;
+    }
+
+    public Chat getNewMessages(Long chatId, String timeStamp) {
+        Chat chat = getChat(chatId);
         int index = 0;
 
+        DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
+        Message message = chat.getMessage().get(index);
+        LocalDateTime messageTime = LocalDateTime.parse(message.getTimeStamp(),formatter);
+        LocalDateTime searchedTime = LocalDateTime.parse(timeStamp, formatter);
+
         // search for newer messages
-        while(chat.getMessage().get(index).getTimeStampObject().isBefore(timeStamp)) {
+        while(messageTime.isBefore(searchedTime) || messageTime.isEqual(searchedTime)) {
             index++;
+            message = chat.getMessage().get(index);
+            searchedTime = LocalDateTime.parse(message.getTimeStamp(),formatter);
         }
-         // send back new Messages or Chat?
-        ArrayList<Message> newMessages = new ArrayList<>(chat.getMessage().subList(index, chat.getMessage().size()-1));
-        return newMessages;
+         // send back List of Messages or Chat?
+        List<Message> newMessages = new ArrayList<>(chat.getMessage().subList(index, chat.getMessage().size()-1));
+        Chat newChat = new Chat();
+        newChat.setChatId(chatId);
+        newChat.setMessages(newMessages);
+        return newChat;
     }
-*/
+
 }

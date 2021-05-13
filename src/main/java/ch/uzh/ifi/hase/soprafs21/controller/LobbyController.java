@@ -1,13 +1,14 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
+import ch.uzh.ifi.hase.soprafs21.entity.Chat;
 import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs21.entity.Message;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.entity.Chat;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.ChatDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.LobbyDTOMapper;
+import ch.uzh.ifi.hase.soprafs21.service.ChatService;
 import ch.uzh.ifi.hase.soprafs21.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import org.springframework.http.HttpStatus;
@@ -21,11 +22,13 @@ public class LobbyController {
 
     private final LobbyService lobbyService;
     private final GameService gameService;
+    private final ChatService chatService;
 
-    LobbyController(LobbyService lobbyService, GameService gameService) {
-            this.lobbyService = lobbyService;
-            this.gameService = gameService;
-        }
+    LobbyController(LobbyService lobbyService, GameService gameService, ChatService chatService) {
+        this.lobbyService = lobbyService;
+        this.gameService = gameService;
+        this.chatService = chatService;
+    }
 
     // Get mapping to /lobbies to fetch all lobbies to the frontend
 
@@ -53,7 +56,7 @@ public class LobbyController {
 
         // create lobby
         Lobby createdLobby = lobbyService.createLobby(lobbyInput, userId);
-
+        chatService.createChat(createdLobby.getId());
         // convert internal representation of lobby back to API
         return LobbyDTOMapper.INSTANCE.convertEntityToLobbyGetDTO(createdLobby);
     }
@@ -88,7 +91,7 @@ public class LobbyController {
     @ResponseBody
     public LobbyGetDTO addMember(@PathVariable Long lobbyId, @RequestBody LobbyPostDTO lobbyEnterDTO) {
         Lobby lobbyInput = LobbyDTOMapper.INSTANCE.convertLobbyPostDTOtoEntity(lobbyEnterDTO);
-        lobbyService.add_lobby_members(lobbyId, lobbyInput);
+        lobbyService.addLobbyMembers(lobbyId, lobbyInput);
         Lobby lobby = lobbyService.getLobby(lobbyId);
         LobbyGetDTO lobbyGetDTO = LobbyDTOMapper.INSTANCE.convertEntityToLobbyGetDTO(lobby);
         return lobbyGetDTO;
@@ -101,19 +104,30 @@ public class LobbyController {
     @ResponseBody
     public void removeMember(@PathVariable Long lobbyId, @RequestBody UserPostDTO userPostDTO) {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-        lobbyService.remove_lobby_members(lobbyId, userInput.getUsername());
+        lobbyService.removeLobbyMembers(lobbyId, userInput.getUsername());
     }
 
     // Mapping for the lobby chats...
-/*
+
     @GetMapping("/lobbies/{lobbyId}/chats")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ChatGetDTO chatGetDTO(@PathVariable Long lobbyId, @RequestBody MessagePostDTO chatPostDTO) {
         Lobby lobby = lobbyService.getLobby(lobbyId);
         Message chatInput = ChatDTOMapper.INSTANCE.convertMessagePostDTOtoEntity(chatPostDTO);
-        Long chatId = lobby.getChatId();
-        return null;
+        Long chatId = lobby.getId();
+        Chat newMessages = chatService.getNewMessages(chatId, chatInput.getTimeStamp());
+        ChatGetDTO newChat = ChatDTOMapper.INSTANCE.convertEntityToChatGetDTO(newMessages);
+        return newChat;
     }
-*/
+
+    @PutMapping("/lobbies/{lobbyId}/chats")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void addChatMessage(@PathVariable Long lobbyId, @RequestBody MessagePostDTO messagePostDTO) {
+        Message message = ChatDTOMapper.INSTANCE.convertMessagePostDTOtoEntity(messagePostDTO);
+        message = chatService.createMessage(message);
+        chatService.addNewMessage(lobbyId, message);
+    }
+
 }
