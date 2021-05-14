@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
+import ch.uzh.ifi.hase.soprafs21.constant.RoundStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.*;
 import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import ch.uzh.ifi.hase.soprafs21.repository.DrawingRepository;
@@ -90,6 +91,7 @@ public class RoundService {
 
         // continue with setting the fields in order
         round.setIndex(0);
+        round.setStatus(RoundStatus.DRAWING);
         round.setHasGuessed( new int[n] );
         round.setHasDrawn( new boolean[n] );
 
@@ -138,6 +140,43 @@ public class RoundService {
         if(h < round.getPlayers().size()) {
             round.setIndex(h);
             roundRepository.saveAndFlush(round);
+        }
+    }
+
+    // change the current phase of the round
+    public void changePhase(Round round) {
+        switch (round.getStatus()) {
+            case SELECTING :
+                round.setStatus(RoundStatus.DRAWING);
+                break;
+            case DRAWING :
+                round.setStatus(RoundStatus.SELECTING);
+                break;
+            case DONE :
+                round.setStatus(RoundStatus.DONE);
+                break;
+        }
+        roundRepository.saveAndFlush(round);
+    }
+
+    // change the phase to done to show the round is already finished
+    public void endRound(Round round) {
+        round.setStatus(RoundStatus.DONE);
+        roundRepository.saveAndFlush(round);
+    }
+
+    // (Issue #35) the function that returns the choices a drawer can pick from
+    public List<String> getChoices(Round round, String username) {
+        if (round.getStatus().equals(RoundStatus.DRAWING)) { // check if the phase of the round is correct
+            String notCorrectPhase = "This round is currently in drawing. Wait for the phase to end before looking for the word choices.";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notCorrectPhase));
+        } else if (!username.equals(round.getDrawerName())) { // check if it is the right user asking for those infos
+            String notRightUser = "This user is not the current drawer. Please wait until it is your turn";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notRightUser));
+        } else { // get the current choices of words
+            int index = round.getIndex();
+            int choices = new Standard().getNumberOfChoices();
+            return round.getWords().subList(choices * index, choices * (index + 1));
         }
     }
 

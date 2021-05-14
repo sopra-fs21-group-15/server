@@ -98,7 +98,7 @@ public class DrawingService {
         LocalDateTime value = LocalDateTime.parse(brushStroke.getTimeStamp(),formatter);
 
         // iterate over the saved brush strokes in drawing
-        while(value.isBefore(timeStamp)) {
+        while(value.isBefore(timeStamp) || value.isEqual(timeStamp)) {
             index++;
             brushStroke = drawing.getBrushStrokes().get(index);
             value = LocalDateTime.parse(brushStroke.getTimeStamp(),formatter);

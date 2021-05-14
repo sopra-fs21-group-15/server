@@ -1,12 +1,15 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-
+@Entity
+@Table(name = "SCOREBOARD")
 public class ScoreBoard implements Serializable {
 
     private static final long serialVersionUID = 1L;
