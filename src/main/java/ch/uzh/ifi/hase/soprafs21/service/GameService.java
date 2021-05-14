@@ -155,6 +155,8 @@ public class GameService implements Runnable {
     public int startPhase(Game game) {
         Timer timer = game.getTimer();
         timerService.begin(timer);
+        Round round = roundService.getRound(game.getRoundId());
+        roundService.changePhase(round);
         return timerService.remainingTime(timer);
     }
 
@@ -196,6 +198,7 @@ public class GameService implements Runnable {
                 // needs to be implemented -> select word drawer pick or pick one yourself
                 endPhase(game);
                 // let players draw and guess the word
+                System.out.println("Should have changed phases");
                 waitingTime = startPhase(game);
                 try {
                     TimeUnit.MILLISECONDS.sleep(waitingTime);

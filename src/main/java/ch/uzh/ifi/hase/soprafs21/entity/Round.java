@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.constant.Colours;
+import ch.uzh.ifi.hase.soprafs21.constant.RoundStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -34,8 +35,8 @@ public class Round implements Serializable {
     @GeneratedValue
     private Long id;
 
-    //@OneToOne
-    //private Game game;
+    @Column(nullable = false)
+    private RoundStatus status = RoundStatus.DRAWING;
 
     @OneToMany
     private List<Drawing> drawings = new ArrayList<Drawing>();
@@ -64,6 +65,9 @@ public class Round implements Serializable {
     // generic getter and setter methods for the mapper
     public Long getId() { return this.id; }
     public void setId(Long id) { this.id = id; }
+
+    public RoundStatus getStatus() { return this.status; }
+    public void setStatus(RoundStatus status) { this.status = status; }
 
     public List<Drawing> getDrawings() { return this.drawings; }
     public void setDrawings(List<Drawing> drawings) { this.drawings = drawings; }

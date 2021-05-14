@@ -165,5 +165,36 @@ public class GameController {
 =======
 
      */
+
+    /** (Issue #35) API call to get the current options the drawer can chose from right now has right now. Checks if
+     * the game is currently in the selection phase and checks if the person sending the request is the drawer at this
+     * point in time. Returns nothing if either requirements do not match.
+     * @param gameId = the id of the game we would like to get the options for
+     * @param username = the username of the user who requested it
+     * @return a list of three strings from which the current drawer can pick one
+     */
+    @GetMapping("/games/{gameId}/choices/{username}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<String> getChoices(@PathVariable Long gameId, @PathVariable String username) {
+        Game game = gameService.getGame(gameId);
+        Round round = roundService.getRound(game.getRoundId());
+        return roundService.getChoices(round,username);
+    }
+
+    /** (Issue #114) API call to get the current information of the round including but not limited to the current
+     * drawer, the phase the round is in and the current word that was picked.
+     * @param gameId = the id of the game the round is associated with
+     * @return a DTO object that contains all the information
+     */
+    @GetMapping("/games/{gameId}/update")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public RoundGetDTO update(@PathVariable Long gameId) {
+        Game game = gameService.getGame(gameId);
+        Round round = roundService.getRound(game.getRoundId());
+        return RoundDTOMapper.INSTANCE.convertEntityToRoundGetDTO(round);
+    }
+
 }
 
