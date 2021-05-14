@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
-import ch.uzh.ifi.hase.soprafs21.constant.RoundStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.*;
 import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import ch.uzh.ifi.hase.soprafs21.repository.DrawingRepository;
@@ -216,6 +215,16 @@ public class RoundService {
         roundRepository.saveAndFlush(round);
     }
 
+    // (Issue #45) API-call for requesting the letter-count
+    public int getLength(Round round) {
+        if (round.getStatus().equals(SELECTING)) { // check if the phase of the round is correct
+            String notCorrectPhase = "This round is currently in selecting. Wait for the phase to end before getting information about the word.";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notCorrectPhase));
+        } else { // get the current length of the word
+            return round.getWord().length();
+        }
+    }
+
     // TODO *41 see if function handling is up to the standarts
     // drawer has drawn (automatically distinguishes between first time drawing and subsequent strokes)
     // public void addStroke(long idOfDrawer, BrushStroke brushStroke) {
@@ -260,11 +269,6 @@ public class RoundService {
                 }
             }
         }
-    }
-
-    // TODO #45 check if the function works properly
-    public int getLength() {
-        return words.get(currentWord - 1).length();
     }
 
     // round has a turning point with new roles or it finishes
