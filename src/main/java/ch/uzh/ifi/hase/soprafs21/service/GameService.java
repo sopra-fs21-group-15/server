@@ -155,8 +155,6 @@ public class GameService implements Runnable {
     public int startPhase(Game game) {
         Timer timer = game.getTimer();
         timerService.begin(timer);
-        Round round = roundService.getRound(game.getRoundId());
-        roundService.changePhase(round);
         return timerService.remainingTime(timer);
     }
 
@@ -188,6 +186,8 @@ public class GameService implements Runnable {
                 // pick a new drawer and select
                 roundService.setNewPainter(round);
                 roundService.setRoundIndex(round,h);
+                roundService.resetChoice(round);
+                roundService.changePhase(round);
                 waitingTime = startPhase(game);
                 // wait for drawer to chose a word
                 try {
@@ -195,10 +195,13 @@ public class GameService implements Runnable {
                 } catch (InterruptedException e) {
                         // needs to be implemented -> player has chosen a word before the timer ran out
                 }
-                // needs to be implemented -> select word drawer pick or pick one yourself
+                // select word drawer pick or pick one yourself
                 endPhase(game);
+                if (round.getWord() == null) {
+                    roundService.makeChoiceForUser(round);
+                }
                 // let players draw and guess the word
-                System.out.println("Should have changed phases");
+                roundService.changePhase(round);
                 waitingTime = startPhase(game);
                 try {
                     TimeUnit.MILLISECONDS.sleep(waitingTime);

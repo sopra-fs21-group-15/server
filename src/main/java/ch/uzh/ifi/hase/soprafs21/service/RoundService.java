@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import static ch.uzh.ifi.hase.soprafs21.constant.RoundStatus.*;
+
 @Service
 @Transactional
 public class RoundService {
@@ -91,7 +93,7 @@ public class RoundService {
 
         // continue with setting the fields in order
         round.setIndex(0);
-        round.setStatus(RoundStatus.DRAWING);
+        round.setStatus(DRAWING);
         round.setHasGuessed( new int[n] );
         round.setHasDrawn( new boolean[n] );
 
@@ -145,29 +147,23 @@ public class RoundService {
 
     // change the current phase of the round
     public void changePhase(Round round) {
-        switch (round.getStatus()) {
-            case SELECTING :
-                round.setStatus(RoundStatus.DRAWING);
-                break;
-            case DRAWING :
-                round.setStatus(RoundStatus.SELECTING);
-                break;
-            case DONE :
-                round.setStatus(RoundStatus.DONE);
-                break;
+        if(round.getStatus().equals(DRAWING)) {
+            round.setStatus(SELECTING);
+        } else {
+            round.setStatus(DRAWING);
         }
         roundRepository.saveAndFlush(round);
     }
 
     // change the phase to done to show the round is already finished
     public void endRound(Round round) {
-        round.setStatus(RoundStatus.DONE);
+        round.setStatus(DONE);
         roundRepository.saveAndFlush(round);
     }
 
-    // (Issue #35) the function that returns the choices a drawer can pick from
+    // (Issue #36) the function that returns the choices a drawer can pick from
     public List<String> getChoices(Round round, String username) {
-        if (round.getStatus().equals(RoundStatus.DRAWING)) { // check if the phase of the round is correct
+        if (round.getStatus().equals(DRAWING)) { // check if the phase of the round is correct
             String notCorrectPhase = "This round is currently in drawing. Wait for the phase to end before looking for the word choices.";
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notCorrectPhase));
         } else if (!username.equals(round.getDrawerName())) { // check if it is the right user asking for those infos
@@ -178,6 +174,46 @@ public class RoundService {
             int choices = new Standard().getNumberOfChoices();
             return round.getWords().subList(choices * index, choices * (index + 1));
         }
+    }
+
+    // (Issue #39) the function that allows the drawer to pick the word he/she would like to draw
+    public void makeChoice(Round round, String username, int choice) {
+        int numberOfChoices = new Standard().getNumberOfChoices();
+        if (round.getStatus().equals(DRAWING)) { // check if the phase of the round is correct
+            String notCorrectPhase = "This round is currently in drawing. Wait for the phase to end before picking a word from the choices.";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notCorrectPhase));
+        } else if (!username.equals(round.getDrawerName())) { // check if it is the right user sending this choice
+            String notRightUser = "This user is not the current drawer. Please wait until it is your turn";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notRightUser));
+        } else if (choice < 0 || choice >= numberOfChoices) {
+            String notRightChoice = "The choice you send is out of bounds. Please consider taking one of the options given to you.";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notRightChoice));
+        } else if (round.getWord() != null) {
+            String noLongerYourChoice = "The drawer has already mad a choice and that choice can not be changed.";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(noLongerYourChoice));
+        } else { // get the current choices of words
+            int index = round.getIndex();
+            String wordOfChoice = round.getWords().get(index * numberOfChoices + choice);
+            round.setWord(wordOfChoice);
+            roundRepository.saveAndFlush(round);
+        }
+    }
+
+    // (Issue #116) reset the word that was chosen
+    public void resetChoice(Round round) {
+        round.setWord(null);
+        roundRepository.saveAndFlush(round);
+    }
+
+    // (Issue #116) make a choice for a user that has not send his wishes in time
+    public void makeChoiceForUser(Round round) {
+        Random rand = new Random();
+        int index = round.getIndex();
+        int numberOfChoices = new Standard().getNumberOfChoices();
+        int choiceId = rand.nextInt(numberOfChoices);
+        String choice = round.getWords().get( index * numberOfChoices + choiceId);
+        round.setWord(choice);
+        roundRepository.saveAndFlush(round);
     }
 
     // TODO *41 see if function handling is up to the standarts
