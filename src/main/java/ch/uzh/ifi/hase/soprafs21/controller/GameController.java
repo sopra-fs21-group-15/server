@@ -182,6 +182,23 @@ public class GameController {
         return roundService.getChoices(round,username);
     }
 
+    /** (Issue #39) function handling the selection of a word. The function checks if the request was send by the
+     * drawer and if the phase the round is in right now is correct and allows for choices.
+     * @param gameId = the id of the game the round is associated with
+     * @param username = the name of the user sending this request
+     * @param choiceId = the choice the user would like to make
+     * @return a DTO object that contains all the information
+     */
+    @PutMapping("/games/{gameId}/choices/{username}/{choiceId}/")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void makeChoice(@PathVariable Long gameId, @PathVariable String username, @PathVariable Integer choiceId) {
+        Game game = gameService.getGame(gameId);
+        Round round = roundService.getRound(game.getRoundId());
+        int choice = choiceId.intValue();
+        roundService.makeChoice(round,username,choice);
+    }
+
     /** (Issue #114) API call to get the current information of the round including but not limited to the current
      * drawer, the phase the round is in and the current word that was picked.
      * @param gameId = the id of the game the round is associated with
