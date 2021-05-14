@@ -109,7 +109,7 @@ public class LobbyController {
 
     // Mapping for the lobby chats...
 
-    @GetMapping("/lobbies/{lobbyId}/chats")
+    @PostMapping("/lobbies/{lobbyId}/chats")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ChatGetDTO chatGetDTO(@PathVariable Long lobbyId, @RequestBody MessagePostDTO chatPostDTO) {
