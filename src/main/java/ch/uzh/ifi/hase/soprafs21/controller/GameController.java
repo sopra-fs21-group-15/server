@@ -109,15 +109,14 @@ public class GameController {
         return value;
     }
 
-    // TODO #44 test and refine mapping API-call for requesting the letter-count
+    // (Issue #44) API-call for requesting the letter-count
     @GetMapping("/games/{gameId}/length")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public WordCountGetDTO lengthRequest(@PathVariable Long gameId) {
+    public int lengthRequest(@PathVariable Long gameId) {
         Game game = gameService.getGame(gameId);
-        //int value = game.getLength();
-        //return WordCountDTOMapper.INSTANCE.convertEntityToWordCountGetDTO(value);
-        return null;
+        Round round = roundService.getRound(game.getRoundId());
+        return roundService.getLength(round);
     }
 /*
     // TODO #51 test and refine mapping API-call for sending a guess of what the word might be
@@ -189,7 +188,7 @@ public class GameController {
      * @param choiceId = the choice the user would like to make
      * @return a DTO object that contains all the information
      */
-    @PutMapping("/games/{gameId}/choices/{username}/{choiceId}/")
+    @PutMapping("/games/{gameId}/choices/{username}/{choiceId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public void makeChoice(@PathVariable Long gameId, @PathVariable String username, @PathVariable Integer choiceId) {
