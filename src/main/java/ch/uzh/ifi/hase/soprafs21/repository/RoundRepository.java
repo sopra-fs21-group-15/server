@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository("roundRepository")
 public interface RoundRepository extends JpaRepository<Round, Long> {
-    Optional<Round> findById(Long roundId);
+    Optional<Round> findById(Long id);
 }

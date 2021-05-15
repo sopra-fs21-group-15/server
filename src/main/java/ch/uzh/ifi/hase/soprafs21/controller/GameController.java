@@ -119,14 +119,17 @@ public class GameController {
         return roundService.getLength(round);
     }
 
-    // TODO #53 test and refine the mapping for this API-call requesting the score
+    /** (Issue 53) API-call for the current score of the round right now
+     * @param gameId = the id of the game we would like have the score as it stands
+     * @return a DTO object with the sorted list of players, their respective ranking and score
+     */
     @GetMapping("/games/{gameId}/score")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ScoreBoardGetDTO getScore(@PathVariable Long gameId) {
         Game game = gameService.getGame(gameId);
-        //ScoreBoard score = game.getScoreBoard();
-        return null;//ScoreBoardDTOMapper.INSTANCE.convertEntityToScoreBoardGetDTO(score);
+        ScoreBoard score = game.getScoreBoard();
+        return ScoreBoardDTOMapper.INSTANCE.convertEntityToScoreBoardGetDTO(score);
     }
 /*
     //API Call for getting the chat in the game
