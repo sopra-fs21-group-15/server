@@ -239,7 +239,6 @@ public class RoundService {
                 playerIndex = round.getPlayers().indexOf(message.getWriterName());
                 hasNotGuessedYet = !round.getHasGuessed()[playerIndex];
             }
-            System.out.println("isNotPainter: " + isNotPainter + ", isPartOfGame: " + isPartOfGame + ", isRightWord: " + isRightWord + ", hasNotGuessedYet:" + hasNotGuessedYet);
 
             // summaries, make all the checks together
             boolean value = isNotPainter && isPartOfGame && isRightWord && hasNotGuessedYet;

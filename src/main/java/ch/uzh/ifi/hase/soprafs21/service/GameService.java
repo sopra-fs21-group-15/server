@@ -33,24 +33,23 @@ public class GameService implements Runnable {
     private final Logger log = LoggerFactory.getLogger(GameService.class);
 
     private final GameRepository gameRepository;
-
     private final LobbyRepository lobbyRepository;
-
     private final UserRepository userRepository;
 
     private final RoundService roundService;
-
     private final TimerService timerService;
+    private final ScoreBoardService scoreBoardService;
 
     private List<Game> gamesToBeRun = new ArrayList<Game>();
 
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository, RoundService roundService, TimerService timerService) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository, RoundService roundService, TimerService timerService, ScoreBoardService scoreBoardService) {
         this.gameRepository = gameRepository;
         this.lobbyRepository = lobbyRepository;
         this.userRepository = userRepository;
         this.roundService = roundService;
         this.timerService = timerService;
+        this.scoreBoardService = scoreBoardService;
     }
 
     /** Huge method to create a game from the lobby id given to us. All the information should be stored and
@@ -90,10 +89,9 @@ public class GameService implements Runnable {
         newGame.setTimePerRound(timePerRound);
         newGame.setTimer(timer);
 
-        // ... the scoreboard
-        //ScoreBoard scoreBoard = new ScoreBoard(newGame.getPlayers());
-        //newGame.setScoreBoard(scoreBoard);
-        //System.out.println("Scoreboard worked");
+        // the scoreboard
+        ScoreBoard scoreBoard = scoreBoardService.createScoreBoard(lobby);
+        newGame.setScoreBoard(scoreBoard);
 
         // general information
         newGame.setRoundTracker(0);
