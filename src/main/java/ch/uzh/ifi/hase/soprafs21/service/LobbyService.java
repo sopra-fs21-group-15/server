@@ -75,11 +75,14 @@ public class LobbyService {
         newLobby.setStatus(LobbyStatus.OPEN);
         newLobby.setMembers(username);
 
+        userFound.setStatus(UserStatus.CHILLING);
+
         // saves the given entity but data is only persisted in the database once flush() is called
 
         newLobby = lobbyRepository.save(newLobby);
         lobbyRepository.flush();
 
+        userService.saveUser(userFound);
         log.debug("Created Information for Lobby: {}", newLobby);
         return newLobby;
     }

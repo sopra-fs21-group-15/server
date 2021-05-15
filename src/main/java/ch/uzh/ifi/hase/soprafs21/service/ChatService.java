@@ -51,6 +51,7 @@ public class ChatService {
     public void createChat(Long chatId) {
         Chat chat = new Chat();
         chat.setChatId(chatId);
+
         chatRepository.save(chat);
         chatRepository.flush();
     }
@@ -71,22 +72,34 @@ public class ChatService {
         Chat chat = getChat(chatId);
         int index = 0;
 
-        DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
-        Message message = chat.getMessage().get(index);
-        LocalDateTime messageTime = LocalDateTime.parse(message.getTimeStamp(),formatter);
-        LocalDateTime searchedTime = LocalDateTime.parse(timeStamp, formatter);
+        List<Message> newMessages = new ArrayList<>();
+        // check if chat is empty
+        if (!(chat.getMessage().isEmpty())) {
 
-        // search for newer messages
-        while(messageTime.isBefore(searchedTime) || messageTime.isEqual(searchedTime)) {
-            index++;
-            message = chat.getMessage().get(index);
-            searchedTime = LocalDateTime.parse(message.getTimeStamp(),formatter);
+            DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
+            Message message = chat.getMessage().get(index);
+            LocalDateTime messageTime = LocalDateTime.parse(message.getTimeStamp(),formatter);
+            LocalDateTime searchedTime = LocalDateTime.parse(timeStamp, formatter);
+
+
+            // search for newer messages
+            while(messageTime.isBefore(searchedTime) || messageTime.isEqual(searchedTime)) {
+                if (index <= chat.getMessage().size()-1) {
+                    message = chat.getMessage().get(index);
+                    searchedTime = LocalDateTime.parse(message.getTimeStamp(), formatter);
+                    index++;
+                }
+                else {
+                    index = chat.getMessage().size()-1;
+                    break;
+                }
+
+            }
+
+            // send back List of Messages or Chat?
+            newMessages = new ArrayList<>(chat.getMessage().subList(index, chat.getMessage().size()-1));
+
         }
-        if (index > chat.getMessage().size()) {
-           index--;
-        }
-         // send back List of Messages or Chat?
-        List<Message> newMessages = new ArrayList<>(chat.getMessage().subList(index, chat.getMessage().size()-1));
         Chat newChat = new Chat();
         newChat.setChatId(chatId);
         newChat.setMessages(newMessages);
