@@ -47,6 +47,7 @@ public class LobbyServiceTest {
         testLobby.setSize(8);
         testLobby.setRounds(5);
 
+
         testUser = new User();
         testUser.setId(1L);
         testUser.setPassword("testName");
@@ -56,6 +57,7 @@ public class LobbyServiceTest {
         Mockito.when(lobbyRepository.save(Mockito.any())).thenReturn(testLobby);
         Mockito.when(lobbyRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testLobby));
         Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testUser));
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn((testUser));
     }
 
     @Test
@@ -87,6 +89,10 @@ public class LobbyServiceTest {
     }
     @Test
     public void update_Lobby_success(){
+        Lobby createdLobby = lobbyService.createLobby(testLobby,testUser.getId());
+
+        // then
+        Mockito.verify(lobbyRepository, Mockito.times(1)).save(Mockito.any());
         Lobby changeslobby = new Lobby();
         changeslobby.setRounds(4);
         changeslobby.setTimer(75);
@@ -94,7 +100,8 @@ public class LobbyServiceTest {
         changeslobby.setSize(10);
         changeslobby.setPassword("null");
 
-        lobbyService.update_lobby(testLobby.getId(), changeslobby );
+        lobbyService.update_lobby(createdLobby.getId(), changeslobby );
+
 
         assertEquals(testLobby.getSize(), changeslobby.getSize());
         assertEquals(testLobby.getRounds(), changeslobby.getRounds());
@@ -107,11 +114,13 @@ public class LobbyServiceTest {
 
     @Test
     public  void joinaPrivateLobby_withPassword_success(){
+
         Lobby user = new Lobby();
         user.setPassword("testPassword");
         user.setLobbyname(testUser.getUsername());
 
-        lobbyService.add_lobby_members(testLobby.getId(), user);
+        lobbyService.addLobbyMembers(testLobby.getId(), user);
+
 
         assertEquals(testLobby.getMembers().size(), 1);
         assertEquals(testLobby.getMembers().contains(user.getLobbyname()), true);
@@ -124,7 +133,7 @@ public class LobbyServiceTest {
         user.setPassword("testPassword1");
         user.setLobbyname(testUser.getUsername());
 
-        assertThrows(ResponseStatusException.class, ()->lobbyService.add_lobby_members(testLobby.getId(), user));
+        assertThrows(ResponseStatusException.class, ()->lobbyService.addLobbyMembers(testLobby.getId(), user));
 
     }
     @Test
@@ -133,7 +142,7 @@ public class LobbyServiceTest {
         user.setPassword(null);
         user.setLobbyname(testUser.getUsername());
 
-        assertThrows(ResponseStatusException.class, ()->lobbyService.add_lobby_members(testLobby.getId(), user));
+        assertThrows(ResponseStatusException.class, ()->lobbyService.addLobbyMembers(testLobby.getId(), user));
 
     }
     @Test
@@ -142,7 +151,7 @@ public class LobbyServiceTest {
         user.setPassword("testPassword1");
         user.setLobbyname(testUser.getUsername());
         testLobby.setStatus(LobbyStatus.FULL);
-        assertThrows(ResponseStatusException.class, ()->lobbyService.add_lobby_members(testLobby.getId(), user));
+        assertThrows(ResponseStatusException.class, ()->lobbyService.addLobbyMembers(testLobby.getId(), user));
 
     }
 
@@ -155,7 +164,8 @@ public class LobbyServiceTest {
         createdLobby.setMembers("delete");
 
 
-        lobbyService.remove_lobby_members(testLobby.getId(), "delete");
+        lobbyService.removeLobbyMembers(testLobby.getId(), "delete");
+        Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any());
 
         assertEquals(LobbyStatus.OPEN, createdLobby.getStatus());
         assertEquals(2, createdLobby.getMembers().size());
@@ -169,7 +179,7 @@ public class LobbyServiceTest {
         Lobby createdLobby = lobbyService.createLobby(testLobby,testUser.getId());
         createdLobby.setMembers("testUser2");
 
-        assertThrows(ResponseStatusException.class, ()->lobbyService.remove_lobby_members(testLobby.getId(), "user"));
+        assertThrows(ResponseStatusException.class, ()->lobbyService.removeLobbyMembers(testLobby.getId(), "user"));
 
     }
 }

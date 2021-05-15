@@ -48,10 +48,27 @@ public class LobbyService {
         return this.lobbyRepository.findAll();
     }
 
+    public User getUser(Long userId){
+        User user;
+        Optional<User> optional = userRepository.findById(userId);
+        if (optional.isPresent()) {
+            user = optional.get();
+            return user;
+        }
+        else {
+            String nonExistingUser = "This user does not exist. Please search for an existing user!";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingUser));
+        }
+    }
+
+    public void saveUser(User user){
+        userRepository.save(user);
+        userRepository.flush();
+    }
     // create the lobby
     public Lobby createLobby(Lobby newLobby, Long userId) {
         checkIfLobbyExists(newLobby);
-        User userFound = userService.getUserById(userId);
+        User userFound = getUser(userId);
 
         String username = userFound.getUsername();
         newLobby.setToken(UUID.randomUUID().toString());
@@ -113,7 +130,7 @@ public class LobbyService {
         // change lobby size
         if (lobbyChange.getSize() != null) {
             String more_members_than_size ="Too many members. Please remove some members, before decreasing the lobby size!";
-            if(lobbytoupdate.getMembers().size() <= lobbyChange.getSize()) {
+            if(lobbytoupdate.getMembers().size() >= lobbyChange.getSize()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(more_members_than_size));
             }
             lobbytoupdate.setSize(lobbyChange.getSize());
@@ -176,7 +193,8 @@ public class LobbyService {
         lobbyRepository.save(lobbytoupdate);
         lobbyRepository.flush();
 
-        userService.saveUser(user);
+        saveUser(user);
+
     }
 
     public void removeLobbyMembers(Long lobbyId, String userName) {
