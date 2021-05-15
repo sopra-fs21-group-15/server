@@ -2,7 +2,6 @@ package ch.uzh.ifi.hase.soprafs21.controller;
 
 import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
-import ch.uzh.ifi.hase.soprafs21.exceptions.GlobalExceptionAdvice;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs21.service.UserService;
@@ -58,7 +57,7 @@ public class UserControllerTest {
         List<User> allUsers = Collections.singletonList(user);
 
         // this mocks the UserService -> we define above what the userService should return when getUsers() is called
-        given(userService.getUsers()).willReturn(allUsers);
+        given(userService.getAllUsers()).willReturn(allUsers);
 
         // when
         MockHttpServletRequestBuilder getRequest = get("/users").contentType(MediaType.APPLICATION_JSON);
@@ -129,7 +128,7 @@ public class UserControllerTest {
         mockMvc.perform(postRequest)
                 .andExpect(status().isCreated());
 
-        System.out.println(userService.getUsers());
+        System.out.println(userService.getAllUsers());
 
         User created_user = new User();
         created_user.setId(1L);
@@ -170,7 +169,7 @@ public class UserControllerTest {
         userPostDTO.setPassword("Test Password");
         userPostDTO.setUsername("testUsername");
 
-        given(userService.login_request(Mockito.any())).willReturn(user);
+        given(userService.loginRequest(Mockito.any())).willReturn(user);
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder putRequest = put("/login")
@@ -194,7 +193,7 @@ public class UserControllerTest {
         userPostDTO.setPassword("Test Password");
         userPostDTO.setUsername("testUsername");
 
-        given(userService.login_request(Mockito.any())).willThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+        given(userService.loginRequest(Mockito.any())).willThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED));
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder putRequest = put("/login")
@@ -216,20 +215,20 @@ public class UserControllerTest {
         User user = new User();
         user.setPassword("Firstname Lastname");
         user.setUsername("firstname@lastname");
-        user.setCreation_date("08-03-2020");
-        user.setBirth_date("01.01.1980");
+        user.setCreationDate("08-03-2020");
+        user.setBirthDate("01.01.1980");
         user.setStatus(UserStatus.OFFLINE);
         user.setId(1L);
 
-        given(userService.getUser(1L)).willReturn(user);
+        given(userService.getUserById(1L)).willReturn(user);
 
         MockHttpServletRequestBuilder getRequest = get("/users/1").contentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(getRequest).andExpect(status().isOk())
                 .andExpect(jsonPath("$.password", is(user.getPassword())))
                 .andExpect(jsonPath("$.username", is(user.getUsername())))
-                .andExpect(jsonPath("$.creation_date", is(user.getCreation_date())))
-                .andExpect(jsonPath("$.birth_date", is(user.getBirth_date())))
+                .andExpect(jsonPath("$.creationDate", is(user.getCreationDate())))
+                .andExpect(jsonPath("$.birthDate", is(user.getBirthDate())))
                 .andExpect(jsonPath("$.status", is(user.getStatus().toString())));
     }
 
@@ -238,7 +237,7 @@ public class UserControllerTest {
     @Test
     public void getUser_notExistingUser() throws Exception {
 
-        given(userService.getUser(Mockito.anyLong())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+        given(userService.getUserById(Mockito.anyLong())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         MockHttpServletRequestBuilder getRequest = get("/users/99")
                 .contentType(MediaType.APPLICATION_JSON);
@@ -254,10 +253,10 @@ public class UserControllerTest {
     public void updateUser_validInput() throws Exception {
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setUsername("username");
-        userPostDTO.setBirth_date("01.01.1980");
+        userPostDTO.setBirthDate("01.01.1980");
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
-        doNothing().when(userService).update_user(1L, userInput);
+        doNothing().when(userService).updateUser(1L, userInput);
 
         MockHttpServletRequestBuilder putRequest = put("/users/1")
                 .contentType(MediaType.APPLICATION_JSON)

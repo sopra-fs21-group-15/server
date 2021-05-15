@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
+import java.util.ArrayList;
+
 public class UserPostDTO {
 
     // added birth date to pass down and convert
@@ -7,7 +9,17 @@ public class UserPostDTO {
 
     private String username;
 
-    private String birth_date;
+    private String birthDate;
+
+    private String userTag;
+
+    private ArrayList<String> friends;
+
+    public void setFriends(ArrayList<String> friends) {
+        this.friends = friends;
+    }
+
+    public ArrayList<String> getFriends(){return friends; }
 
     public String getPassword() {
         return password;
@@ -26,8 +38,12 @@ public class UserPostDTO {
     }
 
     // get birth date
-    public String getBirth_date() {return birth_date; }
+    public String getBirthDate() {return birthDate; }
 
     // set birth date
-    public void setBirth_date(String birth_date) {this.birth_date = birth_date; }
+    public void setBirthDate(String birthDate) {this.birthDate = birthDate; }
+
+    public String getUserTag() { return userTag; }
+
+    public void setUserTag(String userTag) { this.userTag = userTag; }
 }

@@ -1,9 +1,10 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
+import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.UserPostDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ import java.util.UUID;
 
 
 import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
+
 /**
  * User Service
  * This class is the "worker" and responsible for all functionality related to the user
@@ -39,51 +40,41 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public List<User> getUsers() {
+    public List<User> getAllUsers() {
         return this.userRepository.findAll();
+    }
+
+    //save user
+    public void saveUser(User user) {
+        userRepository.save(user);
+        userRepository.flush();
+    }
+
+    //save user & return it
+    public User returnSavedUser(User user) {
+        user = userRepository.save(user);
+        userRepository.flush();
+        return user;
     }
 
     // create the user
     public User createUser(User newUser) {
-        checkIfUserExists(newUser);
+        checkIfUsernameTaken(newUser);
 
         newUser.setToken(UUID.randomUUID().toString());
         newUser.setStatus(UserStatus.ONLINE);
-        newUser.setCreation_date(getDate()); //get the creation date with the current date
+        newUser.setCreationDate(getDate()); //get the creation date with the current date
 
         // saves the given entity but data is only persisted in the database once flush() is called
 
-        newUser = userRepository.save(newUser);
-        userRepository.flush();
+        newUser = returnSavedUser(newUser);
 
         log.debug("Created Information for User: {}", newUser);
         return newUser;
     }
 
-    // getUser from user id
-    public User getUser(Long user_id) {
-
-        //get all users
-        List<User> all_users = this.userRepository.findAll();
-
-        User user_found = null;
-        for (User i : all_users) {
-            if (user_id == i.getId()) {
-                user_found = i;
-            }
-        }
-
-        //if not found
-        String nonexisting_user = "This user does not exist. Please search for an existing user!";
-        if (user_found == null) {
-            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_user));
-        }
-        return user_found;
-
-    }
-
     // getUser from Id
-    public User getUser_id(Long userId) {
+    public User getUserById(Long userId) {
         User user;
         Optional<User> optional = userRepository.findById(userId);
         if (optional.isPresent()) {
@@ -91,8 +82,8 @@ public class UserService {
             return user;
         }
         else {
-            String nonexisting_user = "This user does not exist. Please search for an existing user!";
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonexisting_user));
+            String nonExistingUser = "This user does not exist. Please search for an existing user!";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingUser));
         }
     }
 
@@ -107,17 +98,17 @@ public class UserService {
      */
 
     // Check if the user Exists
-    private void checkIfUserExists(User userToBeCreated) {
+    private void checkIfUsernameTaken(User userToBeCreated) {
         User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
 
         //get entered password
 
-        String entered_password = userToBeCreated.getPassword();
+        String enteredPassword = userToBeCreated.getPassword();
 
-        String taken_username_error = "The %s %s already taken. Please choose an other username!";
+        String takenUsernameError = "The %s %s already taken. Please choose an other username!";
 
         if (userByUsername != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(taken_username_error, "username", "is"));
+            throw new ResponseStatusException(HttpStatus.CONFLICT, String.format(takenUsernameError, "username", "is"));
         }
     }
 
@@ -129,21 +120,21 @@ public class UserService {
     }
 
     //Handle the log-in
-    public User login_request(User requesting_user) {
+    public User loginRequest(User requestingUser) {
 
-        User userByUsername = userRepository.findByUsername(requesting_user.getUsername());
+        User userByUsername = userRepository.findByUsername(requestingUser.getUsername());
 
 
         //If you don't find the user. Tell him to register first.
-        String nonexisting_user = "This username is not registered yet. Please register first or enter an existing username.";
+        String nonExistingUser = "This username is not registered yet. Please register first or enter an existing username.";
         if (userByUsername == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format(nonexisting_user));
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, String.format(nonExistingUser));
         }
 
         //Now since the user exists. Get the saved password and the typed password
 
         String userByPassword = userByUsername.getPassword();
-        String user_typed_password = requesting_user.getPassword();
+        String user_typed_password = requestingUser.getPassword();
 
         //If the given password and the saved password are not the same, tell the user.
         String wrong_password = "You entered the wrong password. Maybe caps lock is activated.";
@@ -153,38 +144,78 @@ public class UserService {
 
         //Set the Status on Online and update the repository
         userByUsername.setStatus(UserStatus.ONLINE);
-        User updatedUser = userRepository.save(userByUsername);
-        userRepository.flush();
+        User updatedUser = returnSavedUser(userByUsername);
 
         return updatedUser;
     }
 
     // update the user after the edit
-    public void update_user(Long userId, User userChange){
+    public void updateUser(Long userId, User userChange){
 
-        User usertoupdate = getUser_id(userId);
+        User userToUpdate = getUserById(userId);
 
-        if (userChange.getBirth_date() != null){
-            usertoupdate.setBirth_date(userChange.getBirth_date());
+        if (userChange.getBirthDate() != null){
+            userToUpdate.setBirthDate(userChange.getBirthDate());
         }
 
         if (userChange.getUsername() != null){
             //If user exists already you cannot change the name!
-            checkIfUserExists(userChange);
-            usertoupdate.setUsername(userChange.getUsername());
+            checkIfUsernameTaken(userChange);
+            userToUpdate.setUsername(userChange.getUsername());
         }
         // save into the repository
-        userRepository.save(usertoupdate);
-        userRepository.flush();
+        saveUser(userToUpdate);
     }
 
     // set the user offline
     public void logout(Long userId){
 
-        User leaving_user = getUser_id(userId);
+        User leavingUser = getUserById(userId);
 
-        leaving_user.setStatus(UserStatus.OFFLINE);
-        userRepository.save(leaving_user);
-        userRepository.flush();
+        leavingUser.setStatus(UserStatus.OFFLINE);
+        saveUser(leavingUser);
     }
+
+    public void addUserToFriendsList(Long userId, User friend) {
+
+        User userToUpdate = getUserById(userId);
+
+        String userName = friend.getUsername();
+
+        // check if the user is already a friend
+        String playerAlreadyInFriendsList = "This user is already your friend!";
+        if (userToUpdate.getFriendsList().contains(userName)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(playerAlreadyInFriendsList));
+        }
+        else userToUpdate.setFriendsList(userName);
+
+        // save into the repository
+        saveUser(userToUpdate);
+    }
+
+    public void removeUserFromFriendsList(Long userId, User friend) {
+        User userToUpdate = getUserById(userId);
+
+        String userName = friend.getUsername();
+
+        // check if the user is already a friend
+        String playerAlreadyNotInFriendsList = "This user is already not your friend!";
+        if (!userToUpdate.getFriendsList().contains(userName)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(playerAlreadyNotInFriendsList));
+        }
+        else userToUpdate.deleteFriendsList(userName);
+
+        // save into the repository
+        saveUser(userToUpdate);
+    }
+
+    // send and accept friend requests?
+    public void sendFriendRequest(Long userId, User friend) {
+        return;
+    }
+
+    public void acceptFriendRequest(Long userId, User friend) {
+        return;
+    }
+
 }

@@ -1,14 +1,11 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import javax.persistence.*;
 /*
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 */
 import java.io.Serializable;
-import java.time.LocalTime;
 
 
 @Entity
@@ -19,9 +16,11 @@ public class Message implements Serializable {
 
 
     @Id
+    @GeneratedValue
+    private Long messageId;
+
     @Column(nullable = false)
-    @JsonFormat(pattern = "hh:mm:ss")
-    private LocalTime timeStamp;
+    private String timeStamp;
 
     @Column
     private String writerName;
@@ -31,6 +30,12 @@ public class Message implements Serializable {
 */
     @Column(nullable = false)
     private String message;
+
+    @Column
+    private boolean correctGuess = false;
+
+    public Long getMessageId() { return messageId; }
+    public void setMessageId(Long messageId) { this.messageId = messageId; }
 
     public String getWriterName() {
         return writerName;
@@ -46,10 +51,13 @@ public class Message implements Serializable {
         this.message = message;
     }
 
-    public LocalTime getTimeStamp() {
+    public String getTimeStamp() {
         return timeStamp;
     }
-    public void setTimeStamp(LocalTime timeStamp) {
+    public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
     }
+
+    public boolean getCorrectGuess() { return correctGuess; }
+    public void setCorrectGuess(boolean correctGuess) { this.correctGuess = correctGuess; }
 }

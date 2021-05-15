@@ -29,7 +29,7 @@ public class UserRepositoryIntegrationTest {
         user.setUsername("firstname@lastname");
         user.setStatus(UserStatus.OFFLINE);
         user.setToken("1");
-        user.setCreation_date("09.06.1195");
+        user.setCreationDate("09.06.1195");
 
         entityManager.persistAndFlush(user);
 
@@ -54,7 +54,7 @@ public class UserRepositoryIntegrationTest {
         user.setUsername("firstname@lastname");
         user.setStatus(UserStatus.OFFLINE);
         user.setToken("1");
-        user.setCreation_date("09.06.1195");
+        user.setCreationDate("09.06.1195");
 
         entityManager.persist(user);
         entityManager.flush();

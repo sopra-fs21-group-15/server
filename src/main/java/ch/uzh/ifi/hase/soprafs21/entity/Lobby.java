@@ -53,11 +53,11 @@ public class Lobby implements Serializable {
     //lobby status
     @Column(nullable = false)
     private LobbyStatus status;
-
+/*
     //lobby chat
     @Column
     private Long chatId;
-
+*/
     public Lobby() {
     }
 
@@ -124,11 +124,11 @@ public class Lobby implements Serializable {
         this.status = status;
     }
 
-
+/*
     public Long getChatId() { return chatId; }
 
     public void setChatId(Long chatId) { this.chatId = chatId; }
-
+*/
 }
 
 

@@ -1,12 +1,11 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-
+@Entity
+@Table(name = "SCOREBOARD")
 public class ScoreBoard implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -15,20 +14,21 @@ public class ScoreBoard implements Serializable {
     @GeneratedValue
     private Long id;
 
-    // private ArrayList<User> players;
+    @Column(nullable = false)
     private ArrayList<String> players;
 
+    @Column(nullable = false)
     private int[] ranking;
 
+    @Column(nullable = false)
     private long[] score;
 
+    // constructor methods
     public ScoreBoard() {
-        //ArrayList<User> players = new ArrayList<>(4);
         ArrayList<String> players = new ArrayList<String>(4);
         new ScoreBoard(players);
     }
 
-    //public ScoreBoard(ArrayList<User> players) {
     public ScoreBoard(ArrayList<String> players) {
         int n = players.size();
         this.players = players;
@@ -36,120 +36,18 @@ public class ScoreBoard implements Serializable {
         this.score = new long[n];
     }
 
-    /**
-     * Default methods that have to be made in order to be able
-     * to transform this data type and send it to the front-end.
-     */
-    // functions for the player list (returns sorted by ranking)
-    // public ArrayList<User> getPlayers() {
-    public ArrayList<String> getPlayers() {
-        // since we do not just return our list but a sorted one we need to create a new one
-        // ArrayList<User> value = new ArrayList<User>();
-        ArrayList<String> value = new ArrayList<String>();
+    // basic getter and setter methods
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-        // inefficient but working loop to get the right order of the ranking
-        for(int position = 0; position < players.size(); position++) {
-            for(int index = 0; index < players.size(); index++) {
-                if (ranking[index] == position) {
-                    value.add(players.get(index));
-                }
-            }
-        }
-        return value;
-    }
+    public ArrayList<String> getPlayers() { return players; }
+    public void setPlayers(ArrayList<String> players) { this.players = players; }
 
-    // public void setPlayers(ArrayList<User> newPlayers) {
-    public void setPlayers(ArrayList<String> newPlayers) {
-        this.players = newPlayers;
-        this.ranking = new int[newPlayers.size()]; // reset the ranking
-        this.score = new long[newPlayers.size()]; // and resetting the scores
-    }
+    public int[] getRanking() { return ranking; }
+    public void setRanking(int[] ranking) { this.ranking = ranking; }
 
-    // functions for the ranking
-    public int[] getRanking() {
-        int[] sorted = Arrays.copyOf(ranking, ranking.length);
-        Arrays.sort(sorted);
-        return sorted;
-    }
-
-    public void setRanking(int[] newRanking) {
-
-        // needs to have the same length as the previous ranking array
-        if( newRanking.length == ranking.length ) {
-            this.ranking = newRanking;
-        }
-    }
-
-    // functions for the scores
-    public long[] getScore() {
-        long[] sorted = Arrays.copyOf(score, score.length);
-        Arrays.sort(sorted);
-
-        // reversing it
-        long temp = 0;
-        int n = sorted.length;
-        for(int i = 0; i < n / 2; i++) {
-            temp = sorted[i];
-            sorted[i] = sorted[n - i - 1];
-            sorted[n - i - 1] = temp;
-        }
-        return sorted;
-    }
-
-    public void setScore(long[] newScore) {
-        if(newScore.length == this.score.length) {
-            this.score = newScore;
-        }
-    }
-
-    /**
-     * Methods and functionalities needed in the backend.
-     */
-    // update the scoreboard after a round has finished
-    public void updateScore(long[] roundScore) {
-        if(roundScore.length == score.length) {
-            for(int i = 0; i < roundScore.length; i++) {
-                score[i] += roundScore[i];
-            }
-        }
-        fixRanking();
-    }
-
-    // fix ranking => changes the order within ranking after the changes to the score have been made
-    private void fixRanking() {
-        long[] sorted = Arrays.copyOf(score, score.length);
-        Arrays.sort(sorted);
-
-        // double check if we have players with identical scores
-        boolean[] used = new boolean[sorted.length];
-
-        // iterate over every value to find the player it belongs to and then safe him/her in ranking
-        int target = 0, index = sorted.length - 1, position = 0, counter = 0;
-
-        while(position < sorted.length && index >= 0) {
-            target = 0; // resetting target to the first player
-            while(score[target] != sorted[index] || used[target]) {
-                if(target < sorted.length - 1 ) {
-                    target++;
-                } else {
-                    break; // should never happen but just in case so it does not result in an infinite loop
-                }
-            } // target is now set to the first player with the fitting score for this position
-
-            counter = 0; // # of players at this position
-
-            while(target < sorted.length) {
-                if(score[target] == sorted[index]) {
-                    ranking[target] = position;
-                    counter++;
-                }
-                target++; // check next player
-            }
-
-            position += counter;
-            index -= counter;
-        }
-    }
+    public long[] getScore() { return score; }
+    public void setScore(long[] score) { this.score = score; }
 
     // toString method to check if the implementation works
     public String toString() {

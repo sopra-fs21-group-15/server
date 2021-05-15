@@ -1,9 +1,13 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
 
+import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.LobbyGetDTO;
+import ch.uzh.ifi.hase.soprafs21.rest.dto.LobbyPostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserGetDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.DTOMapper;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.LobbyDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +36,7 @@ public class UserController {
     @ResponseBody
     public List<UserGetDTO> getAllUsers() {
         // fetch all users in the internal representation
-        List<User> users = userService.getUsers();
+        List<User> users = userService.getAllUsers();
         List<UserGetDTO> userGetDTOs = new ArrayList<>();
 
         // convert each user to the API representation
@@ -68,7 +72,7 @@ public class UserController {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
         //ask userService if login request is allowed
-        User userLogin = userService.login_request(userInput);
+        User userLogin = userService.loginRequest(userInput);
 
         // convert internal representation of user back to API
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(userLogin);
@@ -80,7 +84,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public UserGetDTO getUserByID(@PathVariable Long userId) {
-        User user = userService.getUser(userId);
+        User user = userService.getUserById(userId);
         // convert internal representation of user back to API
         UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
         return userGetDTO;
@@ -94,7 +98,7 @@ public class UserController {
     public void editCurrentUser(@PathVariable Long userId, @RequestBody UserPostDTO userEditDTO) {
         // convert API user to internal representation
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userEditDTO);
-        userService.update_user(userId, userInput);
+        userService.updateUser(userId, userInput);
 
     }
 
@@ -108,5 +112,29 @@ public class UserController {
         userService.logout(userId);
     }
 
+
+    // Put mapping to add a friend to a user
+
+    @PutMapping("/users/{userId}/friendsList")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public UserGetDTO addFriend(@PathVariable Long userId, @RequestBody UserPostDTO userPostDTO) {
+        User friend = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        userService.addUserToFriendsList(userId, friend);
+        User user = userService.getUserById(userId);
+        UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+        return userGetDTO;
+    }
+
+    @PutMapping("/users/{userId}/removeFriendList")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public UserGetDTO removeFriend(@PathVariable Long userId, @RequestBody UserPostDTO userPostDTO) {
+        User friend = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        userService.removeUserFromFriendsList(userId, friend);
+        User user = userService.getUserById(userId);
+        UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+        return userGetDTO;
+    }
 }
 

@@ -46,7 +46,8 @@ public class Game implements Serializable {
     @OneToOne
     private Timer timer;
 
-    // private ScoreBoard scoreBoard;
+    @OneToOne
+    private ScoreBoard scoreBoard;
 
     //private ArrayList<Round> rounds = new ArrayList<>();
     // private Round rounds = new Round();
@@ -101,8 +102,8 @@ public class Game implements Serializable {
     public void setLobbyId(Long lobbyId) { this.lobbyId = lobbyId; }
 
     // access Scoreboard
-    // public ScoreBoard getScoreBoard() { return this.scoreBoard; }
-    // public void setScoreBoard(ScoreBoard newScoreBoard) { this.scoreBoard = newScoreBoard; }
+    public ScoreBoard getScoreBoard() { return this.scoreBoard; }
+    public void setScoreBoard(ScoreBoard newScoreBoard) { this.scoreBoard = newScoreBoard; }
 
     // access Rounds
     // public ArrayList<Round> getRounds() { return this.rounds; }

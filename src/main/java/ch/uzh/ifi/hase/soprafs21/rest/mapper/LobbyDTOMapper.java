@@ -28,7 +28,7 @@ public interface LobbyDTOMapper {
     @Mapping(source = "size", target = "size") //map the lobby size downwards!
     @Mapping(source = "rounds", target = "rounds") //map the game rounds downwards!
     @Mapping(source = "timer", target = "timer") //map the timer downwards!
-    @Mapping(source = "chatId", target = "chatId") //map the lobby chat downwards!
+ //   @Mapping(source = "chatId", target = "chatId") //map the lobby chat downwards!
     Lobby convertLobbyPostDTOtoEntity(LobbyPostDTO lobbyPostDTO);
 
     @Mapping(source = "id", target = "id")
@@ -38,7 +38,7 @@ public interface LobbyDTOMapper {
     @Mapping(source = "rounds", target = "rounds") //map the game rounds upwards!
     @Mapping(source = "timer", target = "timer") //map the timer upwards!
     @Mapping(source = "members", target = "members") //map the members upwards!
-    @Mapping(source = "chatId", target ="chatId") //map the lobby chat upwards!
+//    @Mapping(source = "chatId", target ="chatId") //map the lobby chat upwards!
     @Mapping(source = "status", target = "status")
     LobbyGetDTO convertEntityToLobbyGetDTO(Lobby lobby);
 }
