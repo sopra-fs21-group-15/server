@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.repository;
 
-import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,6 @@ public class LobbyRepositoryIntegrationTest {
     private  LobbyRepository lobbyRepository;
 /**
    @Test
-
    public void findByName_success() {
         // given
         Lobby lobby = new Lobby();
@@ -38,9 +37,10 @@ public class LobbyRepositoryIntegrationTest {
         lobby.setToken("1");
 
 
-        entityManager.persist(lobby);
-        entityManager.flush();
-
+       System.out.println("----------------------------------");
+        System.out.println(lobby);
+       System.out.println("----------------------------------");
+       entityManager.persistAndFlush(lobby);
         // when
         Lobby found = lobbyRepository.findByLobbyname(lobby.getLobbyname());
 
@@ -55,38 +55,34 @@ public class LobbyRepositoryIntegrationTest {
         
     }
    **/
-  /**
+/**
+
 @Test
 void findByLobbyId_success() {
-    User user = new User();
-    user.setId(1L);
-    user.setToken("2");
-    user.setUsername("TestUser");
-
-   
-   
 
     Lobby lobby = new Lobby();
     lobby.setLobbyname("testlobby");
     lobby.setId(2L);
-    lobby.setMembers(user.getUsername());
+    lobby.setMembers("User");
     lobby.setRounds(13);
     lobby.setSize(1);
     lobby.setTimer(2);
     lobby.setPassword("7");
+    lobby.setToken("2");
+    lobby.setStatus(LobbyStatus.FULL);
 
-    entityManager.persist(lobby);
-    entityManager.flush();
+    entityManager.persistAndFlush(lobby);
+
 
     Optional<Lobby> foundLobby = lobbyRepository.findById(lobby.getId());
     assertTrue(foundLobby.isPresent());
     Lobby actualLobby = foundLobby.get();
 
     assertEquals(lobby.getId(), actualLobby.getId());
-    assertTrue(actualLobby.getMembers().contains(user.getUsername()));
-    assertEquals(13, lobby.getRounds());
+    assertTrue(actualLobby.getMembers().contains("User"));
+    assertEquals(actualLobby.getRounds(), lobby.getRounds());
     assertEquals(lobby.getTimer(), actualLobby.getTimer());
     assertEquals(lobby.getPassword(), actualLobby.getPassword());
 }
-        **/
+**/
 }

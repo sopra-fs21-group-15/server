@@ -31,8 +31,8 @@ public class UserRepositoryIntegrationTest {
         user.setToken("1");
         user.setCreation_date("09.06.1195");
 
-        entityManager.persist(user);
-        entityManager.flush();
+        entityManager.persistAndFlush(user);
+
 
         // when
         User found = userRepository.findByUsername(user.getUsername());
