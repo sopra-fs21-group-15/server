@@ -1,12 +1,9 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
-import ch.uzh.ifi.hase.soprafs21.constant.RoundStatus;
-import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.*;
 import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import ch.uzh.ifi.hase.soprafs21.repository.GameRepository;
-import net.bytebuddy.asm.Advice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +19,6 @@ import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import ch.uzh.ifi.hase.soprafs21.repository.*;
-
-import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  * Game Service
@@ -115,8 +110,6 @@ public class GameService implements Runnable {
             //gamesToBeRun.remove(newGame);
         }
 
-        System.out.println("other threads are finishing.");
-
         log.debug("Created and started new game with given information: {}", newGame);
         return newGame.getId();
     }
@@ -165,6 +158,24 @@ public class GameService implements Runnable {
         timerService.changePhase(timer);
     }
 
+    // (Issue #52 Part I) function to handle when a user has made a guess (should also #56)
+    /*public boolean makeGuess(Message message, Game game) {
+        if (round.getStatus().equals(SELECTING)) { // check if the phase of the round is correct
+            String notCorrectPhase = "This round is currently in selecting. Wait for the phase to end before getting information about the word.";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notCorrectPhase));
+        } else { // get the current length of the word
+            return round.getWord().length();
+        }
+
+        boolean
+
+        if(isNotPainter && isRightWord) {
+            return true;
+        } else {
+            return false;
+        }
+    }*/
+
     /** core method, this method runs the game in the background
      *
      */
@@ -174,8 +185,6 @@ public class GameService implements Runnable {
         int i = 0, n = game.getNumberOfRounds(); // index and total number of rounds
         int h = 0, m = game.getPlayers().size(); // index and total number of players
         int waitingTime;
-        int selection = game.getTimer().getSelectTimeSpan() * 1000;
-        int drawing = game.getTimer().getDrawingTimeSpan() * 1000;
         Round round;
 
         while(i < n) { // for each round
@@ -210,6 +219,7 @@ public class GameService implements Runnable {
                 }
                 // finish this round, pass the results
                 endPhase(game);
+                roundService.resetHasGuessed(round);
                 h++;
             }
             i++;

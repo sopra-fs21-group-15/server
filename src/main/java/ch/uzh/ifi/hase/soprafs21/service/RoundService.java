@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 import static ch.uzh.ifi.hase.soprafs21.constant.RoundStatus.*;
 
@@ -93,7 +90,7 @@ public class RoundService {
         // continue with setting the fields in order
         round.setIndex(0);
         round.setStatus(DRAWING);
-        round.setHasGuessed( new int[n] );
+        round.setHasGuessed( new boolean[n] );
         round.setHasDrawn( new boolean[n] );
 
         // last but not least safe it and push it to the repositories
@@ -225,6 +222,47 @@ public class RoundService {
         }
     }
 
+    // (Issue #52 Part I) function to handle when a user has made a guess
+    public boolean makeGuess(Message message, Round round) {
+        if (round.getStatus().equals(SELECTING)) { // check if the phase of the round is correct
+            String notCorrectPhase = "This round is not in a drawing phase right now. Chances are you missed the opportunity to get points.";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notCorrectPhase));
+        } else { // continue with the checks
+            boolean isPartOfGame = round.getPlayers().contains(message.getWriterName()); // check if the writer is part of the game
+            boolean isNotPainter = !message.getWriterName().equals(round.getDrawerName()); // check a person other then the painter has made a guess
+            boolean isRightWord = message.getMessage().equals(round.getWord()); // check if the guess is correct
+            boolean hasNotGuessedYet = false; // default value
+
+            // more precise evaluation of "hasNotGuessedYet"
+            int playerIndex = 0;
+            if(isPartOfGame) {
+                playerIndex = round.getPlayers().indexOf(message.getWriterName());
+                hasNotGuessedYet = !round.getHasGuessed()[playerIndex];
+            }
+            System.out.println("isNotPainter: " + isNotPainter + ", isPartOfGame: " + isPartOfGame + ", isRightWord: " + isRightWord + ", hasNotGuessedYet:" + hasNotGuessedYet);
+
+            // summaries, make all the checks together
+            boolean value = isNotPainter && isPartOfGame && isRightWord && hasNotGuessedYet;
+
+            // if it is a correct guess, remember that that player has guessed
+            if(value) {
+                boolean[] temp = round.getHasGuessed();
+                temp[playerIndex] = true;
+                round.setHasGuessed(temp);
+                roundRepository.saveAndFlush(round);
+            }
+
+            // either way return the value
+            return value;
+        }
+    }
+
+    // at end of drawing phase reset everybody's has guessed status
+    public void resetHasGuessed(Round round) {
+        Arrays.fill(round.getHasGuessed(), false);
+        roundRepository.saveAndFlush(round);
+    }
+
     // TODO *41 see if function handling is up to the standarts
     // drawer has drawn (automatically distinguishes between first time drawing and subsequent strokes)
     // public void addStroke(long idOfDrawer, BrushStroke brushStroke) {
@@ -252,24 +290,7 @@ public class RoundService {
         return pictures.get(currentWord-1).getDrawing(timeStamp);
     }
 
-    // TODO: #52 and #56 improve functionality and consistency
-    // a guesser has made a guess
-    public void makeGuess(Guess guess) {
-        long potPoint = (long) stopWatch.remainingTime() * 1000;
-        // check if: correct person, guess is correct, timer still running, has not made a correct guess before
-        // if(guess.getGuesser_id() != drawerId && guess.getGuess().equals(words.get(currentWord-1)) && !stopWatch.timeIsUp()) {
-        if(guess.getGuesserName() != drawerName && guess.getGuess().equals(words.get(currentWord-1)) && !stopWatch.timeIsUp()) {
-            //for(User potGuesser : players) { //TODO: inefficient way to find wanted user within lobby (change/optimize if enough time left)
-            for(String potGuesser : players) {
-                //if(potGuesser.getId() == guess.getGuesser_id()) { // if it is the correct user ...
-                if(potGuesser == guess.getGuesserName()) { // if it is the correct user ...
-                    int i = players.indexOf(potGuesser);
-                    int h = currentWord - 1;
-                    tempScore[i][h] = Math.max(tempScore[i][h], potPoint); // ... check if he/she already made a better guess and then update accordingly
-                }
-            }
-        }
-    }
+
 
     // round has a turning point with new roles or it finishes
     /*public void check() {

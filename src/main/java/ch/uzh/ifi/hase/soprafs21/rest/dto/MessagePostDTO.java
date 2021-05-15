@@ -17,16 +17,15 @@ public class MessagePostDTO {
     }
 
     public String getTimeStamp() { return timeStamp; }
-
     public void setTimeStamp(String timeStamp) {
         this.timeStamp = timeStamp;
     }
 
+    public String getWriterName() { return writerName; }
     public void setWriterName(String writerName) {
         this.writerName = writerName;
     }
 
-    public String getWriterName() { return writerName; }
 }
 
 
