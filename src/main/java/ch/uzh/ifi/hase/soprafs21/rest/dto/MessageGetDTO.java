@@ -6,7 +6,6 @@ public class MessageGetDTO {
     private String timeStamp;
     private String writerName;
     private String message;
-    private boolean correctGuess;
 
     public Long getMessageId() { return messageId; }
     public void setMessageId(Long messageId) { this.messageId = messageId; }
@@ -28,6 +27,4 @@ public class MessageGetDTO {
         this.message = message;
     }
 
-    public boolean getCorrectGuess() { return correctGuess; }
-    public void setCorrectGuess(boolean correctGuess) { this.correctGuess = correctGuess; }
 }

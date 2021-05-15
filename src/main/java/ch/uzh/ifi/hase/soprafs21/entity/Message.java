@@ -31,9 +31,6 @@ public class Message implements Serializable {
     @Column(nullable = false)
     private String message;
 
-    @Column
-    private boolean correctGuess = false;
-
     public Long getMessageId() { return messageId; }
     public void setMessageId(Long messageId) { this.messageId = messageId; }
 
@@ -58,6 +55,4 @@ public class Message implements Serializable {
         this.timeStamp = timeStamp;
     }
 
-    public boolean getCorrectGuess() { return correctGuess; }
-    public void setCorrectGuess(boolean correctGuess) { this.correctGuess = correctGuess; }
 }

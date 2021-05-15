@@ -224,10 +224,10 @@ public class RoundService {
 
     // (Issue #52 Part I) function to handle when a user has made a guess
     public boolean makeGuess(Message message, Round round) {
-        if (round.getStatus().equals(SELECTING)) { // check if the phase of the round is correct
+       /* if (round.getStatus().equals(SELECTING)) { // check if the phase of the round is correct
             String notCorrectPhase = "This round is not in a drawing phase right now. Chances are you missed the opportunity to get points.";
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notCorrectPhase));
-        } else { // continue with the checks
+        }*/ //else { // continue with the checks
             boolean isPartOfGame = round.getPlayers().contains(message.getWriterName()); // check if the writer is part of the game
             boolean isNotPainter = !message.getWriterName().equals(round.getDrawerName()); // check a person other then the painter has made a guess
             boolean isRightWord = message.getMessage().equals(round.getWord()); // check if the guess is correct
@@ -253,7 +253,7 @@ public class RoundService {
 
             // either way return the value
             return value;
-        }
+        //}
     }
 
     // at end of drawing phase reset everybody's has guessed status

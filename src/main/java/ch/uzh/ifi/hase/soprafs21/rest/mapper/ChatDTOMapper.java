@@ -24,7 +24,6 @@ public interface ChatDTOMapper {
     @Mapping(source = "chatId", target = "lobbyId")
     ChatGetDTO convertEntityToChatGetDTO(Chat chat);
 
-    @Mapping(source = "correctGuess", target = "correctGuess")
     @Mapping(source = "messageId", target = "messageId")
     @Mapping(source = "writerName", target = "writerName")
     @Mapping(source = "message", target = "message")

@@ -81,7 +81,7 @@ public class GameService implements Runnable {
         newGame.setPlayers(lobby.getMembers());
         newGame.setNumberOfRounds(lobby.getRounds());
         newGame.setGameName(lobby.getLobbyname());
-        newGame.setLobbyId(lobby.getId());
+        newGame.setId(lobby.getId());
 
         // generate Objects from lobby information
         int timePerRound = lobby.getTimer().intValue();
@@ -126,10 +126,10 @@ public class GameService implements Runnable {
 
         return value;
     }
-
+/*
     // quality of life method (logging in again after disconnect)
     public Game getGameFromLobbyId(Long lobbyId) {
-        Optional<Game> potGame = gameRepository.findByLobbyId(lobbyId);
+        Optional<Game> potGame = gameRepository.findById(lobbyId);
         Game value = null;
 
         if (potGame.isEmpty()) { // if not found
@@ -141,7 +141,7 @@ public class GameService implements Runnable {
 
         return value;
     }
-
+*/
     // start the timer for this phase
     public int startPhase(Game game) {
         Timer timer = game.getTimer();
