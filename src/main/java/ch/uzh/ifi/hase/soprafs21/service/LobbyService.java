@@ -82,7 +82,7 @@ public class LobbyService {
         newLobby = lobbyRepository.save(newLobby);
         lobbyRepository.flush();
 
-        saveUser(userFound);
+        userService.saveUser(userFound);
         log.debug("Created Information for Lobby: {}", newLobby);
         return newLobby;
     }
@@ -225,8 +225,8 @@ public class LobbyService {
             // save into the repository
             lobbyRepository.save(lobbytoupdate);
             lobbyRepository.flush();
-        saveUser(user);
-
+        userRepository.save(user);
+        userRepository.flush();
     }
 
 }
