@@ -12,6 +12,7 @@ public class RoundGetDTO {
     private ArrayList<String> words;
     private int index;
     private boolean[] hasDrawn;
+    private  int[] gotPoints;
     private boolean[] hasGuessed;
     private String drawerName;
     private String word;
@@ -34,6 +35,9 @@ public class RoundGetDTO {
 
     public boolean[] getHasDrawn() { return this.hasDrawn; }
     public void setHasDrawn(boolean[] newHasDrawn) { this.hasDrawn = newHasDrawn; }
+
+    public int[] getGotPoints() { return this.gotPoints; }
+    public void setGotPoints(int[] gotPoints) { this.gotPoints = gotPoints; }
 
     public boolean[] getHasGuessed() { return this.hasGuessed; }
     public void setHasGuessed(boolean[] hasGuessed) { this.hasGuessed = hasGuessed; }
