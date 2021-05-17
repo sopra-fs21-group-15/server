@@ -165,7 +165,7 @@ public class LobbyServiceTest {
 
 
         lobbyService.removeLobbyMembers(testLobby.getId(), "delete");
-        Mockito.verify(userRepository, Mockito.times(2)).save(Mockito.any());
+        Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any());
 
         assertEquals(LobbyStatus.OPEN, createdLobby.getStatus());
         assertEquals(2, createdLobby.getMembers().size());

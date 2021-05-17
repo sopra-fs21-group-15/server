@@ -17,7 +17,6 @@ public interface RoundDTOMapper {
     @Mapping(source = "words", target = "words")
     @Mapping(source = "index", target = "index")
     @Mapping(source = "hasDrawn", target = "hasDrawn")
-    @Mapping(source = "gotPoints", target = "gotPoints")
     @Mapping(source = "hasGuessed", target = "hasGuessed")
     @Mapping(source = "drawerName", target = "drawerName")
     @Mapping(source = "word", target = "word")

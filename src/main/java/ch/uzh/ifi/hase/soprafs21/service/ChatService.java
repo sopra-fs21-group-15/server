@@ -40,9 +40,8 @@ public class ChatService {
 
         if (optionalChat.isEmpty()) { // if not found
             String nonExistingChat = "The chat you have been looking for does not exist.";
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingChat));
-        }
-        else { // if found
+            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingChat));
+        } else { // if found
             chat = optionalChat.get();
         }
 
@@ -72,32 +71,39 @@ public class ChatService {
     public Chat getNewMessages(Long chatId, String timeStamp) {
         Chat chat = getChat(chatId);
         int index = 0;
+
         List<Message> newMessages = new ArrayList<>();
+        // check if chat is empty
         if (!(chat.getMessage().isEmpty())) {
+
             DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
             Message message = chat.getMessage().get(index);
-            LocalDateTime messageTime = LocalDateTime.parse(message.getTimeStamp(), formatter);
+            LocalDateTime messageTime = LocalDateTime.parse(message.getTimeStamp(),formatter);
             LocalDateTime searchedTime = LocalDateTime.parse(timeStamp, formatter);
 
+
             // search for newer messages
-            while (messageTime.isBefore(searchedTime) || messageTime.isEqual(searchedTime)) {
-                index++;
-                if (index >= chat.getMessage().size()) {
+            while(messageTime.isBefore(searchedTime) || messageTime.isEqual(searchedTime)) {
+                if (index <= chat.getMessage().size()-1) {
+                    message = chat.getMessage().get(index);
+                    searchedTime = LocalDateTime.parse(message.getTimeStamp(), formatter);
+                    index++;
+                }
+                else {
+                    index = chat.getMessage().size()-1;
                     break;
                 }
-                message = chat.getMessage().get(index);
-                messageTime = LocalDateTime.parse(message.getTimeStamp(), formatter);
+
             }
 
             // send back List of Messages or Chat?
             newMessages = new ArrayList<>(chat.getMessage().subList(index, chat.getMessage().size()));
+
         }
         Chat newChat = new Chat();
         newChat.setChatId(chatId);
         newChat.setMessages(newMessages);
         return newChat;
-
-
     }
-}
 
+}

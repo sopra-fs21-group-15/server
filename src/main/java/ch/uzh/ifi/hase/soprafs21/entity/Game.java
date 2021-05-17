@@ -13,7 +13,6 @@ public class Game implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue
     private Long id;
 
     // passed values from front-end
@@ -36,9 +35,6 @@ public class Game implements Serializable {
 
     @Column(nullable = false)
     private int roundTracker;
-
-    @Column(nullable = false, unique = true)
-    private Long lobbyId;
 
     @Column(nullable = true, unique = true)
     private Long roundId;
@@ -97,10 +93,6 @@ public class Game implements Serializable {
         this.roundTracker = roundTracker;
     }
 
-    // access Lobby
-    public Long getLobbyId() { return this.lobbyId; }
-    public void setLobbyId(Long lobbyId) { this.lobbyId = lobbyId; }
-
     // access Scoreboard
     public ScoreBoard getScoreBoard() { return this.scoreBoard; }
     public void setScoreBoard(ScoreBoard newScoreBoard) { this.scoreBoard = newScoreBoard; }
@@ -134,8 +126,6 @@ public class Game implements Serializable {
     //public int getLength() { return rounds.get(roundTracker-1).getLength(); }
     // public int getLength() { return rounds.getLength(); }
 
-    //public void makeGuess(Guess guess) { rounds.get(roundTracker-1).makeGuess(guess);}
-    // public void makeGuess(Guess guess) { rounds.makeGuess(guess);}
 
     /**
      * Back-end specific methods for quality of life
