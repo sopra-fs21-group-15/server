@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -110,6 +111,22 @@ public class GameService implements Runnable {
 
         log.debug("Created and started new game with given information: {}", newGame);
         return newGame.getId();
+    }
+
+    // add points for a correct answer
+    public void addPoints(Game game, Message message) {
+        // get the timer
+        Timer timer = game.getTimer();
+
+        // get the local time from the message
+        int offSet = new Standard().getConvertToLocalTimeOffSet();
+        String timeString = message.getTimeStamp().substring(offSet,offSet+8) + message.getTimeStamp().substring(offSet+8,offSet+12).replace(":",".") + "000000"; // converting String
+        LocalTime time = LocalTime.parse(timeString); // transforming into LocalTime object
+
+        // pass it to the service
+        int points = timerService.remainingTime(timer,time);
+        int relPoints = (points / (timer.getDrawingTimeSpan() * 10) ) ; // makes a relative scale from 0 - 100, like percent
+        scoreBoardService.addPoints(game.getScoreBoard(),message.getWriterName(),relPoints);
     }
 
     // quality of life method (logging in again after disconnect)

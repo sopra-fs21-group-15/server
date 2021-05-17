@@ -158,6 +158,7 @@ public class GameController {
 */
 
     /** (Issue 51) API-call for sending a guess of what the word might be from a user
+     * (Issue 55) and giving that user points should his/her guess be correct.
      * @param gameId = the id of the game we would like to send the guess to
      * @param messagePostDTO = contains the player, the guess and a timestamp when it was send
      * @return true only if the player guessed the correct word for the first time
@@ -170,9 +171,11 @@ public class GameController {
         Game game = gameService.getGame(gameId); // find game
         Round round = roundService.getRound(game.getRoundId()); // get current round
         boolean value = roundService.makeGuess(message,round); // check if the guess is valid and correct
+        if (value) {
+            gameService.addPoints(game,message);
+        }
         return value;
     }
-
 
     /** (Issue #35) API call to get the current options the drawer can chose from right now has right now. Checks if
      * the game is currently in the selection phase and checks if the person sending the request is the drawer at this
