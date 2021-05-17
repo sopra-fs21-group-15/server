@@ -143,6 +143,7 @@ public class ChatServiceTest {
         assertFalse(getMessages.getMessage().contains(testMessage));
         assertFalse(getMessages.getMessage().contains(newMessage));
         assertFalse(getMessages.getMessage().contains(newMessage1));
+        System.out.print(getMessages);
 
     }
     @Test
