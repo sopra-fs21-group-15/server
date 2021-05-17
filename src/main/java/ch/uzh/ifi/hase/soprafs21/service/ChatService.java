@@ -40,7 +40,7 @@ public class ChatService {
 
         if (optionalChat.isEmpty()) { // if not found
             String nonExistingChat = "The chat you have been looking for does not exist.";
-            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingChat));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingChat));
         } else { // if found
             chat = optionalChat.get();
         }
@@ -79,14 +79,15 @@ public class ChatService {
         // search for newer messages
         while(messageTime.isBefore(searchedTime) || messageTime.isEqual(searchedTime)) {
             index++;
+            if (index >= chat.getMessage().size()) {
+                break;
+            }
             message = chat.getMessage().get(index);
-            searchedTime = LocalDateTime.parse(message.getTimeStamp(),formatter);
+            messageTime = LocalDateTime.parse(message.getTimeStamp(),formatter);
         }
-        if (index > chat.getMessage().size()) {
-           index--;
-        }
+
          // send back List of Messages or Chat?
-        List<Message> newMessages = new ArrayList<>(chat.getMessage().subList(index, chat.getMessage().size()-1));
+        List<Message> newMessages = new ArrayList<>(chat.getMessage().subList(index, chat.getMessage().size()));
         Chat newChat = new Chat();
         newChat.setChatId(chatId);
         newChat.setMessages(newMessages);

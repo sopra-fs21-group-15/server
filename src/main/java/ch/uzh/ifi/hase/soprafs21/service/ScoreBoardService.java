@@ -33,7 +33,7 @@ public class ScoreBoardService {
 
         if (potScoreBoard.isEmpty()) {
             String nonExistingScoreBoard = "This scoreboard does not exist, has expired or has not been initialized yet.";
-            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingScoreBoard));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingScoreBoard));
         } else { // if found
             value = potScoreBoard.get();
         }

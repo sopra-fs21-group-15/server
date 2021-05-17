@@ -50,25 +50,25 @@ public class ScoreBoard implements Serializable {
     public void setScore(long[] score) { this.score = score; }
 
     // toString method to check if the implementation works
-    public String toString() {
-        String value = "This is the current Scoreboard:\n";
-        value += "-------------------------------------------\n";
-        value += "Position  | Player          | Points       \n";
-        value += "-------------------------------------------\n";
-
-        //ArrayList<User> sortPlayers = this.getPlayers();
-        ArrayList<String> sortPlayers = this.getPlayers();
-        long[] sortScore = this.getScore();
-        int[] sortRanking = this.getRanking();
-
-        for(int i = 0; i < players.size(); i++) {
-            //value += "" + (sortRanking[i] + 1) + ".        | " + sortPlayers.get(i).getUsername();
-            value += "" + (sortRanking[i] + 1) + ".        | " + sortPlayers.get(i);
-            value += "\t\t| " + sortScore[i];
-            value += "             \n";
-        }
-
-        return value;
-    }
+    //public String toString() {
+    //    String value = "This is the current Scoreboard:\n";
+    //    value += "-------------------------------------------\n";
+    //    value += "Position  | Player          | Points       \n";
+    //    value += "-------------------------------------------\n";
+    //
+    //    //ArrayList<User> sortPlayers = this.getPlayers();
+    //    ArrayList<String> sortPlayers = this.getPlayers();
+    //    long[] sortScore = this.getScore();
+    //    int[] sortRanking = this.getRanking();
+    //
+    //    for(int i = 0; i < players.size(); i++) {
+    //        //value += "" + (sortRanking[i] + 1) + ".        | " + sortPlayers.get(i).getUsername();
+    //        value += "" + (sortRanking[i] + 1) + ".        | " + sortPlayers.get(i);
+    //        value += "\t\t| " + sortScore[i];
+    //        value += "             \n";
+    //    }
+    //
+    //    return value;
+    //}
 
 }
