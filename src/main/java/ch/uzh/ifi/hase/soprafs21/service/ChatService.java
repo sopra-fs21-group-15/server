@@ -97,7 +97,7 @@ public class ChatService {
             }
 
             // send back List of Messages or Chat?
-            newMessages = new ArrayList<>(chat.getMessage().subList(index, chat.getMessage().size()-1));
+            newMessages = new ArrayList<>(chat.getMessage().subList(index, chat.getMessage().size()));
 
         }
         Chat newChat = new Chat();

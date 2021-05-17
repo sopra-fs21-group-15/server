@@ -1,10 +1,9 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
 import javax.persistence.*;
-/*
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-*/
+
 import java.io.Serializable;
 
 
@@ -24,10 +23,9 @@ public class Message implements Serializable {
 
     @Column
     private String writerName;
-/*
+
     @NotBlank
     @NotEmpty
-*/
     @Column(nullable = false)
     private String message;
 
