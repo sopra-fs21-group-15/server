@@ -90,7 +90,7 @@ public class ChatService {
                     index++;
                 }
                 else {
-                    index = chat.getMessage().size()-1;
+                    index = chat.getMessage().size();
                     break;
                 }
 
