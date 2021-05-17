@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
-import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs21.entity.ScoreBoard;
 import ch.uzh.ifi.hase.soprafs21.repository.*;
@@ -72,7 +71,7 @@ public class ScoreBoardService {
     public void setPlayers(ScoreBoard scoreBoard, ArrayList<String> newPlayers) {
         scoreBoard.setPlayers(newPlayers);
         scoreBoard.setRanking(new int[newPlayers.size()]); // reset the ranking
-        scoreBoard.setScore(new long[newPlayers.size()]); // and resetting the scores
+        scoreBoard.setScore(new int[newPlayers.size()]); // and resetting the scores
         scoreBoardRepository.saveAndFlush(scoreBoard);
     }
 
@@ -93,12 +92,12 @@ public class ScoreBoardService {
     }
 
     // functions for the scores
-    public long[] getScore(ScoreBoard scoreBoard) {
-        long[] sorted = Arrays.copyOf(scoreBoard.getScore(), scoreBoard.getScore().length);
+    public int[] getScore(ScoreBoard scoreBoard) {
+        int[] sorted = Arrays.copyOf(scoreBoard.getScore(), scoreBoard.getScore().length);
         Arrays.sort(sorted);
 
         // reversing it
-        long temp = 0;
+        int temp = 0;
         int n = sorted.length;
         for(int i = 0; i < n / 2; i++) {
             temp = sorted[i];
@@ -109,7 +108,7 @@ public class ScoreBoardService {
     }
 
     // change the score itself
-    public void setScore(ScoreBoard scoreBoard, long[] newScore) {
+    public void setScore(ScoreBoard scoreBoard, int[] newScore) {
         if(newScore.length == scoreBoard.getScore().length) {
             scoreBoard.setScore(newScore);
             scoreBoardRepository.saveAndFlush(scoreBoard);
@@ -120,7 +119,7 @@ public class ScoreBoardService {
      * Methods and functionalities needed in the backend.
      */
     // update the scoreboard after a round has finished
-    public void updateScore(ScoreBoard scoreBoard, long[] roundScore) {
+    public void updateScore(ScoreBoard scoreBoard, int[] roundScore) {
         if(roundScore.length == scoreBoard.getScore().length) {
             scoreBoard.setScore(roundScore);
         }
@@ -128,9 +127,19 @@ public class ScoreBoardService {
         scoreBoardRepository.saveAndFlush(scoreBoard);
     }
 
+    // add points to a particular player
+    public void addPoints(ScoreBoard scoreBoard, String username, int points) {
+        int index = scoreBoard.getPlayers().indexOf(username);
+        int[] temp = scoreBoard.getScore();
+        temp[index] += points;
+        scoreBoard.setScore(temp);
+        fixRanking(scoreBoard);
+        scoreBoardRepository.saveAndFlush(scoreBoard);
+    }
+
     // fix ranking => changes the order within ranking after the changes to the score have been made
     private void fixRanking(ScoreBoard scoreBoard) {
-        long[] sorted = Arrays.copyOf(scoreBoard.getScore(), scoreBoard.getScore().length);
+        int[] sorted = Arrays.copyOf(scoreBoard.getScore(), scoreBoard.getScore().length);
         Arrays.sort(sorted);
 
         // double check if we have players with identical scores
