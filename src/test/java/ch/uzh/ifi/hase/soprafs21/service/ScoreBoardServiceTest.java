@@ -123,7 +123,7 @@ public class ScoreBoardServiceTest {
     assertEquals(createdScoreboard.getScore()[2], 0);
     assertEquals(createdScoreboard.getScore()[3], 0);
 
-    long [] newscores = {200,500,600,50};
+    int [] newscores = {200,500,600,50};
     scoreBoardService.updateScore(createdScoreboard, newscores );
     assertEquals(createdScoreboard.getScore()[0], newscores[0]);
     assertEquals(createdScoreboard.getScore()[1],newscores[1]);
@@ -140,7 +140,7 @@ public void setScore_test(){
     assertEquals(createdScoreboard.getScore()[2], 0);
     assertEquals(createdScoreboard.getScore()[3], 0);
 
-    long [] newscores = {200,500,600,50};
+    int [] newscores = {200,500,600,50};
     scoreBoardService.setScore(createdScoreboard, newscores );
     assertEquals(createdScoreboard.getScore()[0], newscores[0]);
     assertEquals(createdScoreboard.getScore()[1],newscores[1]);
