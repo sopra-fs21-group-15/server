@@ -120,13 +120,18 @@ public class GameService implements Runnable {
 
         // get the local time from the message
         int offSet = new Standard().getConvertToLocalTimeOffSet();
-        String timeString = message.getTimeStamp().substring(offSet,offSet+8) + message.getTimeStamp().substring(offSet+8,offSet+12).replace(":",".") + "000000"; // converting String
-        LocalTime time = LocalTime.parse(timeString); // transforming into LocalTime object
+        String part1 = message.getTimeStamp().substring(offSet,offSet+8); // hours, minute and seconds
+        String part2 = message.getTimeStamp().substring(offSet+8,offSet+12).replace(":","."); // milliseconds
+        String part3 = "000000"; // added zeros for nanoseconds
+        //LocalTime time = LocalTime.parse(part1 + part2 + part3); // transforming into LocalTime object
+        LocalTime time = LocalTime.now(); // used whenever we are testing
 
         // pass it to the service
         int points = timerService.remainingTime(timer,time);
         int relPoints = (points / (timer.getDrawingTimeSpan() * 10) ) ; // makes a relative scale from 0 - 100, like percent
-        scoreBoardService.addPoints(game.getScoreBoard(),message.getWriterName(),relPoints);
+        scoreBoardService.addPoints(game.getScoreBoard(), message.getWriterName(), relPoints);
+        Round round = roundService.getRound(game.getRoundId());
+        roundService.addPoints(round, message.getWriterName(), relPoints);
     }
 
     // quality of life method (logging in again after disconnect)
@@ -234,7 +239,14 @@ public class GameService implements Runnable {
                 }
                 // finish this round, pass the results
                 endPhase(game);
+                round = roundService.getRound(game.getRoundId());
+                game = getGame(game.getId());
+
+                int painterPoints = roundService.computeRewardPainter(round);
+
+                scoreBoardService.addPoints(game.getScoreBoard(),round.getDrawerName(),painterPoints);
                 roundService.resetHasGuessed(round);
+                roundService.resetGotPoints(round);
                 h++;
             }
             i++;

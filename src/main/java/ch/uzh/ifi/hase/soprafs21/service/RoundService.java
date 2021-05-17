@@ -91,6 +91,7 @@ public class RoundService {
         round.setIndex(0);
         round.setStatus(DRAWING);
         round.setHasGuessed( new boolean[n] );
+        round.setGotPoints( new int[n] );
         round.setHasDrawn( new boolean[n] );
 
         // last but not least safe it and push it to the repositories
@@ -157,7 +158,7 @@ public class RoundService {
         roundRepository.saveAndFlush(round);
     }
 
-    // (Issue #36) the function that returns the choices a drawer can pick from
+    // the function that returns the choices a drawer can pick from
     public List<String> getChoices(Round round, String username) {
         if (round.getStatus().equals(DRAWING)) { // check if the phase of the round is correct
             String notCorrectPhase = "This round is currently in drawing. Wait for the phase to end before looking for the word choices.";
@@ -172,7 +173,7 @@ public class RoundService {
         }
     }
 
-    // (Issue #39) the function that allows the drawer to pick the word he/she would like to draw
+    // the function that allows the drawer to pick the word he/she would like to draw
     public void makeChoice(Round round, String username, int choice) {
         int numberOfChoices = new Standard().getNumberOfChoices();
         if (round.getStatus().equals(DRAWING)) { // check if the phase of the round is correct
@@ -195,13 +196,13 @@ public class RoundService {
         }
     }
 
-    // (Issue #116) reset the word that was chosen
+    // reset the word that was chosen
     public void resetChoice(Round round) {
         round.setWord(null);
         roundRepository.saveAndFlush(round);
     }
 
-    // (Issue #116) make a choice for a user that has not send his wishes in time
+    // make a choice for a user that has not send his wishes in time
     public void makeChoiceForUser(Round round) {
         Random rand = new Random();
         int index = round.getIndex();
@@ -212,7 +213,7 @@ public class RoundService {
         roundRepository.saveAndFlush(round);
     }
 
-    // (Issue #45) API-call for requesting the letter-count
+    // API-call for requesting the letter-count
     public int getLength(Round round) {
         if (round.getStatus().equals(SELECTING)) { // check if the phase of the round is correct
             String notCorrectPhase = "This round is currently in selecting. Wait for the phase to end before getting information about the word.";
@@ -222,7 +223,7 @@ public class RoundService {
         }
     }
 
-    // (Issue #52 Part I) function to handle when a user has made a guess
+    // function to handle when a user has made a guess
     public boolean makeGuess(Message message, Round round) {
         if (round.getStatus().equals(SELECTING)) { // check if the phase of the round is correct
             String notCorrectPhase = "This round is not in a drawing phase right now. Chances are you missed the opportunity to get points.";
@@ -256,10 +257,34 @@ public class RoundService {
         }
     }
 
-    // at end of drawing phase reset everybody's has guessed status
+    // at the end of drawing phase reset everybody's has guessed status
     public void resetHasGuessed(Round round) {
         Arrays.fill(round.getHasGuessed(), false);
         roundRepository.saveAndFlush(round);
+    }
+
+    // at the end of drawing phase reset everybody's got points
+    public void resetGotPoints(Round round) {
+        Arrays.fill(round.getGotPoints(), 0);
+        roundRepository.saveAndFlush(round);
+    }
+
+    // add points to the array
+    public void addPoints(Round round, String username, int points) {
+        int index = round.getPlayers().indexOf(username);
+        int[] pointArray = round.getGotPoints();
+        pointArray[index] = points;
+        round.setGotPoints(pointArray);
+        roundRepository.saveAndFlush(round);
+    }
+
+    // throw a coin to your painter, oh guessers of plenty
+    public int computeRewardPainter(Round round) {
+        int total = 0;
+        for (int points : round.getGotPoints() ) {
+            total += points;
+        }
+        return total / (round.getPlayers().size() - 1);
     }
 
     // TODO *41 see if function handling is up to the standarts
@@ -287,32 +312,5 @@ public class RoundService {
     // TODO: #43 add function to send drawing information to the guessers
     public Drawing getDrawing(LocalDateTime timeStamp) {
         return pictures.get(currentWord-1).getDrawing(timeStamp);
-    }
-
-
-
-    // round has a turning point with new roles or it finishes
-    /*public void check() {
-        // check if the timer indeed has run out and we have to ...
-        if (stopWatch.timeIsUp()) {
-            if(currentWord == hasDrawn.length + 1) { // ... finish the round and distribute the points
-                long[] sumRound = new long[players.size()];
-                int i = 0, h = 0;
-                while(i < players.size()) {
-                    h = 0;
-                    while(h < players.size()) {
-                        sumRound[h] += tempScore[h][i];
-                        h++;
-                    }
-                }
-                this.partOf.updatePoints(sumRound);
-            } else { // ... a new painter
-                setNewPainter();
-                currentWord++;
-            }
-        }
-
     }*/
-
-
 }
