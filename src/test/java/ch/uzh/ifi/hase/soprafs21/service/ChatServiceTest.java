@@ -100,7 +100,7 @@ public class ChatServiceTest {
         assertEquals(newMessage.getMessage(),testMessage.getMessage());
         assertEquals(newMessage.getTimeStamp(), testMessage.getTimeStamp());
     }
-
+/**
     @Test
     public void getNewMessages_Test(){
 
@@ -123,6 +123,7 @@ public class ChatServiceTest {
         assertTrue(getMessages.getMessage().contains(newMessage1));
 
     }
+ **/
     @Test
     public void getNewMessages_noMessage(){
 

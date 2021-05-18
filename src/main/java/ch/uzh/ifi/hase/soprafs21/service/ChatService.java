@@ -40,7 +40,7 @@ public class ChatService {
 
         if (optionalChat.isEmpty()) { // if not found
             String nonExistingChat = "The chat you have been looking for does not exist.";
-            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingChat));
+           throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingChat));
         } else { // if found
             chat = optionalChat.get();
         }
