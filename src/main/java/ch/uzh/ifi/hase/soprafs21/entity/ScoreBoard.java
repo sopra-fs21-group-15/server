@@ -21,7 +21,7 @@ public class ScoreBoard implements Serializable {
     private int[] ranking;
 
     @Column(nullable = false)
-    private int[] score;
+    private long[] score;
 
     // constructor methods
     public ScoreBoard() {
@@ -33,7 +33,7 @@ public class ScoreBoard implements Serializable {
         int n = players.size();
         this.players = players;
         this.ranking = new int[n];
-        this.score = new int[n];
+        this.score = new long[n];
     }
 
     // basic getter and setter methods
@@ -46,30 +46,29 @@ public class ScoreBoard implements Serializable {
     public int[] getRanking() { return ranking; }
     public void setRanking(int[] ranking) { this.ranking = ranking; }
 
-    public int[] getScore() { return score; }
-    public void setScore(int[] score) { this.score = score; }
+    public long[] getScore() { return score; }
+    public void setScore(long[] score) { this.score = score; }
 
     // toString method to check if the implementation works
-    //public String toString() {
-    //    String value = "This is the current Scoreboard:\n";
-    //    value += "-------------------------------------------\n";
-    //    value += "Position  | Player          | Points       \n";
-    //    value += "-------------------------------------------\n";
-    //
-    //    //ArrayList<User> sortPlayers = this.getPlayers();
-    //    ArrayList<String> sortPlayers = this.getPlayers();
-    //    long[] sortScore = this.getScore();
-    //    int[] sortRanking = this.getRanking();
-    //
-    //    for(int i = 0; i < players.size(); i++) {
-    //        //value += "" + (sortRanking[i] + 1) + ".        | " + sortPlayers.get(i).getUsername();
-    //        value += "" + (sortRanking[i] + 1) + ".        | " + sortPlayers.get(i);
-    //        value += "\t\t| " + sortScore[i];
-    //        value += "             \n";
-    //    }
-    //
-    //    return value;
-    //}
+    public String toString() {
+        String value = "This is the current Scoreboard:\n";
+        value += "-------------------------------------------\n";
+        value += "Position  | Player          | Points       \n";
+        value += "-------------------------------------------\n";
 
+        //ArrayList<User> sortPlayers = this.getPlayers();
+        ArrayList<String> sortPlayers = this.getPlayers();
+        long[] sortScore = this.getScore();
+        int[] sortRanking = this.getRanking();
+
+        for(int i = 0; i < players.size(); i++) {
+            //value += "" + (sortRanking[i] + 1) + ".        | " + sortPlayers.get(i).getUsername();
+            value += "" + (sortRanking[i] + 1) + ".        | " + sortPlayers.get(i);
+            value += "\t\t| " + sortScore[i];
+            value += "             \n";
+        }
+
+        return value;
+    }
 
 }
