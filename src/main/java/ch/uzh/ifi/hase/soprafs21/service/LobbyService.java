@@ -225,8 +225,8 @@ public class LobbyService {
             // save into the repository
             lobbyRepository.save(lobbytoupdate);
             lobbyRepository.flush();
-        saveUser(user);
-
+        userRepository.save(user);
+        userRepository.flush();
     }
 
 }

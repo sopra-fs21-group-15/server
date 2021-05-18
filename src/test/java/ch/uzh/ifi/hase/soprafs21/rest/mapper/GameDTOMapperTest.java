@@ -28,7 +28,6 @@ public class GameDTOMapperTest {
         game.setRoundTracker(8);
         game.setId(1L);
         game.setRoundId(5L);
-        game.setLobbyId(6L);
 
 
 
@@ -39,7 +38,6 @@ public class GameDTOMapperTest {
         assertEquals(game.getNumberOfRounds(),gameGetDTO.getNumberOfRounds());
         assertEquals(game.getId(), gameGetDTO.getId());
         assertEquals(game.getTimePerRound(),gameGetDTO.getTimePerRound());
-        assertEquals(game.getLobbyId(),gameGetDTO.getLobbyId());
         assertEquals(game.getRoundId(),gameGetDTO.getRoundId());
     }
 }

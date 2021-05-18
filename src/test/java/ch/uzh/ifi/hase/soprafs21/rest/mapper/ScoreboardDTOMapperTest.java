@@ -26,7 +26,7 @@ public class ScoreboardDTOMapperTest {
         players.add("Anton");
         players.add("Mike");
         scoreBoard.setPlayers(players);
-        int [] newScore = {545654, 456465};
+        long [] newScore = {545654, 456465};
         scoreBoard.setScore(newScore);
         int[] ranking = {1,2};
         scoreBoard.setRanking(ranking);

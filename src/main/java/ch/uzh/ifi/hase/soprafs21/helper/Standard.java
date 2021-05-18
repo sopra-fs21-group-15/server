@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs21.helper;
 
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -11,9 +10,7 @@ public class Standard {
     public int numberOfChoices = 3; // how many options the drawer can choose from
     public int minNumOfPlayers = 2; // the minimum of users that need to be present for a game
     public int timeToSelect = 10; // [s] time to select the words before a random word is chosen for you
-    public int convertToLocalTimeOffSet = 11; // the off set we have if we want to transform the format into localtime
     public DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS"); // how time is saved and reasoned about
-
 
     // access number of choices
     public int getNumberOfChoices() { return this.numberOfChoices; }
@@ -26,10 +23,6 @@ public class Standard {
     // access time to select an option
     public int getTimeToSelect() { return this.timeToSelect; }
     public void setTimeToSelect(int timeToSelect) { this.timeToSelect = timeToSelect; }
-
-    // access to the convert to localtime off set
-    public int getConvertToLocalTimeOffSet() { return this.convertToLocalTimeOffSet; }
-    public void setConvertToLocalTimeOffSet(int convertToLocalTimeOffSet) { this.convertToLocalTimeOffSet = convertToLocalTimeOffSet; }
 
     // access the general formatting of time
     public DateTimeFormatter getDateTimeFormatter() { return this.dateTimeFormatter; }
