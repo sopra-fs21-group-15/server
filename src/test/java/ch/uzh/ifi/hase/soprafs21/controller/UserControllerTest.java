@@ -268,11 +268,21 @@ public class UserControllerTest {
 
         @Test
         public void logoutUser_validInput() throws Exception{
-        //userService.logout();
+        UserPostDTO userPostDTO = new UserPostDTO();
+            userPostDTO.setPassword("Test Password");
+            userPostDTO.setUsername("testUsername");
 
+            doNothing().when(userService).logout(1L);
 
+            MockHttpServletRequestBuilder putRequest = put("/logout/1")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(asJsonString(userPostDTO));
+
+            mockMvc.perform(putRequest).andExpect(status().isNoContent());
 
     }
+
+
 
 
     /**
