@@ -7,7 +7,7 @@ import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import ch.uzh.ifi.hase.soprafs21.repository.BrushStrokeRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.DrawingRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.RoundRepository;
-import org.hibernate.mapping.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -17,9 +17,9 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+
 import java.util.Collections;
-import java.util.Comparator;
+
 import java.util.List;
 
 @Service
@@ -58,7 +58,7 @@ public class DrawingService {
         // if we do not find the drawing
         String nonExistingDrawing = "This drawing does not exist. Please search for an existing drawing.";
         if (drawingFound == null) {
-            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingDrawing));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingDrawing));
         }
 
         return drawingFound;

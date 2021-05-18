@@ -119,7 +119,7 @@ public class GameService implements Runnable {
 
         if (potGame.isEmpty()) { // if not found
             String nonExistingGame = "This game does not exist or has expired. Please search for an existing game.";
-            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingGame));
+           throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingGame));
         } else { // if found
             value = potGame.get();
         }
