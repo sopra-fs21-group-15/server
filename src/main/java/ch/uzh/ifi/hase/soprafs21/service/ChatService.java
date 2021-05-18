@@ -83,19 +83,13 @@ public class ChatService {
 
 
             // search for newer messages
-            while(messageTime.isBefore(searchedTime) || messageTime.isEqual(searchedTime)) {
-                if (index <= chat.getMessage().size()-1) {
-                    message = chat.getMessage().get(index);
-                    searchedTime = LocalDateTime.parse(message.getTimeStamp(), formatter);
+            for (int i = 0; i <= chat.getMessage().size()-1; i++) {
+                message = chat.getMessage().get(i);
+                messageTime = LocalDateTime.parse(message.getTimeStamp(), formatter);
+                if (messageTime.isBefore(searchedTime) || messageTime.isEqual(searchedTime)) {
                     index++;
                 }
-                else {
-                    index = chat.getMessage().size();
-                    break;
-                }
-
             }
-
             // send back List of Messages or Chat?
             newMessages = new ArrayList<>(chat.getMessage().subList(index, chat.getMessage().size()));
 
