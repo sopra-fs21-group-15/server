@@ -46,6 +46,7 @@ public class LobbyServiceTest {
         testLobby.setTimer(60);
         testLobby.setSize(8);
         testLobby.setRounds(5);
+        testLobby.setToken("2");
 
 
         testUser = new User();
@@ -72,7 +73,7 @@ public class LobbyServiceTest {
         assertEquals(testLobby.getId(), createdLobby.getId());
         assertEquals(testLobby.getPassword(), createdLobby.getPassword());
         assertEquals(testLobby.getLobbyname(), createdLobby.getLobbyname());
-
+        assertEquals(testLobby.getToken(), createdLobby.getToken());
     }
 
 
