@@ -36,7 +36,7 @@ public class GameServiceTest {
     private Lobby testLobby;
     private Game testgame;
 
-    @Autowired
+    @MockBean
     private TimerService timerService;
 
 
@@ -68,6 +68,7 @@ public class GameServiceTest {
         Mockito.when(lobbyRepository.findById(Mockito.any())).thenReturn(Optional.ofNullable(testLobby));
         Mockito.when(gameRepository.findById(Mockito.any())).thenReturn(Optional.ofNullable(testgame));
         //Mockito.when(gameRepository.findByLobbyId(Mockito.any())).thenReturn(Optional.ofNullable(testgame));
+        Mockito.when(timerService.begin(Mockito.any())).thenReturn(5);
     }
 
     @Test
@@ -142,7 +143,8 @@ public class GameServiceTest {
 @Test
     public void test_mocking(){
     int time = gameService.startPhase(testgame);
-    //Mockito.when(timerService.begin(Mockito.any())).thenReturn(testgame.getTimer());
+
+
 
 }
 
