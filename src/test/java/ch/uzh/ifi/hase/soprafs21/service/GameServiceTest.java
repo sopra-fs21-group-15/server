@@ -138,13 +138,13 @@ public class GameServiceTest {
 
     }
 **/
-
+/**
 @Test
     public void test_mocking(){
     int time = gameService.startPhase(testgame);
     //Mockito.when(timerService.begin(Mockito.any())).thenReturn(testgame.getTimer());
 
 }
-
+**/
 
 }

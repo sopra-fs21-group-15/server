@@ -133,7 +133,7 @@ public class LobbyService {
         // change lobby size
         if (lobbyChange.getSize() != null) {
             String more_members_than_size ="Too many members. Please remove some members, before decreasing the lobby size!";
-            if(lobbytoupdate.getMembers().size() >= lobbyChange.getSize()) {
+            if(lobbytoupdate.getMembers().size() > lobbyChange.getSize()) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(more_members_than_size));
             }
             lobbytoupdate.setSize(lobbyChange.getSize());

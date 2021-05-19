@@ -67,7 +67,7 @@ public class ChatService {
         newMessage = messageRepository.saveAndFlush(newMessage);
         return newMessage;
     }
-
+ /**
     public Chat getNewMessages(Long chatId, String timeStamp) {
         Chat chat = getChat(chatId);
         int index = 0;
@@ -105,5 +105,56 @@ public class ChatService {
         newChat.setMessages(newMessages);
         return newChat;
     }
+    **/
+ public Chat getNewMessages(Long chatId, String timeStamp) {
+
+     Chat chat = getChat(chatId);
+
+     int index = 0;
+
+     List<Message> newMessages = new ArrayList<>();
+
+     // check if chat is empty
+
+     if (!(chat.getMessage().isEmpty())) {
+
+         DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
+
+         Message message = chat.getMessage().get(index);
+
+         LocalDateTime messageTime = LocalDateTime.parse(message.getTimeStamp(), formatter);
+
+         LocalDateTime searchedTime = LocalDateTime.parse(timeStamp, formatter);
+
+         // search for newer messages
+
+         for (int i = 0; i <= chat.getMessage().size() - 1; i++) {
+
+             message = chat.getMessage().get(i);
+
+             messageTime = LocalDateTime.parse(message.getTimeStamp(), formatter);
+
+             if (messageTime.isBefore(searchedTime) || messageTime.isEqual(searchedTime)) {
+
+                 index++;
+
+             }
+
+         }
+
+         // send back List of Messages or Chat?
+
+         newMessages = new ArrayList<>(chat.getMessage().subList(index, chat.getMessage().size()));
+
+     }
+
+     Chat newChat = new Chat();
+
+     newChat.setChatId(chatId);
+
+     newChat.setMessages(newMessages);
+
+     return newChat;
+ }
 
 }
