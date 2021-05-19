@@ -44,7 +44,7 @@ public class RoundService {
 
         if (potRound.isEmpty()) { // if not found
             String nonExistingRound = "This round does not exist, has expired or has not been initialized yet.";
-            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingRound));
+           throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingRound));
         } else { // if found
             value = potRound.get();
         }
