@@ -124,6 +124,7 @@ public class ChatServiceTest {
 
     }
 
+
     @Test
     public void getaemptyChatback_ifthereareNoMessages(){
 
@@ -141,6 +142,7 @@ public class ChatServiceTest {
         assertTrue(getMessages.getMessage().isEmpty());
 
     }
+
 
     @Test
     public void getNewMessages_noMessage(){

@@ -82,32 +82,22 @@ public class ChatService {
      if (!(chat.getMessage().isEmpty())) {
 
          DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
-
          Message message = chat.getMessage().get(index);
 
          LocalDateTime messageTime = LocalDateTime.parse(message.getTimeStamp(), formatter);
 
          LocalDateTime searchedTime = LocalDateTime.parse(timeStamp, formatter);
 
-         // search for newer messages
-
-         for (int i = 0; i <= chat.getMessage().size() - 1; i++) {
-
-             message = chat.getMessage().get(i);
-
-             messageTime = LocalDateTime.parse(message.getTimeStamp(), formatter);
-
-             if (messageTime.isBefore(searchedTime) || messageTime.isEqual(searchedTime)) {
-
-                 index++;
-
-             }
-
-         }
-
-         // send back List of Messages or Chat?
-
-         newMessages = new ArrayList<>(chat.getMessage().subList(index, chat.getMessage().size()));
+            // search for newer messages
+            for (int i = 0; i <= chat.getMessage().size()-1; i++) {
+                message = chat.getMessage().get(i);
+                messageTime = LocalDateTime.parse(message.getTimeStamp(), formatter);
+                if (messageTime.isBefore(searchedTime) || messageTime.isEqual(searchedTime)) {
+                    index++;
+                }
+            }
+            // send back List of Messages or Chat?
+            newMessages = new ArrayList<>(chat.getMessage().subList(index, chat.getMessage().size()));
 
      }
 
