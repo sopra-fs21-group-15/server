@@ -164,6 +164,24 @@ public class UserServiceTest {
 
 
     }
+
+    @Test
+    public void updateUser_successfull_withNullvalues(){
+        User userchanges = new User();
+        userchanges.setUsername(null);
+        userchanges.setBirthDate(null);
+
+        assertNotEquals(testUser.getUsername(), userchanges.getUsername());
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
+        userService.updateUser(testUser.getId(), userchanges);
+
+        assertEquals(testUser.getUsername(), testUser.getUsername());
+        assertEquals(testUser.getBirthDate(), testUser.getBirthDate());
+
+
+    }
+
+
     @Test
     public void updateUser_unsuccessfull(){
         User existinguser = new User();

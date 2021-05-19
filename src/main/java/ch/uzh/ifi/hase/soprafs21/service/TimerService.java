@@ -34,7 +34,7 @@ public class TimerService {
 
         if (potTimer.isEmpty()) { // if not found
             String nonExistingTimer = "The timer you have been looking for does not exist. Please search for an existing timer.";
-            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingTimer));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingTimer));
         } else { // if found
             value = potTimer.get();
         }
