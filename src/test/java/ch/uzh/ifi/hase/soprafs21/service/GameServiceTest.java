@@ -12,6 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
@@ -27,14 +29,15 @@ public class GameServiceTest {
     @Mock
     private GameRepository gameRepository;
 
-    @InjectMocks
-    private TimerService timerService;
+
 
     @InjectMocks
     private GameService gameService;
     private Lobby testLobby;
     private Game testgame;
 
+    @Autowired
+    private TimerService timerService;
 
 
     @BeforeEach
@@ -127,7 +130,7 @@ public class GameServiceTest {
 
         Game foundgame = gameService.getGame(newgameID);
 
-        assertEquals(foundgame.getLobbyId(), testgame.getLobbyId());
+
         assertEquals(foundgame.getTimePerRound(), testgame.getTimePerRound());
         assertEquals(foundgame.getGameName(),testgame.getGameName());
         assertEquals(foundgame.getGameModes(), testgame.getGameModes());
@@ -135,6 +138,13 @@ public class GameServiceTest {
 
     }
 **/
+/**
+@Test
+    public void test_mocking(){
+    int time = gameService.startPhase(testgame);
+    //Mockito.when(timerService.begin(Mockito.any())).thenReturn(testgame.getTimer());
 
+}
+**/
 
 }

@@ -107,22 +107,42 @@ public class ChatServiceTest {
         String searchedtimer = "2021-05-17 14:54:10:000";
 
         Message newMessage = new Message();
-        newMessage.setTimeStamp("2021-05-17 14:56:10:000");
+        newMessage.setTimeStamp("2021-05-17 14:54:10:000");
         newMessage.setMessage("Test 89789");
         chatService.addNewMessage(testChat.getChatId(), newMessage);
         Message newMessage1 = new Message();
         newMessage1.setTimeStamp("2021-05-17 14:57:10:000");
-        newMessage1.setMessage("Test 89789");
+        newMessage1.setMessage("Test 897889");
         chatService.addNewMessage(testChat.getChatId(), newMessage1);
 
 
         Chat getMessages = chatService.getNewMessages(testChat.getChatId(), searchedtimer);
 
         assertFalse(getMessages.getMessage().contains(testMessage));
-        assertTrue(getMessages.getMessage().contains(newMessage));
+        assertFalse(getMessages.getMessage().contains(newMessage));
         assertTrue(getMessages.getMessage().contains(newMessage1));
 
     }
+
+
+    @Test
+    public void getaemptyChatback_ifthereareNoMessages(){
+
+        String searchedtimer = "2021-05-17 14:54:10:000";
+
+        Chat emptyChat = new Chat();
+        emptyChat.setChatId(2L);
+
+        Mockito.when(chatRepository.findById(Mockito.any())).thenReturn(Optional.ofNullable(emptyChat));
+
+
+        Chat getMessages = chatService.getNewMessages(emptyChat.getChatId(), searchedtimer);
+
+        assertFalse(getMessages.getMessage().contains(testMessage));
+        assertTrue(getMessages.getMessage().isEmpty());
+
+    }
+
 
     @Test
     public void getNewMessages_noMessage(){
