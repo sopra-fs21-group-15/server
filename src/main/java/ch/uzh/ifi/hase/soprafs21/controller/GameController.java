@@ -139,6 +139,47 @@ public class GameController {
         return ScoreBoardDTOMapper.INSTANCE.convertEntityToScoreBoardGetDTO(score);
     }
 
+  
+/*
+    //API Call for getting the chat in the game
+    @GetMapping("/game/{gameId}/messages")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ChatGetDTO getMessages (@PathVariable Long gameId, @RequestBody ChatPostDTO chatPostDTO) {
+        LocalDateTime timeStamp = ChatDTOMapper.INSTANCE.convertChatPostDTOtoEntity(chatPostDTO);
+        Game game = gameService.getGame(gameId);
+        Chat chat = game.getChat(timeStamp);
+        return ChatDTOMapper.INSTANCE.convertEntityToChatGetDTO(chat);
+    }
+*/
+    /*
+    //API Call for posting a message in the game
+    @PutMapping("/game/{gameId}/messages")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Boolean guessMessage (@PathVariable Long gameId, @RequestBody MessagePostDTO messagePostDTO) {
+        Message message = MessageDTOMapper.INSTANCE.convertMessagePostDTOtoEntity(messagePostDTO);
+        Game game = gameService.getGame(gameId);
+        Boolean correct = game.makeGuess(message);
+        return correct;
+    }
+*/
+
+    
+    @PutMapping("/games/{gameId}/guess")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public boolean makeGuess(@RequestBody MessagePostDTO messagePostDTO, @PathVariable Long gameId) {
+        Message message = ChatDTOMapper.INSTANCE.convertMessagePostDTOtoEntity(messagePostDTO); // convert to usable object
+        Game game = gameService.getGame(gameId); // find game
+        Round round = roundService.getRound(game.getRoundId()); // get current round
+        boolean value = roundService.makeGuess(message,round); // check if the guess is valid and correct
+        if (value) {
+            gameService.addPoints(game,message);
+        }
+        return value;
+    }
+
     /** (Issue #35) API call to get the current options the drawer can chose from right now has right now. Checks if
      * the game is currently in the selection phase and checks if the person sending the request is the drawer at this
      * point in time. Returns nothing if either requirements do not match.
