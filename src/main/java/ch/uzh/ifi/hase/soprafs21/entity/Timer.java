@@ -47,7 +47,7 @@ public class Timer implements Serializable {
     }
 
     public Timer(int drawingTimeSpan){ // constructor with options for callers
-        this.drawingTimeSpan = drawingTimeSpan;//drawingTimeSpan;
+        this.drawingTimeSpan = drawingTimeSpan; // drawingTimeSpan;
         this.selectTimeSpan = new Standard().getTimeToSelect();
         this.isDrawing = false;
         this.start = null;

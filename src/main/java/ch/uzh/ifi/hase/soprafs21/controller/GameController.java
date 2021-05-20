@@ -163,7 +163,7 @@ public class GameController {
      * @param messagePostDTO = contains the player, the guess and a timestamp when it was send
      * @return true only if the player guessed the correct word for the first time
      */
-    @GetMapping("/games/{gameId}/guess")
+    @PutMapping("/games/{gameId}/guess")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
     public boolean makeGuess(@RequestBody MessagePostDTO messagePostDTO, @PathVariable Long gameId) {

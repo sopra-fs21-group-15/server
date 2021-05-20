@@ -10,7 +10,7 @@ public class Standard {
 
     public int numberOfChoices = 3; // how many options the drawer can choose from
     public int minNumOfPlayers = 2; // the minimum of users that need to be present for a game
-    public int timeToSelect = 10; // [s] time to select the words before a random word is chosen for you
+    public int timeToSelect = 20; // [s] time to select the words before a random word is chosen for you
     public int convertToLocalTimeOffSet = 11; // the off set we have if we want to transform the format into localtime
     public DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS"); // how time is saved and reasoned about
 
