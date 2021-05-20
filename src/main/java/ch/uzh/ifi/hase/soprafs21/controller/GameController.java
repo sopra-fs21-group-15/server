@@ -8,16 +8,21 @@ import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.*;
 import ch.uzh.ifi.hase.soprafs21.service.DrawingService;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
+import ch.uzh.ifi.hase.soprafs21.service.ChatService;
 
 import ch.uzh.ifi.hase.soprafs21.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs21.service.RoundService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static ch.uzh.ifi.hase.soprafs21.constant.RoundStatus.DRAWING;
+import static ch.uzh.ifi.hase.soprafs21.constant.RoundStatus.SELECTING;
 
 @RestController
 public class GameController {
@@ -26,12 +31,14 @@ public class GameController {
     private final RoundService roundService;
     private final DrawingService drawingService;
     private final LobbyService lobbyService;
+    private final ChatService chatService;
 
-    GameController(GameService gameService, RoundService roundService, DrawingService drawingService, LobbyService lobbyService) {
+    GameController(GameService gameService, RoundService roundService, DrawingService drawingService, LobbyService lobbyService, ChatService chatService) {
         this.gameService = gameService;
         this.roundService = roundService;
         this.drawingService = drawingService;
         this.lobbyService = lobbyService;
+        this.chatService = chatService;
     }
 
     // API call to create a game from the lobby (requires to be in a lobby first, lobby owner only)
@@ -47,7 +54,7 @@ public class GameController {
         // convert internal representation of game back to API for client
         return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(createdGame);
     }
-
+/*
     // API call to join a created game from the lobby (requires to be in a lobby first)
     @GetMapping("/games/{lobbyId}/convert")
     @ResponseStatus(HttpStatus.OK)
@@ -59,7 +66,7 @@ public class GameController {
         // convert internal representation of game back to API for client
         return GameDTOMapper.INSTANCE.convertEntityToGameGetDTO(foundGame);
     }
-
+*/
     // API call to get a newer version of the game that you are in
     @GetMapping("/games/{gameId}")
     @ResponseStatus(HttpStatus.OK)
@@ -131,6 +138,8 @@ public class GameController {
         ScoreBoard score = game.getScoreBoard();
         return ScoreBoardDTOMapper.INSTANCE.convertEntityToScoreBoardGetDTO(score);
     }
+
+  
 /*
     //API Call for getting the chat in the game
     @GetMapping("/game/{gameId}/messages")
@@ -154,15 +163,9 @@ public class GameController {
         Boolean correct = game.makeGuess(message);
         return correct;
     }
-=======
 */
 
-    /** (Issue 51) API-call for sending a guess of what the word might be from a user
-     * (Issue 55) and giving that user points should his/her guess be correct.
-     * @param gameId = the id of the game we would like to send the guess to
-     * @param messagePostDTO = contains the player, the guess and a timestamp when it was send
-     * @return true only if the player guessed the correct word for the first time
-     */
+    
     @PutMapping("/games/{gameId}/guess")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
@@ -224,5 +227,52 @@ public class GameController {
         return RoundDTOMapper.INSTANCE.convertEntityToRoundGetDTO(round);
     }
 
+    // Game Chat
+
+    @PostMapping("/games/{gameId}/chats")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ChatGetDTO chatGetDTO(@PathVariable Long gameId, @RequestBody MessagePostDTO chatPostDTO) {
+        Game game = gameService.getGame(gameId);
+        Message chatInput = ChatDTOMapper.INSTANCE.convertMessagePostDTOtoEntity(chatPostDTO);
+        Long chatId = game.getId();
+        Chat newMessages = chatService.getNewMessages(chatId, chatInput.getTimeStamp());
+        ChatGetDTO newChat = ChatDTOMapper.INSTANCE.convertEntityToChatGetDTO(newMessages);
+        return newChat;
+    }
+
+    @PutMapping("/games/{gameId}/chats")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public boolean addGuess(@PathVariable Long gameId, @RequestBody MessagePostDTO messagePostDTO) {
+        Message message = ChatDTOMapper.INSTANCE.convertMessagePostDTOtoEntity(messagePostDTO);
+        message = chatService.createMessage(message);
+        chatService.addNewMessage(gameId, message);
+        Game game = gameService.getGame(gameId); // find game
+        Round round = roundService.getRound(game.getRoundId()); // get current round
+        boolean guess = false;
+        if (round.getStatus().equals(DRAWING)) { // check if the phase of the round is correct
+            guess = roundService.makeGuess(message,round); // check if the guess is valid and correct
+        }
+        return guess;
+    }
+
+    /** (Issue 51) API-call for sending a guess of what the word might be from a user
+     * @param gameId = the id of the game we would like to send the guess to
+     * @param messagePostDTO = contains the player, the guess and a timestamp when it was send
+     * @return true only if the player guessed the correct word for the first time
+     */
+    /*
+    @GetMapping("/games/{gameId}/guess")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public boolean makeGuess(@RequestBody MessagePostDTO messagePostDTO, @PathVariable Long gameId) {
+        Message message = ChatDTOMapper.INSTANCE.convertMessagePostDTOtoEntity(messagePostDTO); // convert to usable object
+        Game game = gameService.getGame(gameId); // find game
+        Round round = roundService.getRound(game.getRoundId()); // get current round
+        boolean value = roundService.makeGuess(message,round); // check if the guess is valid and correct
+        return value;
+    }
+*/
 }
 

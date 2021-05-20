@@ -34,7 +34,7 @@ public class TimerService {
 
         if (potTimer.isEmpty()) { // if not found
             String nonExistingTimer = "The timer you have been looking for does not exist. Please search for an existing timer.";
-            new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingTimer));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingTimer));
         } else { // if found
             value = potTimer.get();
         }
@@ -81,37 +81,26 @@ public class TimerService {
         return timer.getStart() == null;
     }
 
-    /** returns the remaining time by looking at the current mode (drawing or selecting), the starting time and the
-     * current time to determine the remaining time in seconds and milliseconds in this mode.
+    /** returns the remaining time
+     * looks at the current mode (drawing or selecting), the starting time and the
+     * current time to determine the remaining time in seconds and milliseconds in
+     * this mode.
      * @param timer = we have to give the method the timer of whom
      *              we would like to know the remaining time
      * @return remaining time in this mode
      */
     public int remainingTime(Timer timer){
-        LocalTime rightNow = LocalTime.now();
-        return remainingTime(timer,rightNow);
-    }
-
-    /** returns the remaining time by looking at the current mode (usually drawing), the starting time and the
-     * time past down to determine the remaining time in seconds and milliseconds in this mode.
-     * @param timer = we have to give the method the timer of whom
-     *              we would like to know the remaining time
-     * @param timeStamp = the time we would like it to get compared to
-     * @return remaining time in this mode
-     */
-    public int remainingTime(Timer timer, LocalTime timeStamp){
-        double value = 0, tempMilli, tempSec, tempMin, tempHour, time;
+        double value = 0, tempMilli, tempSec, time;
         if(!isReady(timer)) {
             if(timer.getIsDrawing()) {
                 time = timer.getDrawingTimeSpan();
             } else {
                 time = timer.getSelectTimeSpan();
             }
-            tempMilli = Math.floor((timeStamp.getNano() - timer.getStart().getNano()) / Math.pow(10.0,6.0)) / Math.pow(10.0,3.0);
-            tempSec = timeStamp.getSecond() - timer.getStart().getSecond();
-            tempMin = (timeStamp.getMinute() - timer.getStart().getMinute()) * 60;
-            tempHour = (timeStamp.getHour() - timer.getStart().getHour()) * 3600;
-            value = Math.floor((time - (tempHour + tempMin + tempSec + tempMilli)) * 1000);
+            LocalTime rightNow = LocalTime.now();
+            tempMilli = Math.floor((rightNow.getNano() - timer.getStart().getNano()) / Math.pow(10.0,6.0)) / Math.pow(10.0,3.0);
+            tempSec = rightNow.getSecond() - timer.getStart().getSecond();
+            value = Math.floor((time - (tempSec + tempMilli)) * 1000);
         }
         return (int) Math.max(0,value);
     }

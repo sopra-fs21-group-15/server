@@ -1,10 +1,9 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
 import javax.persistence.*;
-/*
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-*/
+
 import java.io.Serializable;
 
 
@@ -24,15 +23,11 @@ public class Message implements Serializable {
 
     @Column
     private String writerName;
-/*
+
     @NotBlank
     @NotEmpty
-*/
     @Column(nullable = false)
     private String message;
-
-    @Column
-    private boolean correctGuess = false;
 
     public Long getMessageId() { return messageId; }
     public void setMessageId(Long messageId) { this.messageId = messageId; }
@@ -58,6 +53,4 @@ public class Message implements Serializable {
         this.timeStamp = timeStamp;
     }
 
-    public boolean getCorrectGuess() { return correctGuess; }
-    public void setCorrectGuess(boolean correctGuess) { this.correctGuess = correctGuess; }
 }

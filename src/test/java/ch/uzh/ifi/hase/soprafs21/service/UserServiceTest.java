@@ -164,6 +164,24 @@ public class UserServiceTest {
 
 
     }
+
+    @Test
+    public void updateUser_successfull_withNullvalues(){
+        User userchanges = new User();
+        userchanges.setUsername(null);
+        userchanges.setBirthDate(null);
+
+        assertNotEquals(testUser.getUsername(), userchanges.getUsername());
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
+        userService.updateUser(testUser.getId(), userchanges);
+
+        assertEquals(testUser.getUsername(), testUser.getUsername());
+        assertEquals(testUser.getBirthDate(), testUser.getBirthDate());
+
+
+    }
+
+
     @Test
     public void updateUser_unsuccessfull(){
         User existinguser = new User();
@@ -180,4 +198,45 @@ public class UserServiceTest {
         assertThrows(ResponseStatusException.class, () -> userService.updateUser(testUser.getId(),userchanges));
         assertEquals(testUser.getUsername(),unchanged);
 
-}}
+}
+@Test
+    public void addUserasFriend_success(){
+        User newFriend = new User();
+        newFriend.setUsername("Friend1");
+        newFriend.setId(2L);
+
+        userService.addUserToFriendsList(testUser.getId(), newFriend);
+        assertTrue(testUser.getFriendsList().contains(newFriend.getUsername()));
+
+
+}
+@Test
+    public void add_user_again_fail(){
+    testUser.setFriendsList("Friend1");
+    User newFriend = new User();
+    newFriend.setUsername("Friend1");
+    newFriend.setId(2L);
+
+    assertThrows(ResponseStatusException.class, () -> userService.addUserToFriendsList(testUser.getId(),newFriend));
+
+
+}
+@Test
+    public void removeUser_fromFL_success(){
+    User delete = new User();
+    delete.setUsername("delete");
+    testUser.setFriendsList("delete");
+    testUser.setFriendsList("Friend1");
+    userService.removeUserFromFriendsList(testUser.getId(),delete);
+    assertTrue(testUser.getFriendsList().contains("Friend1"));
+    assertFalse(testUser.getFriendsList().contains(delete.getUsername()));
+}
+@Test
+    public void Remove_random_persone_failed(){
+    User delete = new User();
+    delete.setUsername("delete");
+
+    assertThrows(ResponseStatusException.class, () -> userService.removeUserFromFriendsList(testUser.getId(),delete));
+
+    }
+}

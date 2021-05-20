@@ -46,6 +46,7 @@ public class LobbyServiceTest {
         testLobby.setTimer(60);
         testLobby.setSize(8);
         testLobby.setRounds(5);
+        testLobby.setToken("2");
 
 
         testUser = new User();
@@ -72,7 +73,7 @@ public class LobbyServiceTest {
         assertEquals(testLobby.getId(), createdLobby.getId());
         assertEquals(testLobby.getPassword(), createdLobby.getPassword());
         assertEquals(testLobby.getLobbyname(), createdLobby.getLobbyname());
-
+        assertEquals(testLobby.getToken(), createdLobby.getToken());
     }
 
 
@@ -182,4 +183,128 @@ public class LobbyServiceTest {
         assertThrows(ResponseStatusException.class, ()->lobbyService.removeLobbyMembers(testLobby.getId(), "user"));
 
     }
-}
+
+    @Test
+    void getnoUser(){
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(null));
+        assertThrows(ResponseStatusException.class, ()->lobbyService.getUser(5L));
+
+    }
+    @Test
+    void getLobbybyID_failed(){
+        Mockito.when(lobbyRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(null));
+        assertThrows(ResponseStatusException.class, ()->lobbyService.getLobby(5L));
+
+    }
+    @Test
+    void updateLobby_failed(){
+        testLobby.setMembers("1");
+        testLobby.setMembers("2");
+        testLobby.setMembers("3");
+
+        Lobby changeslobby = new Lobby();
+        changeslobby.setRounds(null);
+        changeslobby.setTimer(null);
+        changeslobby.setLobbyname(null);
+        changeslobby.setSize(2);
+        changeslobby.setPassword(null);
+        assertThrows(ResponseStatusException.class, ()->lobbyService.update_lobby(testLobby.getId(),changeslobby));
+    }
+    @Test
+    void smallentheLobbytotheMax(){
+        testLobby.setMembers("1");
+        testLobby.setMembers("2");
+        testLobby.setMembers("3");
+
+        Lobby changeslobby = new Lobby();
+        changeslobby.setRounds(null);
+        changeslobby.setTimer(null);
+        changeslobby.setLobbyname(null);
+        changeslobby.setSize(3);
+        changeslobby.setPassword(null);
+        lobbyService.update_lobby(testLobby.getId(),changeslobby);
+
+        assertEquals(testLobby.getStatus(),LobbyStatus.FULL);
+        assertEquals(testLobby.getSize(),changeslobby.getSize());
+    }
+    @Test
+    void updateLobby_onlyLobbyname() {
+        testLobby.setMembers("1");
+        testLobby.setMembers("2");
+        testLobby.setMembers("3");
+
+        Lobby changeslobby = new Lobby();
+        changeslobby.setRounds(null);
+        changeslobby.setTimer(null);
+        changeslobby.setLobbyname("null");
+        changeslobby.setSize(null);
+        changeslobby.setPassword(null);
+
+        Lobby beforeupdate= new Lobby();
+        beforeupdate.setId(2L);
+        beforeupdate.setPassword("testPassword");
+        beforeupdate.setLobbyname("test");
+        beforeupdate.setTimer(60);
+        beforeupdate.setSize(8);
+        beforeupdate.setRounds(5);
+        beforeupdate.setToken("2");
+        lobbyService.update_lobby(testLobby.getId(), changeslobby);
+
+        assertNotEquals(testLobby.getLobbyname(), beforeupdate.getLobbyname());
+        assertEquals(testLobby.getPassword(), beforeupdate.getPassword());
+        assertEquals(testLobby.getToken(), beforeupdate.getToken());
+        assertEquals(testLobby.getRounds(), beforeupdate.getRounds());
+        assertEquals(testLobby.getSize(), beforeupdate.getSize());
+        assertEquals(testLobby.getTimer(), beforeupdate.getTimer());
+    }
+
+    @Test
+    public  void publicLobby_lasstemptyspace_success(){
+        testLobby.setPassword(null);
+        testLobby.setMembers("1");
+        testLobby.setMembers("2");
+        testLobby.setMembers("3");
+        testLobby.setSize(4);
+
+
+        Lobby user = new Lobby();
+        user.setPassword(null);
+        user.setLobbyname(testUser.getUsername());
+
+        lobbyService.addLobbyMembers(testLobby.getId(), user);
+
+        assertTrue(testLobby.getMembers().contains(user.getLobbyname()));
+        assertEquals(testLobby.getStatus(),LobbyStatus.FULL);
+
+    }
+    @Test
+    public  void join_in_the_smaeLobbyagain(){
+        testLobby.setPassword(null);
+        testLobby.setMembers(testUser.getUsername());
+        testLobby.setMembers("2");
+        testLobby.setMembers("3");
+        testLobby.setSize(4);
+
+
+        Lobby user = new Lobby();
+        user.setPassword(null);
+        user.setLobbyname(testUser.getUsername());
+
+        assertThrows(ResponseStatusException.class, ()->lobbyService.addLobbyMembers(testLobby.getId(), user));
+
+    }
+    @Test
+    public  void removelastplayer() {
+        testLobby.setPassword(null);
+        testLobby.setMembers(testUser.getUsername());
+
+        lobbyService.removeLobbyMembers(testLobby.getId(), testUser.getUsername());
+
+
+    }
+
+
+
+
+
+    }
