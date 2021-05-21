@@ -1,14 +1,11 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
-import ch.uzh.ifi.hase.soprafs21.constant.Colours;
 import ch.uzh.ifi.hase.soprafs21.constant.RoundStatus;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 // external API call to generate a random word. not yet working
 // TODO: part 1, make external API functional
@@ -56,6 +53,9 @@ public class Round implements Serializable {
     @Column(nullable = false)
     private boolean[] hasGuessed;
 
+    @Column(nullable = false)
+    private int[] gotPoints;
+
     @Column(nullable = true)
     private String drawerName;
 
@@ -83,6 +83,9 @@ public class Round implements Serializable {
 
     public boolean[] getHasDrawn() { return this.hasDrawn; }
     public void setHasDrawn(boolean[] newHasDrawn) { this.hasDrawn = newHasDrawn; }
+
+    public int[] getGotPoints() { return this.gotPoints; }
+    public void setGotPoints(int[] gotPoints) { this.gotPoints = gotPoints; }
 
     public boolean[] getHasGuessed() { return this.hasGuessed; }
     public void setHasGuessed(boolean[] hasGuessed) { this.hasGuessed = hasGuessed; }

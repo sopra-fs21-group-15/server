@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.helper;
 
 import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
 
 /**
  * A helper class to standardize all the different types and formats throughout the project
@@ -25,6 +26,10 @@ public class Standard {
     // access time to select an option
     public int getTimeToSelect() { return this.timeToSelect; }
     public void setTimeToSelect(int timeToSelect) { this.timeToSelect = timeToSelect; }
+
+    // access to the convert to localtime off set
+    public int getConvertToLocalTimeOffSet() { return this.convertToLocalTimeOffSet; }
+    public void setConvertToLocalTimeOffSet(int convertToLocalTimeOffSet) { this.convertToLocalTimeOffSet = convertToLocalTimeOffSet; }
 
     // access the general formatting of time
     public DateTimeFormatter getDateTimeFormatter() { return this.dateTimeFormatter; }
