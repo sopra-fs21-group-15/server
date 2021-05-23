@@ -84,14 +84,17 @@ public class GameController {
     @PutMapping("/games/{gameId}/drawing")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    public void addBrushStrokes(@RequestBody BrushStrokePutDTO brushStrokeEditDTO, @PathVariable long gameId) {
-        // convert API brush stroke to an internal representation
-        BrushStroke brushStroke = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(brushStrokeEditDTO);
-
-        // save the newly created brush stroke in the repository and in the drawing
+    public void addBrushStrokes(@RequestBody List<BrushStrokePutDTO> brushStrokeListDTO, @PathVariable long gameId) {
+        // get the correct game and drawing in which we need to save all the brushstrokes
         Game game = gameService.getGame(gameId);
         Round round = roundService.getRound(game.getRoundId());
-        drawingService.addStroke(round.getCurrentDrawing(),brushStroke);
+
+        // convert each and every API brush stroke to an internal representation
+        BrushStroke temp;
+        for (BrushStrokePutDTO preBrushStroke : brushStrokeListDTO) {
+            temp = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(preBrushStroke);
+            drawingService.addStroke(round.getCurrentDrawing(),temp);
+        }
     }
 
     // TODO #42 test and refine mapping for API-calls requesting the drawing
