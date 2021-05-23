@@ -178,13 +178,14 @@ public class GameController {
         return value;
     }
 
+    /*
     /** (Issue #35) API call to get the current options the drawer can chose from right now has right now. Checks if
      * the game is currently in the selection phase and checks if the person sending the request is the drawer at this
      * point in time. Returns nothing if either requirements do not match.
      * @param gameId = the id of the game we would like to get the options for
      * @param username = the username of the user who requested it
      * @return a list of three strings from which the current drawer can pick one
-     */
+     *//*
     @GetMapping("/games/{gameId}/choices/{username}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -192,7 +193,8 @@ public class GameController {
         Game game = gameService.getGame(gameId);
         Round round = roundService.getRound(game.getRoundId());
         return roundService.getChoices(round,username);
-    }
+    }*/
+
 
     /** (Issue #39) function handling the selection of a word. The function checks if the request was send by the
      * drawer and if the phase the round is in right now is correct and allows for choices.
