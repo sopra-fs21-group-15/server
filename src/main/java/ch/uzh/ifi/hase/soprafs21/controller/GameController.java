@@ -248,12 +248,14 @@ public class GameController {
     public boolean addGuess(@PathVariable Long gameId, @RequestBody MessagePostDTO messagePostDTO) {
         Message message = ChatDTOMapper.INSTANCE.convertMessagePostDTOtoEntity(messagePostDTO);
         message = chatService.createMessage(message);
-        chatService.addNewMessage(gameId, message);
         Game game = gameService.getGame(gameId); // find game
         Round round = roundService.getRound(game.getRoundId()); // get current round
         boolean guess = false;
         if (round.getStatus().equals(DRAWING)) { // check if the phase of the round is correct
             guess = roundService.makeGuess(message,round); // check if the guess is valid and correct
+        }
+        if (guess == false) {
+            chatService.addNewMessage(gameId, message); // add chat message
         }
         return guess;
     }

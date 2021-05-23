@@ -83,6 +83,7 @@ public class GameService implements Runnable {
         newGame.setNumberOfRounds(lobby.getRounds());
         newGame.setGameName(lobby.getLobbyname());
         newGame.setId(lobby.getId());
+        newGame.setGameModes(lobby.getGameMode());
 
         // generate Objects from lobby information
         int timePerRound = lobby.getTimer().intValue();

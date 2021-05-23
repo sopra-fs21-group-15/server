@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
+import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.Chat;
 
@@ -16,7 +17,7 @@ public class LobbyGetDTO {
     private Integer timer;
     private ArrayList<String> members;
     private LobbyStatus status;
-   // private Integer chatId;
+    private GameModes gameMode;
 
     public Long getId() {
         return id;
@@ -72,8 +73,8 @@ public class LobbyGetDTO {
         this.status = status;
     }
 
-    // get & set lobbyChat
- //   public Integer getChatId() { return chatId; }
+    // get & set gameMode
+    public GameModes getGameMode() { return gameMode; }
 
-//    public void setChatId(Integer chatId) { this.chatId = chatId; }
+    public void setGameMode(GameModes gameMode) { this.gameMode = gameMode; }
 }

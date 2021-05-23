@@ -1,7 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.rest.dto;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Chat;
-
+import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 import java.util.ArrayList;
 
 public class LobbyPostDTO {
@@ -17,9 +17,9 @@ public class LobbyPostDTO {
 
     private String rounds;
 
-    private String  timer;
+    private String timer;
 
- //   private Integer chatId;
+    private String gameMode;
 
     private String status;
 
@@ -53,8 +53,7 @@ public class LobbyPostDTO {
 
     public void setTimer(String timer) { this.timer = timer; }
 
- //   public Integer getChatId() { return chatId; }
+    public String getGameMode() { return gameMode; }
 
- //   public void setChatId(Integer chatId) { this.chatId = chatId; }
-
+    public void setGameMode(String gameMode) { this.gameMode = gameMode; }
 }
