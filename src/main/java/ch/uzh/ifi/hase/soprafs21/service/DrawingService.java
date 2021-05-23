@@ -59,7 +59,7 @@ public class DrawingService {
         // if we do not find the drawing
         String nonExistingDrawing = "This drawing does not exist. Please search for an existing drawing.";
         if (drawingFound == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingDrawing));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, nonExistingDrawing);
         }
 
         return drawingFound;
@@ -92,7 +92,7 @@ public class DrawingService {
      */
     public List<BrushStroke> getDrawing(Drawing drawing, LocalDateTime timeStamp) {
         int maxIndex = drawing.getBrushStrokes().size(); // get the size of the drawing
-        List<BrushStroke> result = new ArrayList<BrushStroke>(); // get the basic return value
+        List<BrushStroke> result = new ArrayList<>(); // get the basic return value
 
         if(!drawing.getBrushStrokes().isEmpty()) { // if the drawing is not empty we can look for the right part
             int index = 0; // initiate the index
@@ -104,8 +104,6 @@ public class DrawingService {
 
             // iterate over the saved brush strokes in drawing
             while (index < maxIndex && (value.isBefore(timeStamp) || value.isEqual(timeStamp))) {
-
-                System.out.println("" + value.toString() + " " + timeStamp.toString());
                 index++;
                 if (index < maxIndex) {
                     brushStroke = drawing.getBrushStrokes().get(index);
@@ -117,7 +115,11 @@ public class DrawingService {
             result = drawing.getBrushStrokes().subList(index, maxIndex);
 
             // sort the list and then return it
-            Collections.sort(result);
+            try {
+                Collections.sort(result);
+            } catch (ClassCastException e) {
+                System.out.println("You tried to sort a list with objects that can not be compared with one another.");
+            }
         }
 
         return result;
@@ -134,10 +136,14 @@ public class DrawingService {
         brushStrokeRepository.flush();
 
         drawing.getBrushStrokes().add(brushStroke); // add to drawing
-        Collections.sort(drawing.getBrushStrokes()); // sort list within drawing
+        // for safety we check if it works
+        try {
+            Collections.sort(drawing.getBrushStrokes()); // sort list within drawing
+        } catch (ClassCastException e) {
+            System.out.println("You tried to sort a list with objects that can not be compared with one another.");
+        }
 
-        drawing = drawingRepository.save(drawing); // update the drawing in the repository
-        drawingRepository.flush();
+        drawingRepository.saveAndFlush(drawing); // update the drawing in the repository
     }
 
     // get all rounds
