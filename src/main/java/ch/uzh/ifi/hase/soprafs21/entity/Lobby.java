@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
+import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 
 import javax.persistence.*;
@@ -53,11 +54,11 @@ public class Lobby implements Serializable {
     //lobby status
     @Column(nullable = false)
     private LobbyStatus status;
-/*
-    //lobby chat
-    @Column
-    private Long chatId;
-*/
+
+    //game mode
+    @Column(nullable = false)
+    private GameModes gameMode = GameModes.CLASSIC;
+
     public Lobby() {
     }
 
@@ -124,11 +125,9 @@ public class Lobby implements Serializable {
         this.status = status;
     }
 
-/*
-    public Long getChatId() { return chatId; }
+    public GameModes getGameMode() { return gameMode; }
 
-    public void setChatId(Long chatId) { this.chatId = chatId; }
-*/
+    public void setGameMode(GameModes gameMode) { this.gameMode = gameMode; }
 }
 
 

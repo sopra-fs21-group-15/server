@@ -235,7 +235,9 @@ public class RoundService {
         }*/ //else { // continue with the checks
             boolean isPartOfGame = round.getPlayers().contains(message.getWriterName()); // check if the writer is part of the game
             boolean isNotPainter = !message.getWriterName().equals(round.getDrawerName()); // check a person other then the painter has made a guess
-            boolean isRightWord = message.getMessage().equals(round.getWord()); // check if the guess is correct
+            String lowerCaseMessage = message.getMessage().toLowerCase();
+            String lowerCaseWord = round.getWord().toLowerCase();
+            boolean isRightWord = lowerCaseMessage.equals(lowerCaseWord); // check if the guess is correct
             boolean hasNotGuessedYet = false; // default value
 
             // more precise evaluation of "hasNotGuessedYet"
