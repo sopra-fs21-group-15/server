@@ -8,8 +8,9 @@ public class RoundGetDTO {
 
     private Long id;
     private RoundStatus status = RoundStatus.DRAWING;
-    private ArrayList<String> players = new ArrayList<String>();
-    private ArrayList<String> words;
+    private ArrayList<String> players = new ArrayList<>();
+    // private ArrayList<String> words;
+    private ArrayList<String> selection;
     private int index;
     private boolean[] hasDrawn;
     private int[] gotPoints;
@@ -27,8 +28,11 @@ public class RoundGetDTO {
     public ArrayList<String> getPlayers() { return this.players; }
     public void setPlayers(ArrayList<String> players) { this.players = players; }
 
-    public ArrayList<String> getWords() { return this.words; }
-    public void setWords(ArrayList<String> newWords) {this.words = newWords; }
+    // public ArrayList<String> getWords() { return this.words; }
+    // public void setWords(ArrayList<String> newWords) {this.words = newWords; }
+
+    public ArrayList<String> getSelection() { return this.selection; }
+    public void setSelection(ArrayList<String> selection) { this.selection = selection; }
 
     public int getIndex() { return this.index; }
     public void setIndex(int index) { this.index = index; }

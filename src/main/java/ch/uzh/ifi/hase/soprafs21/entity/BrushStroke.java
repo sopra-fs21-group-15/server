@@ -95,6 +95,8 @@ public class BrushStroke implements Serializable, Comparable {
             } else {
                 value = 1;
             }
+        } else {
+            throw new ClassCastException();
         }
 
         return value;

@@ -44,6 +44,9 @@ public class Round implements Serializable {
     @Column(nullable = false)
     private ArrayList<String> words;
 
+    @Column(nullable = true)
+    private ArrayList<String> selection;
+
     @Column(nullable = false)
     private int index;
 
@@ -77,6 +80,9 @@ public class Round implements Serializable {
 
     public ArrayList<String> getWords() { return this.words; }
     public void setWords(ArrayList<String> newWords) {this.words = newWords; }
+
+    public ArrayList<String> getSelection() { return this.selection; }
+    public void setSelection(ArrayList<String> selection){ this.selection = selection; }
 
     public int getIndex() { return this.index; }
     public void setIndex(int index) { this.index = index; }

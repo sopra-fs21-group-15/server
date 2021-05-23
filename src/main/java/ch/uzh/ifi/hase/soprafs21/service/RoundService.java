@@ -40,11 +40,11 @@ public class RoundService {
     // get a specific round quality of life
     public Round getRound(Long roundId) {
         Optional<Round> potRound = roundRepository.findById(roundId);
-        Round value = null;
+        Round value;
 
         if (potRound.isEmpty()) { // if not found
             String nonExistingRound = "This round does not exist, has expired or has not been initialized yet.";
-           throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingRound));
+           throw new ResponseStatusException(HttpStatus.NOT_FOUND, nonExistingRound);
         } else { // if found
             value = potRound.get();
         }
@@ -65,7 +65,7 @@ public class RoundService {
         int n = game.getPlayers().size();
 
         // prepare multiple drawings for this round
-        List<Drawing> drawings = new ArrayList<Drawing>();
+        List<Drawing> drawings = new ArrayList<>();
         Drawing tempDrawing;
         for(int i = 0; i < n; i++) {
             tempDrawing = new Drawing();
@@ -79,7 +79,7 @@ public class RoundService {
         round.setPlayers(game.getPlayers());
 
         // generate words for this round
-        ArrayList<String> words = new ArrayList<String>();
+        ArrayList<String> words = new ArrayList<>();
         Words wordGenerator = new Words();
         int choices = new Standard().getNumberOfChoices();
         for (int i = 0; i < n * choices; i++) {
@@ -115,7 +115,7 @@ public class RoundService {
         int i = rand.nextInt(n), sign = -1, distance = 0;
 
         // if player has already drawn systematically pick an acceptable drawer
-        int value = (i + sign * distance + n) % n;
+        int value = i;
         while(round.getHasDrawn()[value]) {
             if(sign == -1) {
                 distance++;
@@ -159,18 +159,22 @@ public class RoundService {
     }
 
     // the function that returns the choices a drawer can pick from
-    public List<String> getChoices(Round round, String username) {
-        if (round.getStatus().equals(DRAWING)) { // check if the phase of the round is correct
-            String notCorrectPhase = "This round is currently in drawing. Wait for the phase to end before looking for the word choices.";
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notCorrectPhase));
-        } else if (!username.equals(round.getDrawerName())) { // check if it is the right user asking for those infos
-            String notRightUser = "This user is not the current drawer. Please wait until it is your turn";
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notRightUser));
-        } else { // get the current choices of words
+    public ArrayList<String> getChoices(Round round, String username) {
+        // set the default return option
+        ArrayList<String> result = new ArrayList<>();
+
+        // check if the phase of the round is correct and if it is the right user asking to know
+        if (round.getStatus().equals(SELECTING) && username.equals(round.getDrawerName())) {
             int index = round.getIndex();
             int choices = new Standard().getNumberOfChoices();
-            return round.getWords().subList(choices * index, choices * (index + 1));
+
+            // add the corresponding values from the original list
+            for (int i = choices * index; i < choices * (index + 1); i++) {
+                result.add(round.getWords().get(i));
+            }
         }
+
+        return result;
     }
 
     // the function that allows the drawer to pick the word he/she would like to draw
@@ -178,16 +182,16 @@ public class RoundService {
         int numberOfChoices = new Standard().getNumberOfChoices();
         if (round.getStatus().equals(DRAWING)) { // check if the phase of the round is correct
             String notCorrectPhase = "This round is currently in drawing. Wait for the phase to end before picking a word from the choices.";
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notCorrectPhase));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, notCorrectPhase);
         } else if (!username.equals(round.getDrawerName())) { // check if it is the right user sending this choice
             String notRightUser = "This user is not the current drawer. Please wait until it is your turn";
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notRightUser));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, notRightUser);
         } else if (choice < 0 || choice >= numberOfChoices) {
             String notRightChoice = "The choice you send is out of bounds. Please consider taking one of the options given to you.";
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notRightChoice));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, notRightChoice);
         } else if (round.getWord() != null) {
             String noLongerYourChoice = "The drawer has already mad a choice and that choice can not be changed.";
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(noLongerYourChoice));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, noLongerYourChoice);
         } else { // get the current choices of words
             int index = round.getIndex();
             String wordOfChoice = round.getWords().get(index * numberOfChoices + choice);
@@ -217,7 +221,7 @@ public class RoundService {
     public int getLength(Round round) {
         if (round.getStatus().equals(SELECTING)) { // check if the phase of the round is correct
             String notCorrectPhase = "This round is currently in selecting. Wait for the phase to end before getting information about the word.";
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notCorrectPhase));
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, notCorrectPhase);
         } else { // get the current length of the word
             return round.getWord().length();
         }

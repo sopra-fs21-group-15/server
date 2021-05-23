@@ -199,7 +199,6 @@ public class GameController {
      * @param gameId = the id of the game the round is associated with
      * @param username = the name of the user sending this request
      * @param choiceId = the choice the user would like to make
-     * @return a DTO object that contains all the information
      */
     @PutMapping("/games/{gameId}/choices/{username}/{choiceId}")
     @ResponseStatus(HttpStatus.OK)
@@ -207,7 +206,7 @@ public class GameController {
     public void makeChoice(@PathVariable Long gameId, @PathVariable String username, @PathVariable Integer choiceId) {
         Game game = gameService.getGame(gameId);
         Round round = roundService.getRound(game.getRoundId());
-        int choice = choiceId.intValue();
+        int choice = choiceId;
         roundService.makeChoice(round,username,choice);
     }
 
@@ -220,8 +219,11 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public RoundGetDTO update(@PathVariable Long gameId) {
-        Game game = gameService.getGame(gameId);
-        Round round = roundService.getRound(game.getRoundId());
+        Game game = gameService.getGame(gameId); // find the right game
+        Round round = roundService.getRound(game.getRoundId()); // get the currently active round
+
+        ArrayList<String> choices = roundService.getChoices(round, round.getDrawerName()); // get and add the choices for this selection phase
+        round.setSelection(choices);
         return RoundDTOMapper.INSTANCE.convertEntityToRoundGetDTO(round);
     }
 
@@ -235,8 +237,7 @@ public class GameController {
         Message chatInput = ChatDTOMapper.INSTANCE.convertMessagePostDTOtoEntity(chatPostDTO);
         Long chatId = game.getId();
         Chat newMessages = chatService.getNewMessages(chatId, chatInput.getTimeStamp());
-        ChatGetDTO newChat = ChatDTOMapper.INSTANCE.convertEntityToChatGetDTO(newMessages);
-        return newChat;
+        return ChatDTOMapper.INSTANCE.convertEntityToChatGetDTO(newMessages);
     }
 
     @PutMapping("/games/{gameId}/chats")
@@ -254,7 +255,7 @@ public class GameController {
         }
         return guess;
     }
-
+    /*
     /** (Issue 51) API-call for sending a guess of what the word might be from a user
      * @param gameId = the id of the game we would like to send the guess to
      * @param messagePostDTO = contains the player, the guess and a timestamp when it was send
