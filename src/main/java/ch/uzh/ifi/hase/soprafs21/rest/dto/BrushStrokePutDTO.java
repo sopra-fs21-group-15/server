@@ -7,6 +7,7 @@ public class BrushStrokePutDTO {
     private String userName;
     private int x;
     private int y;
+    private String timeStamp;
     private int size;
     private String colour;
 
@@ -21,6 +22,10 @@ public class BrushStrokePutDTO {
     // methods for y
     public int getY() { return this.y; }
     public void setY(int y) { this.y = y; }
+
+    // methods for timeStamp
+    public String getTimeStamp() { return this.timeStamp; }
+    public void setTimeStamp(String timeStamp) { this.timeStamp = timeStamp; }
 
     // methods for size
     public int getSize() { return this.size; }

@@ -88,11 +88,6 @@ public class GameController {
         // convert API brush stroke to an internal representation
         BrushStroke brushStroke = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(brushStrokeEditDTO);
 
-        // add the current time to the given brush stroke
-        DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
-        String currentTime = LocalDateTime.now().format(formatter);
-        brushStroke.setTimeStamp(currentTime);
-
         // save the newly created brush stroke in the repository and in the drawing
         Game game = gameService.getGame(gameId);
         Round round = roundService.getRound(game.getRoundId());

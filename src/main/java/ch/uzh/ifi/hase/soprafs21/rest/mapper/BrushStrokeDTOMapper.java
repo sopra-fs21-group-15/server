@@ -14,6 +14,7 @@ public interface BrushStrokeDTOMapper {
 
     @Mapping(source = "x", target = "x")
     @Mapping(source = "y", target = "y")
+    @Mapping(source = "timeStamp", target = "timeStamp")
     @Mapping(source = "size", target = "size")
     @Mapping(source = "colour", target = "colour")
     BrushStroke convertBrushStrokePutDTOtoEntity(BrushStrokePutDTO brushStrokePutDTO);

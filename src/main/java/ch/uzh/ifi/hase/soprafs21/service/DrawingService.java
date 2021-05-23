@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import java.util.List;
@@ -90,26 +91,36 @@ public class DrawingService {
      * @return a sorted list of all the need brush strokes starting from latest to newest
      */
     public List<BrushStroke> getDrawing(Drawing drawing, LocalDateTime timeStamp) {
-        int index = 0; // initiate the index
+        int maxIndex = drawing.getBrushStrokes().size(); // get the size of the drawing
+        List<BrushStroke> result = new ArrayList<BrushStroke>(); // get the basic return value
 
-        // setting everything up to iterate over the indexes to find the point after which the needed brush strokes are listed
-        DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
-        BrushStroke brushStroke = drawing.getBrushStrokes().get(index);
-        LocalDateTime value = LocalDateTime.parse(brushStroke.getTimeStamp(),formatter);
+        if(!drawing.getBrushStrokes().isEmpty()) { // if the drawing is not empty we can look for the right part
+            int index = 0; // initiate the index
 
-        // iterate over the saved brush strokes in drawing
-        while(value.isBefore(timeStamp) || value.isEqual(timeStamp)) {
-            index++;
-            brushStroke = drawing.getBrushStrokes().get(index);
-            value = LocalDateTime.parse(brushStroke.getTimeStamp(),formatter);
+            // setting everything up to iterate over the indexes to find the point after which the needed brush strokes are listed
+            DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
+            BrushStroke brushStroke = drawing.getBrushStrokes().get(index);
+            LocalDateTime value = LocalDateTime.parse(brushStroke.getTimeStamp(), formatter);
+
+            // iterate over the saved brush strokes in drawing
+            while (index < maxIndex && (value.isBefore(timeStamp) || value.isEqual(timeStamp))) {
+
+                System.out.println("" + value.toString() + " " + timeStamp.toString());
+                index++;
+                if (index < maxIndex) {
+                    brushStroke = drawing.getBrushStrokes().get(index);
+                    value = LocalDateTime.parse(brushStroke.getTimeStamp(), formatter);
+                }
+            }
+
+            // get a sublist past the critical point
+            result = drawing.getBrushStrokes().subList(index, maxIndex);
+
+            // sort the list and then return it
+            Collections.sort(result);
         }
 
-        // get a sublist past the critical point
-        List<BrushStroke> test = drawing.getBrushStrokes().subList(index, drawing.getBrushStrokes().size());
-
-        // sort the list and then return it
-        Collections.sort(test);
-        return test;
+        return result;
     }
 
     /** Add a new brush stroke to an existing drawing while at the same time saving it in the repository
