@@ -13,6 +13,7 @@ public interface RoundDTOMapper {
 
     @Mapping(source = "id", target = "id")
     @Mapping(source = "status", target = "status")
+    @Mapping(source = "endsAt", target = "endsAt")
     @Mapping(source = "players", target = "players")
     // @Mapping(source = "words", target = "words")
     @Mapping(source = "selection", target = "selection")

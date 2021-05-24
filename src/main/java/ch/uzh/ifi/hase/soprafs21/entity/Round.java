@@ -35,6 +35,9 @@ public class Round implements Serializable {
     @Column(nullable = false)
     private RoundStatus status = RoundStatus.DRAWING;
 
+    @Column(nullable = true)
+    private String endsAt;
+
     @OneToMany
     private List<Drawing> drawings = new ArrayList<Drawing>();
 
@@ -71,6 +74,9 @@ public class Round implements Serializable {
 
     public RoundStatus getStatus() { return this.status; }
     public void setStatus(RoundStatus status) { this.status = status; }
+
+    public String getEndsAt() { return this.endsAt; }
+    public void setEndsAt(String endsAt) { this.endsAt = endsAt; }
 
     public List<Drawing> getDrawings() { return this.drawings; }
     public void setDrawings(List<Drawing> drawings) { this.drawings = drawings; }
