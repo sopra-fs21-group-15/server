@@ -7,7 +7,9 @@ import java.util.ArrayList;
 public class RoundGetDTO {
 
     private Long id;
+
     private RoundStatus status = RoundStatus.DRAWING;
+    private String endsAt;
     private ArrayList<String> players = new ArrayList<>();
     // private ArrayList<String> words;
     private ArrayList<String> selection;
@@ -24,6 +26,9 @@ public class RoundGetDTO {
 
     public RoundStatus getStatus() { return this.status; }
     public void setStatus(RoundStatus status) { this.status = status; }
+
+    public String getEndsAt() { return this.endsAt; }
+    public void setEndsAt(String endsAt) { this.endsAt = endsAt; }
 
     public ArrayList<String> getPlayers() { return this.players; }
     public void setPlayers(ArrayList<String> players) { this.players = players; }

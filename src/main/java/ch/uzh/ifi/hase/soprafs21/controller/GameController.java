@@ -6,12 +6,8 @@ import ch.uzh.ifi.hase.soprafs21.helper.TimeStamp;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.*;
-import ch.uzh.ifi.hase.soprafs21.service.DrawingService;
-import ch.uzh.ifi.hase.soprafs21.service.GameService;
-import ch.uzh.ifi.hase.soprafs21.service.ChatService;
+import ch.uzh.ifi.hase.soprafs21.service.*;
 
-import ch.uzh.ifi.hase.soprafs21.service.LobbyService;
-import ch.uzh.ifi.hase.soprafs21.service.RoundService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,13 +28,15 @@ public class GameController {
     private final DrawingService drawingService;
     private final LobbyService lobbyService;
     private final ChatService chatService;
+    private final TimerService timerService;
 
-    GameController(GameService gameService, RoundService roundService, DrawingService drawingService, LobbyService lobbyService, ChatService chatService) {
+    GameController(GameService gameService, RoundService roundService, DrawingService drawingService, LobbyService lobbyService, ChatService chatService, TimerService timerService) {
         this.gameService = gameService;
         this.roundService = roundService;
         this.drawingService = drawingService;
         this.lobbyService = lobbyService;
         this.chatService = chatService;
+        this.timerService = timerService;
     }
 
     // API call to create a game from the lobby (requires to be in a lobby first, lobby owner only)
@@ -224,8 +222,14 @@ public class GameController {
         Game game = gameService.getGame(gameId); // find the right game
         Round round = roundService.getRound(game.getRoundId()); // get the currently active round
 
-        ArrayList<String> choices = roundService.getChoices(round, round.getDrawerName()); // get and add the choices for this selection phase
+        // get and add the choices for this selection phase
+        ArrayList<String> choices = roundService.getChoices(round, round.getDrawerName());
         round.setSelection(choices);
+
+        // calculate when this current phase will end
+        String end = timerService.getEnd(game.getTimer());
+        round.setEndsAt(end);
+
         return RoundDTOMapper.INSTANCE.convertEntityToRoundGetDTO(round);
     }
 

@@ -22,11 +22,8 @@ import static ch.uzh.ifi.hase.soprafs21.constant.RoundStatus.*;
 public class RoundService {
 
     private final GameRepository gameRepository;
-
     private final RoundRepository roundRepository;
-
     private final DrawingRepository drawingRepository;
-
     private final UserRepository userRepository;
 
     @Autowired

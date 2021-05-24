@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.entity.Timer;
+import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import ch.uzh.ifi.hase.soprafs21.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,7 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Optional;
 
 @Service
@@ -79,6 +84,14 @@ public class TimerService {
     // check if the timer is ready to be started
     public boolean isReady(Timer timer) {
         return timer.getStart() == null;
+    }
+
+    // get the time at which this round will end
+    public String getEnd(Timer timer) {
+        Long time = (long) remainingTime(timer);
+        LocalDateTime end = LocalDateTime.now().plus(time, ChronoUnit.MILLIS);
+        DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
+        return end.format(formatter);
     }
 
     /** returns the remaining time by looking at the current mode (drawing or selecting), the starting time and the
