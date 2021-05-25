@@ -13,10 +13,11 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 //I commented this test out, since I could not fix it and it was not required for this milestone!
 public class ScoreBoardServiceTest {
@@ -131,6 +132,22 @@ public class ScoreBoardServiceTest {
     assertEquals(createdScoreboard.getScore()[3], newscores[3]);
 
 }
+@Test
+public void update_scoreboard_wrong() {
+    ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
+    assertEquals(createdScoreboard.getScore()[0], 0);
+    assertEquals(createdScoreboard.getScore()[1], 0);
+    assertEquals(createdScoreboard.getScore()[2], 0);
+    assertEquals(createdScoreboard.getScore()[3], 0);
+
+    int[] newscores = {200, 500, 600,};
+    scoreBoardService.updateScore(createdScoreboard, newscores);
+    assertEquals(createdScoreboard.getScore()[0],0);
+    assertEquals(createdScoreboard.getScore()[1],0);
+    assertEquals(createdScoreboard.getScore()[2],0);
+    assertEquals(createdScoreboard.getScore()[3],0);
+
+}
 
 @Test
 public void setScore_test(){
@@ -149,6 +166,23 @@ public void setScore_test(){
 
 }
 
+    @Test
+    public void setScore_test_wrong(){
+        ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
+        assertEquals(createdScoreboard.getScore()[0], 0);
+        assertEquals(createdScoreboard.getScore()[1], 0);
+        assertEquals(createdScoreboard.getScore()[2], 0);
+        assertEquals(createdScoreboard.getScore()[3], 0);
+
+        int [] newscores = {200,500,600};
+        scoreBoardService.setScore(createdScoreboard, newscores );
+        assertEquals(createdScoreboard.getScore()[0],0);
+        assertEquals(createdScoreboard.getScore()[1],0);
+        assertEquals(createdScoreboard.getScore()[2],0);
+        assertEquals(createdScoreboard.getScore()[3],0);
+
+    }
+
 
 
 @Test
@@ -165,5 +199,60 @@ public void setScore_test(){
     assertEquals(1, createdScoreboard.getRanking()[3]);
 
 }
+@Test
+    public void test_setRanking(){
+    ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
+    int[] ranking = {2,4,3,1};
+    testscoreBoard.setRanking(ranking);
+    scoreBoardService.setRanking(createdScoreboard, ranking);
+
+
+    assertEquals(testscoreBoard.getRanking(),createdScoreboard.getRanking());
+
+
+}
+@Test
+    public void test_setRanking_wrong(){
+    ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
+    int[] ranking = {2,4,3};
+    testscoreBoard.setRanking(ranking);
+    scoreBoardService.setRanking(createdScoreboard, ranking);
+
+    assertNotEquals(testscoreBoard.getRanking(),createdScoreboard.getRanking());
+    }
+
+    @Test
+    public void getScoretest(){
+        ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
+        int [] newscores = {200,500,600,50};
+
+
+        createdScoreboard.setScore(newscores);
+
+        Arrays.sort(newscores);
+
+        assertEquals(newscores[3],scoreBoardService.getScore(createdScoreboard)[0]);
+        assertEquals(newscores[2],scoreBoardService.getScore(createdScoreboard)[1]);
+        assertEquals(newscores[1],scoreBoardService.getScore(createdScoreboard)[2]);
+        assertEquals(newscores[0],scoreBoardService.getScore(createdScoreboard)[3]);
+
+
+
+    }
+
+    @Test
+    public void addingPoints_test(){
+        ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
+        int [] newscores = {200,500,600,50};
+        createdScoreboard.setScore(newscores);
+        scoreBoardService.addPoints(createdScoreboard, createdScoreboard.getPlayers().get(2), 50);
+
+        Mockito.when(scoreBoardRepository.saveAndFlush(Mockito.any())).thenReturn(createdScoreboard);
+
+        assertEquals(newscores[0],createdScoreboard.getScore()[0]);
+         assertEquals(newscores[1],createdScoreboard.getScore()[1]);
+         assertEquals(650,createdScoreboard.getScore()[2]);
+         assertEquals(newscores[3],createdScoreboard.getScore()[3]);
+    }
 
 }
