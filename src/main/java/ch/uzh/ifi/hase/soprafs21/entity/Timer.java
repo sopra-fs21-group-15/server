@@ -64,7 +64,7 @@ public class Timer implements Serializable {
 
     // access and change drawing time span
     public int getDrawingTimeSpan() { return this.drawingTimeSpan; }
-    public void setDrawingTimeSpan(int newDrawingTimeSpan) { this.drawingTimeSpan = drawingTimeSpan; }
+    public void setDrawingTimeSpan(int newDrawingTimeSpan) { this.drawingTimeSpan = newDrawingTimeSpan; }
 
     // access and change selection time span
     public int getSelectTimeSpan() { return this.selectTimeSpan; }
