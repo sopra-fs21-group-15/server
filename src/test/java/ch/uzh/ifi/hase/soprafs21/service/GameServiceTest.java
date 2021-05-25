@@ -4,6 +4,7 @@ package ch.uzh.ifi.hase.soprafs21.service;
 import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
+import ch.uzh.ifi.hase.soprafs21.entity.Timer;
 import ch.uzh.ifi.hase.soprafs21.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.LobbyRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,6 +30,8 @@ public class GameServiceTest {
     @Mock
     private GameRepository gameRepository;
 
+    @Mock
+    private TimerService timerService;
 
 
     @InjectMocks
@@ -36,8 +39,7 @@ public class GameServiceTest {
     private Lobby testLobby;
     private Game testgame;
 
-    @Autowired
-    private TimerService timerService;
+
 
 
     @BeforeEach
@@ -68,6 +70,7 @@ public class GameServiceTest {
         Mockito.when(lobbyRepository.findById(Mockito.any())).thenReturn(Optional.ofNullable(testLobby));
         Mockito.when(gameRepository.findById(Mockito.any())).thenReturn(Optional.ofNullable(testgame));
         //Mockito.when(gameRepository.findByLobbyId(Mockito.any())).thenReturn(Optional.ofNullable(testgame));
+
     }
 
     @Test
@@ -138,13 +141,17 @@ public class GameServiceTest {
 
     }
 **/
-/**
+
+
 @Test
     public void test_mocking(){
     int time = gameService.startPhase(testgame);
-    //Mockito.when(timerService.begin(Mockito.any())).thenReturn(testgame.getTimer());
+    Timer mocktimer= new Timer();
+    mocktimer=testgame.getTimer();
+    Mockito.doNothing().when(timerService).begin(Mockito.any());
+
 
 }
-**/
+
 
 }
