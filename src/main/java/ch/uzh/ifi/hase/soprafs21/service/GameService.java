@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import ch.uzh.ifi.hase.soprafs21.repository.*;
 
 /**
+ *
  * Game Service
  * This class is responsible for all requests regarding the game itself
  * (e.g., it creates, modifies and generates rounds). The result will
