@@ -232,6 +232,83 @@ public class RoundServiceTest {
         assertEquals(testround.getWords().get(0), testround.getWord());
 
     }
+    @Test
+    void makechoice_inDrawingphase_fail(){
+        testround.setIndex(0);
+        testround.setStatus(RoundStatus.DRAWING);
+        testround.setWord(null);
+        assertThrows(ResponseStatusException.class, () -> roundService.makeChoice(testround,testround.getDrawerName(),0));
+
+    }
+    @Test
+    void makechoice_notDrawer_fail(){
+        testround.setIndex(0);
+        testround.setStatus(RoundStatus.SELECTING);
+        testround.setWord(null);
+        testround.setDrawerName(testround.getPlayers().get(0));
+        assertThrows(ResponseStatusException.class, () -> roundService.makeChoice(testround,testround.getPlayers().get(1), 0));
+    }
+    @Test
+    void makechoice_wrongchoice1_fail(){
+        testround.setIndex(0);
+        testround.setStatus(RoundStatus.SELECTING);
+        testround.setWord(null);
+        assertThrows(ResponseStatusException.class, () -> roundService.makeChoice(testround,testround.getDrawerName(),-1));
+
+    }
+    @Test
+    void makechoice_wrongchoice2_fail(){
+        testround.setIndex(0);
+        testround.setStatus(RoundStatus.SELECTING);
+        testround.setWord(null);
+        assertThrows(ResponseStatusException.class, () -> roundService.makeChoice(testround,testround.getDrawerName(),15));
+
+    }
+    @Test
+    void makechoice_again_fail(){
+        testround.setIndex(0);
+        testround.setStatus(RoundStatus.SELECTING);
+        testround.setWord("null");
+        assertThrows(ResponseStatusException.class, () -> roundService.makeChoice(testround,testround.getDrawerName(),0));
+
+    }
+
+    @Test
+    void resetChoice_test(){
+        roundService.resetChoice(testround);
+        Mockito.verify(roundRepository).saveAndFlush(Mockito.any());
+
+        assertNull(testround.getWord());
+
+    }
+    @Test
+    void makeautomaticChoic_test(){
+        testround.setWord(null);
+        roundService.makeChoiceForUser(testround);
+
+        Mockito.verify(roundRepository).saveAndFlush(Mockito.any());
+        assertNotNull(testround.getWord());
+    }
+
+    @Test
+    void getlength_oftheWord_success(){
+        int length = roundService.getLength(testround);
+
+        assertEquals(testround.getWord().length(), length);
+    }
+    @Test
+    void getlength_oftheWord_during_selecting_failed(){
+        testround.setStatus(RoundStatus.SELECTING);
+
+        assertThrows(ResponseStatusException.class, () -> roundService.getLength(testround);
+
+
+    }
+
+
+
+
+
 
 
     }
