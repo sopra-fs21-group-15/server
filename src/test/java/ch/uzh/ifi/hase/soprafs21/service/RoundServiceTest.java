@@ -2,7 +2,7 @@ package ch.uzh.ifi.hase.soprafs21.service;
 
 
 import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
-import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
+
 import ch.uzh.ifi.hase.soprafs21.constant.RoundStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.*;
 import ch.uzh.ifi.hase.soprafs21.repository.*;
@@ -15,12 +15,12 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//I commented this test out, since I could not fix it and it was not required for this milestone!
+
 public class RoundServiceTest {
 
     @Mock
@@ -31,12 +31,10 @@ public class RoundServiceTest {
     private GameRepository gameRepository;
 
 
-
     @InjectMocks
     private RoundService roundService;
     public Round testround;
     public Game testGame;
-
 
 
     @BeforeEach
@@ -50,7 +48,7 @@ public class RoundServiceTest {
         players.add("User3");
         players.add("User4");
 
-        ArrayList <String> words = new ArrayList();
+        ArrayList<String> words = new ArrayList();
         words.add("House");
         words.add("get");
         words.add("Test");
@@ -61,9 +59,9 @@ public class RoundServiceTest {
         words.add("Test7");
         words.add("Test8");
         words.add("Test9");
-        int [] points = {10,20,30,40};
-        boolean [] drawn = {false,false,false,false};
-        boolean[] guessed= {false,false,false,false};
+        int[] points = {10, 20, 30, 40};
+        boolean[] drawn = {false, false, false, false};
+        boolean[] guessed = {false, false, false, false};
 
         testGame = new Game();
         testGame.setGameModes(GameModes.CLASSIC);
@@ -90,9 +88,6 @@ public class RoundServiceTest {
         testround.setWord(words.get(0));
 
 
-
-
-
         // when -> any object is being save in the userRepository -> return the dummy testUser and the dummy testlobby
         Mockito.when(roundRepository.save(Mockito.any())).thenReturn(testround);
         Mockito.when(roundRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testround));
@@ -101,7 +96,7 @@ public class RoundServiceTest {
     }
 
     @Test
-    public void GetRound_byRoundID_success(){
+    void GetRound_byRoundID_success() {
         Round foundround = roundService.getRound(testround.getId());
 
         assertEquals(testround.getId(), foundround.getId());
@@ -117,18 +112,18 @@ public class RoundServiceTest {
         assertEquals(testround.getGotPoints(), foundround.getGotPoints());
 
 
-
-
     }
+
     @Test
-    public void GetRound_byRoundID_failed(){
+    void GetRound_byRoundID_failed() {
         Mockito.when(roundRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 
         assertThrows(ResponseStatusException.class, () -> roundService.getRound(6L));
 
     }
+
     @Test
-    public void createRound_successfull(){
+    void createRound_successfull() {
 
         Round createdround = roundService.createRound(testGame);
         Mockito.verify(drawingRepository).flush();
@@ -136,14 +131,14 @@ public class RoundServiceTest {
         assertEquals(testGame.getPlayers(), createdround.getPlayers());
         assertEquals(RoundStatus.DRAWING, createdround.getStatus());
         assertEquals(testround.getIndex(), createdround.getIndex());
-        assertEquals(testGame.getRoundId(),createdround.getId());
+        assertEquals(testGame.getRoundId(), createdround.getId());
 
 
     }
 
     @Test
-    void setNewPainter_success(){
-        boolean [] drawn = {true,false,true,true};
+    void setNewPainter_success() {
+        boolean[] drawn = {true, false, true, true};
         testround.setHasDrawn(drawn);
 
         roundService.setNewPainter(testround);
@@ -152,8 +147,9 @@ public class RoundServiceTest {
         assertTrue(testround.getHasDrawn()[1]);
 
     }
+
     @Test
-    void IndexTest_success(){
+    void IndexTest_success() {
         Mockito.when(roundRepository.saveAndFlush(Mockito.any())).thenReturn(testround);
         roundService.setRoundIndex(testround, 1);
 
@@ -161,14 +157,16 @@ public class RoundServiceTest {
 
 
     }
+
     @Test
-    void Indextestfails(){
+    void Indextestfails() {
         roundService.setRoundIndex(testround, 6);
         Mockito.verify(roundRepository, Mockito.never()).saveAndFlush(Mockito.any());
         assertEquals(2, testround.getIndex());
     }
+
     @Test
-    void testChangePhase_from_Drawing_to_selecting(){
+    void testChangePhase_from_Drawing_to_selecting() {
         testround.setStatus(RoundStatus.DRAWING);
 
         roundService.changePhase(testround);
@@ -177,8 +175,9 @@ public class RoundServiceTest {
 
         assertEquals(RoundStatus.SELECTING, testround.getStatus());
     }
+
     @Test
-    void testChangePhase_from_selecting_to_drawing(){
+    void testChangePhase_from_selecting_to_drawing() {
         testround.setStatus(RoundStatus.SELECTING);
 
         roundService.changePhase(testround);
@@ -187,8 +186,9 @@ public class RoundServiceTest {
 
         assertEquals(RoundStatus.DRAWING, testround.getStatus());
     }
+
     @Test
-    void testroundEnd(){
+    void testroundEnd() {
         roundService.endRound(testround);
         Mockito.verify(roundRepository).saveAndFlush(Mockito.any());
 
@@ -196,8 +196,9 @@ public class RoundServiceTest {
         assertEquals(RoundStatus.DONE, testround.getStatus());
 
     }
+
     @Test
-    void getChoices_success(){
+    void getChoices_success() {
         testround.setStatus(RoundStatus.SELECTING);
         ArrayList<String> choises = roundService.getChoices(testround, testround.getDrawerName());
 
@@ -207,23 +208,26 @@ public class RoundServiceTest {
         assertTrue(testround.getWords().contains(choises.get(1)));
         assertTrue(testround.getWords().contains(choises.get(2)));
     }
+
     @Test
-    void getChoice_failed_isDrawing(){
+    void getChoice_failed_isDrawing() {
         ArrayList<String> choises = roundService.getChoices(testround, testround.getDrawerName());
 
 
         assertTrue(choises.isEmpty());
     }
+
     @Test
-    void getChoice_failed_wrongPlayer(){
+    void getChoice_failed_wrongPlayer() {
         testround.setStatus(RoundStatus.SELECTING);
         ArrayList<String> choises = roundService.getChoices(testround, testround.getPlayers().get(2));
 
 
         assertTrue(choises.isEmpty());
     }
+
     @Test
-    void makechoice_success(){
+    void makechoice_success() {
         testround.setIndex(0);
         testround.setStatus(RoundStatus.SELECTING);
         testround.setWord(null);
@@ -232,57 +236,63 @@ public class RoundServiceTest {
         assertEquals(testround.getWords().get(0), testround.getWord());
 
     }
+
     @Test
-    void makechoice_inDrawingphase_fail(){
+    void makechoice_inDrawingphase_fail() {
         testround.setIndex(0);
         testround.setStatus(RoundStatus.DRAWING);
         testround.setWord(null);
-        assertThrows(ResponseStatusException.class, () -> roundService.makeChoice(testround,testround.getDrawerName(),0));
+        assertThrows(ResponseStatusException.class, () -> roundService.makeChoice(testround, testround.getDrawerName(), 0));
 
     }
+
     @Test
-    void makechoice_notDrawer_fail(){
+    void makechoice_notDrawer_fail() {
         testround.setIndex(0);
         testround.setStatus(RoundStatus.SELECTING);
         testround.setWord(null);
         testround.setDrawerName(testround.getPlayers().get(0));
-        assertThrows(ResponseStatusException.class, () -> roundService.makeChoice(testround,testround.getPlayers().get(1), 0));
+        assertThrows(ResponseStatusException.class, () -> roundService.makeChoice(testround, testround.getPlayers().get(1), 0));
     }
+
     @Test
-    void makechoice_wrongchoice1_fail(){
+    void makechoice_wrongchoice1_fail() {
         testround.setIndex(0);
         testround.setStatus(RoundStatus.SELECTING);
         testround.setWord(null);
-        assertThrows(ResponseStatusException.class, () -> roundService.makeChoice(testround,testround.getDrawerName(),-1));
+        assertThrows(ResponseStatusException.class, () -> roundService.makeChoice(testround, testround.getDrawerName(), -1));
 
     }
+
     @Test
-    void makechoice_wrongchoice2_fail(){
+    void makechoice_wrongchoice2_fail() {
         testround.setIndex(0);
         testround.setStatus(RoundStatus.SELECTING);
         testround.setWord(null);
-        assertThrows(ResponseStatusException.class, () -> roundService.makeChoice(testround,testround.getDrawerName(),15));
+        assertThrows(ResponseStatusException.class, () -> roundService.makeChoice(testround, testround.getDrawerName(), 15));
 
     }
+
     @Test
-    void makechoice_again_fail(){
+    void makechoice_again_fail() {
         testround.setIndex(0);
         testround.setStatus(RoundStatus.SELECTING);
         testround.setWord("null");
-        assertThrows(ResponseStatusException.class, () -> roundService.makeChoice(testround,testround.getDrawerName(),0));
+        assertThrows(ResponseStatusException.class, () -> roundService.makeChoice(testround, testround.getDrawerName(), 0));
 
     }
 
     @Test
-    void resetChoice_test(){
+    void resetChoice_test() {
         roundService.resetChoice(testround);
         Mockito.verify(roundRepository).saveAndFlush(Mockito.any());
 
         assertNull(testround.getWord());
 
     }
+
     @Test
-    void makeautomaticChoic_test(){
+    void makeautomaticChoic_test() {
         testround.setWord(null);
         roundService.makeChoiceForUser(testround);
 
@@ -291,24 +301,109 @@ public class RoundServiceTest {
     }
 
     @Test
-    void getlength_oftheWord_success(){
+    void getlength_oftheWord_success() {
         int length = roundService.getLength(testround);
 
         assertEquals(testround.getWord().length(), length);
     }
+
     @Test
-    void getlength_oftheWord_during_selecting_failed(){
+    void getlength_oftheWord_during_selecting_failed() {
         testround.setStatus(RoundStatus.SELECTING);
 
-        assertThrows(ResponseStatusException.class, () -> roundService.getLength(testround);
+        assertThrows(ResponseStatusException.class, () -> roundService.getLength(testround));
 
 
     }
 
+    @Test
+    void guess_arightword() {
+        Message testMessage = new Message();
+        testMessage.setWriterName(testround.getPlayers().get(2));
+        testMessage.setMessage(testround.getWord());
 
 
+        assertTrue(roundService.makeGuess(testMessage, testround));
+        assertTrue(testround.getHasGuessed()[2]);
+    }
+
+    @Test
+    void gues_thewrongword() {
+        Message testMessage = new Message();
+        testMessage.setWriterName(testround.getPlayers().get(2));
+        testMessage.setMessage(testround.getWords().get(1));
 
 
+        assertFalse(roundService.makeGuess(testMessage, testround));
+        assertFalse(testround.getHasGuessed()[2]);
+    }
+
+    @Test
+    void painter_guess() {
+        Message testMessage = new Message();
+        testMessage.setWriterName(testround.getDrawerName());
+        testMessage.setMessage(testround.getWord());
+
+
+        assertFalse(roundService.makeGuess(testMessage, testround));
+    }
+
+    @Test
+    void randomplayer_guesstheword() {
+        Message testMessage = new Message();
+        testMessage.setWriterName("FakeUser");
+        testMessage.setMessage(testround.getWord());
+
+
+        assertFalse(roundService.makeGuess(testMessage, testround));
+    }
+
+    @Test
+    void resetTheGuessBools() {
+        boolean[] guessed = {true, true, true, true};
+        testround.setHasGuessed(guessed);
+        roundService.resetHasGuessed(testround);
+        Mockito.verify(roundRepository).saveAndFlush(Mockito.any());
+
+        assertFalse(testround.getHasGuessed()[0]);
+        assertFalse(testround.getHasGuessed()[1]);
+        assertFalse(testround.getHasGuessed()[2]);
+        assertFalse(testround.getHasGuessed()[3]);
+    }
+
+    @Test
+    void resetGotPoints() {
+
+        roundService.resetGotPoints(testround);
+        Mockito.verify(roundRepository).saveAndFlush(Mockito.any());
+
+        assertEquals(0, testround.getGotPoints()[0]);
+        assertEquals(0, testround.getGotPoints()[1]);
+        assertEquals(0, testround.getGotPoints()[2]);
+        assertEquals(0, testround.getGotPoints()[3]);
 
 
     }
+
+    @Test
+    void testpoint_distribution() {
+        roundService.addPoints(testround, testround.getPlayers().get(2), 50);
+
+        Mockito.when(roundRepository.saveAndFlush(Mockito.any())).thenReturn(testround);
+
+        assertEquals(10, testround.getGotPoints()[0]);
+        assertEquals(20, testround.getGotPoints()[1]);
+        assertEquals(50, testround.getGotPoints()[2]);
+        assertEquals(40, testround.getGotPoints()[3]);
+    }
+
+    @Test
+    void testpainter_points_distribution() {
+        int[] points = {0, 20, 30, 40};
+        testround.setGotPoints(points);
+
+
+        assertEquals(30, roundService.computeRewardPainter(testround));
+
+    }
+}
