@@ -4,6 +4,7 @@ package ch.uzh.ifi.hase.soprafs21.service;
 import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
+import ch.uzh.ifi.hase.soprafs21.entity.Timer;
 import ch.uzh.ifi.hase.soprafs21.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.LobbyRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +29,8 @@ public class GameServiceTest {
     private LobbyRepository lobbyRepository;
     @Mock
     private GameRepository gameRepository;
+    @Mock
+    private TimerService timerService;
 
 
 
@@ -35,9 +38,8 @@ public class GameServiceTest {
     private GameService gameService;
     private Lobby testLobby;
     private Game testgame;
+    private Timer testTimer;
 
-    @Autowired
-    private TimerService timerService;
 
 
     @BeforeEach
@@ -62,12 +64,15 @@ public class GameServiceTest {
         testgame.setId(4L);
         testgame.setGameModes(GameModes.CLASSIC);
 
+        Timer testTimer = new Timer(testLobby.getTimer());
+
 
         // when -> any object is being save in the userRepository -> return the dummy testUser and the dummy testlobby
         Mockito.when(lobbyRepository.save(Mockito.any())).thenReturn(testLobby);
         Mockito.when(lobbyRepository.findById(Mockito.any())).thenReturn(Optional.ofNullable(testLobby));
         Mockito.when(gameRepository.findById(Mockito.any())).thenReturn(Optional.ofNullable(testgame));
         //Mockito.when(gameRepository.findByLobbyId(Mockito.any())).thenReturn(Optional.ofNullable(testgame));
+        
     }
 
     @Test
@@ -146,5 +151,15 @@ public class GameServiceTest {
 
 }
 **/
+@Test
+    void test_mocking(){
+    gameService.endPhase(testgame);
+    Mockito.verify(timerService).reset(Mockito.any());
+
+    gameService.startPhase(testgame);
+
+
+}
+
 
 }
