@@ -161,9 +161,10 @@ public class DrawingService {
 
     public void save(Drawing drawing,List<BrushStroke> brushStrokes){
         List<BrushStroke> allStrokes = new ArrayList<>();
-        allStrokes.addAll(drawing.getBrushStrokes());
-        allStrokes.addAll(brushStrokes);
-        drawing.setBrushStrokes(allStrokes);
+        // allStrokes.addAll(drawing.getBrushStrokes());
+        // allStrokes.addAll(brushStrokes);
+        // drawing.setBrushStrokes(allStrokes);
+        drawing.setBrushStrokes(brushStrokes);
         drawingRepository.saveAndFlush(drawing);
     }
 
