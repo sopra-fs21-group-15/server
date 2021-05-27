@@ -40,6 +40,20 @@ public class GameController {
 
     }
 
+    @PostMapping("/games/{gameId}/canvas")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public void updateCanvas(@PathVariable Long gameId, @RequestBody CanvasDTO canvasDTO) {
+
+    }
+
+    @GetMapping("/games/{gameId}/canvas")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void getCanvas(@PathVariable Long gameId) {
+
+    }
+
     // API call to create a game from the lobby (requires to be in a lobby first, lobby owner only)
     @PostMapping("/games/{lobbyId}/start")
     @ResponseStatus(HttpStatus.CREATED)

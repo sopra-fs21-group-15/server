@@ -70,7 +70,18 @@ public class BrushStroke implements Serializable, Comparable {
 
     // required constructor with no parameters so that it can get parsed by the mapper
     public BrushStroke() {
-        new BrushStroke(0,0,0,"");
+        //new BrushStroke(0,0,0,"");
+
+        // FIXME remove maybe
+        this.x = -3;
+        this.y = -3;
+        this.size = 0;
+        this.colour = "red";
+
+        // the time it was created
+        LocalDateTime currentTime = LocalDateTime.now();
+        DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
+        this.timeStamp = currentTime.format(formatter);
     }
 
     // needed class in order to sort a list of BrushStroke objects
