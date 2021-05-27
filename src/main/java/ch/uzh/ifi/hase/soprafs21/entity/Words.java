@@ -5,12 +5,12 @@ import java.util.Random;
 
 public class Words {
 
-    private final String[] words = { "house", "dog", "end", "salmon","virtue", "spine", "represent", "situation",
-            "murder", "study", "bean", "cream", "train", "calculation", "stereotype", "bench", "drill", "solution",
-            "orientation", "polish", "tribute", "physical", "club", "frame", "provoke", "equip", "lounge", "cinema",
-            "ministry", "earthquake", "revive", "oh", "concession", "curve", "freighter", "relationship", "fraction",
-            "jewel", "addicted", "dose", "berry", "orbit", "influence", "twilight", "eaux", "summer", "ghostwriter",
-            "rough", "elapse", "rib", "scatter", "color-blind" };
+    private final String[] words = { "house", "dog", "fish", "spine",
+            "murder", "study", "bean", "ice cream", "train", "calculator", "bench", "drill",
+            "compass", "physics", "bar", "painting", "cinema",
+            "parliament", "earthquake", "volcano", "curve", "relationship", "fraction",
+            "jewel", "addiction", "strawberry", "orbit", "onion", "influencer", "twilight", "horse", "summer", "ghost",
+            "switzerland", "ellipse", "rib", "scotland", "color-blind" };
 
     public String getRandomWord() {
         Random rand = new Random();
