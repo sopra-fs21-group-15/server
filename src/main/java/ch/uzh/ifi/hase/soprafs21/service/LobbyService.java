@@ -233,5 +233,28 @@ public class LobbyService {
         userRepository.flush();
     }
 
+    public void returnLobbyMembers (Long lobbyId, String userName) {
+
+        Lobby lobbyToUpdate = getLobby(lobbyId);
+        User user = userRepository.findByUsername(userName);
+
+        // check if the user is already a member
+        String playerAlreadyInLobby = "This user is not a member of the lobby! Please enter the lobby normally.";
+        if (!lobbyToUpdate.getMembers().contains(userName)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(playerAlreadyInLobby));
+        }
+        user.setStatus(UserStatus.CHILLING);
+
+        if(lobbyToUpdate.getMembers().size() == lobbyToUpdate.getSize()) {
+            lobbyToUpdate.setStatus(LobbyStatus.FULL);
+        }
+        // save into the repository
+        lobbyRepository.save(lobbyToUpdate);
+        lobbyRepository.flush();
+
+        saveUser(user);
+
+    }
+
 }
 

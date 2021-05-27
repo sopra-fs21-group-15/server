@@ -167,20 +167,6 @@ public class GameController {
     }
 */
 
-    
-    @PutMapping("/games/{gameId}/guess")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ResponseBody
-    public boolean makeGuess(@RequestBody MessagePostDTO messagePostDTO, @PathVariable Long gameId) {
-        Message message = ChatDTOMapper.INSTANCE.convertMessagePostDTOtoEntity(messagePostDTO); // convert to usable object
-        Game game = gameService.getGame(gameId); // find game
-        Round round = roundService.getRound(game.getRoundId()); // get current round
-        boolean value = roundService.makeGuess(message,round); // check if the guess is valid and correct
-        if (value) {
-            gameService.addPoints(game,message);
-        }
-        return value;
-    }
 
     /*
     /** (Issue #35) API call to get the current options the drawer can chose from right now has right now. Checks if
@@ -263,12 +249,30 @@ public class GameController {
         boolean guess = false;
         if (round.getStatus().equals(DRAWING)) { // check if the phase of the round is correct
             guess = roundService.makeGuess(message,round); // check if the guess is valid and correct
+            gameService.addPoints(game,message);
         }
         if (guess == false) {
             chatService.addNewMessage(gameId, message); // add chat message
         }
         return guess;
     }
+
+/*
+    @PutMapping("/games/{gameId}/guess")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public boolean makeGuess(@RequestBody MessagePostDTO messagePostDTO, @PathVariable Long gameId) {
+        Message message = ChatDTOMapper.INSTANCE.convertMessagePostDTOtoEntity(messagePostDTO); // convert to usable object
+        Game game = gameService.getGame(gameId); // find game
+        Round round = roundService.getRound(game.getRoundId()); // get current round
+        boolean value = roundService.makeGuess(message,round); // check if the guess is valid and correct
+        if (value) {
+            gameService.addPoints(game,message);
+        }
+        return value;
+    }
+ */
+
     /*
     /** (Issue 51) API-call for sending a guess of what the word might be from a user
      * @param gameId = the id of the game we would like to send the guess to
@@ -287,5 +291,20 @@ public class GameController {
         return value;
     }
 */
+
+    // removing a player from the game
+
+    @PutMapping("/games/{gameId}/leavers")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void removeMember(@PathVariable Long gameId, @RequestBody UserPostDTO userPostDTO) {
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        gameService.leaveGame(gameId, userInput.getUsername());
+        lobbyService.removeLobbyMembers(gameId, userInput.getUsername());
+
+    }
+
+
+
 }
 
