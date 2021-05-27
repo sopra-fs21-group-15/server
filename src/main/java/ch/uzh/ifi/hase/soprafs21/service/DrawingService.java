@@ -132,8 +132,7 @@ public class DrawingService {
      * @param brushStroke = the brush stroke we are supposed to add
      */
     public void addStroke(Drawing drawing, BrushStroke brushStroke) {
-        brushStroke = brushStrokeRepository.save(brushStroke); // save in repository
-        brushStrokeRepository.flush();
+        brushStroke = brushStrokeRepository.saveAndFlush(brushStroke); // save in repository
 
         drawing.getBrushStrokes().add(brushStroke); // add to drawing
         // for safety we check if it works

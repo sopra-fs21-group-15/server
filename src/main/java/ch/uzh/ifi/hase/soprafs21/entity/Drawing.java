@@ -1,5 +1,9 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,7 +23,9 @@ public class Drawing implements Serializable {
     @Column(nullable = false)
     private String drawerName = "";
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.SUBSELECT)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<BrushStroke> brushStrokes = new ArrayList<>();
 
     // generic methods to handle incoming requests
