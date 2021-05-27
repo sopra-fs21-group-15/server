@@ -94,6 +94,7 @@ public class GameController {
             temp = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(preBrushStroke);
             drawingService.addStroke(round.getCurrentDrawing(),temp);
         }
+        System.out.println(round.getCurrentDrawing().getBrushStrokes().size());
         drawingService.save(round.getCurrentDrawing());
 
     }
@@ -112,6 +113,7 @@ public class GameController {
         for(BrushStroke i : drawings){
             value.add(DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(i));
         }
+        System.out.println("length of Brushstrockes"+value.size());
         return value;
     }
 

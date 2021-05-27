@@ -112,8 +112,12 @@ public class DrawingService {
             }
 
             // get a sublist past the critical point
-            result = drawing.getBrushStrokes().subList(index, maxIndex);
+            System.out.println("Index"+ index);
+            System.out.println("MaxIndex"+ maxIndex);
 
+
+            result = drawing.getBrushStrokes().subList(index, maxIndex);
+            System.out.println("Resul Sublist" + result.toString());
             // sort the list and then return it
             try {
                 Collections.sort(result);
@@ -134,7 +138,7 @@ public class DrawingService {
     public void addStroke(Drawing drawing, BrushStroke brushStroke) {
         brushStroke = brushStrokeRepository.save(brushStroke); // save in repository
         brushStrokeRepository.flush();
-        System.out.println(brushStroke.getId());
+        
 
             drawing.getBrushStrokes().add(brushStroke); // add to drawing
 
