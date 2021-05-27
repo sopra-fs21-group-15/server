@@ -88,10 +88,12 @@ public class GameController {
         Round round = roundService.getRound(game.getRoundId());
 
         // convert each and every API brush stroke to an internal representation
+        ArrayList<BrushStroke> value = new ArrayList<>();
         BrushStroke temp;
         for (BrushStrokePutDTO preBrushStroke : brushStrokeListDTO) {
             temp = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(preBrushStroke);
-            drawingService.addStroke(round.getCurrentDrawing(),temp);
+            value.add(temp);
+            drawingService.addStroke(round.getCurrentDrawing(),value);
         }
     }
 

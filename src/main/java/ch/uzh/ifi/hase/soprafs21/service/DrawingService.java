@@ -129,12 +129,16 @@ public class DrawingService {
      * and sorting the list within the drawing just to make sure it did not mix up the order of the brushstrokes.
      *
      * @param drawing = the drawing we would like to add brush stroke to
-     * @param brushStroke = the brush stroke we are supposed to add
+     * @param brushStrokes = the brush strokes we are supposed to add
      */
-    public void addStroke(Drawing drawing, BrushStroke brushStroke) {
-        brushStroke = brushStrokeRepository.saveAndFlush(brushStroke); // save in repository
+    public void addStroke(Drawing drawing, ArrayList<BrushStroke> brushStrokes) {
+        //brushStroke = brushStrokeRepository.saveAndFlush(brushStroke); // save in repository
 
-        drawing.getBrushStrokes().add(brushStroke); // add to drawing
+        for(BrushStroke temp : brushStrokes) {
+            brushStrokeRepository.saveAndFlush(temp);
+        }
+
+        drawing.getBrushStrokes().addAll(brushStrokes); // add to drawing
         // for safety we check if it works
         try {
             Collections.sort(drawing.getBrushStrokes()); // sort list within drawing
