@@ -134,18 +134,31 @@ public class DrawingService {
     public void addStroke(Drawing drawing, BrushStroke brushStroke) {
         brushStroke = brushStrokeRepository.save(brushStroke); // save in repository
         brushStrokeRepository.flush();
+        System.out.println(brushStroke.getId());
 
-        drawing.getBrushStrokes().add(brushStroke); // add to drawing
-        // for safety we check if it works
+            drawing.getBrushStrokes().add(brushStroke); // add to drawing
+
         try {
             Collections.sort(drawing.getBrushStrokes()); // sort list within drawing
         } catch (ClassCastException e) {
             System.out.println("You tried to sort a list with objects that can not be compared with one another.");
         }
+       // try {
+       // drawingRepository.save(drawing);
+       // } catch (Exception e){
+       //     e.printStackTrace();
+       //
+       // }
+       // drawingRepository.flush();// update the drawing in the repository
+       //
+       //
+        }
 
-        drawingRepository.saveAndFlush(drawing); // update the drawing in the repository
+    public void save(Drawing drawing){
+        drawingRepository.save(drawing);
+        drawingRepository.flush();
+
     }
-
     // get all rounds
     public List<Round> getRounds() {
         return this.roundRepository.findAll();

@@ -25,7 +25,7 @@ public class Drawing implements Serializable {
 
 
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<BrushStroke> brushStrokes = new ArrayList<>();
