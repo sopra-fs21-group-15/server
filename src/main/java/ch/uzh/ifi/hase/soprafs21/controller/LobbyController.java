@@ -107,6 +107,20 @@ public class LobbyController {
         lobbyService.removeLobbyMembers(lobbyId, userInput.getUsername());
     }
 
+    // Back to the lobby
+    @PutMapping("/lobbies/{lobbyId}/return")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public LobbyGetDTO returnMember(@PathVariable Long lobbyId, @RequestBody UserPostDTO userPostDTO) {
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        gameService.leaveGame(lobbyId, userInput.getUsername());
+        lobbyService.returnLobbyMembers(lobbyId, userInput.getUsername());
+
+        Lobby lobby = lobbyService.getLobby(lobbyId);
+        LobbyGetDTO lobbyGetDTO = LobbyDTOMapper.INSTANCE.convertEntityToLobbyGetDTO(lobby);
+        return lobbyGetDTO;
+    }
+
     // Mapping for the lobby chats...
 
     @PostMapping("/lobbies/{lobbyId}/chats")

@@ -1,6 +1,8 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
+import ch.uzh.ifi.hase.soprafs21.constant.RoundStatus;
+import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.*;
 import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import ch.uzh.ifi.hase.soprafs21.repository.GameRepository;
@@ -36,19 +38,23 @@ public class GameService implements Runnable {
     private final GameRepository gameRepository;
     private final LobbyRepository lobbyRepository;
     private final UserRepository userRepository;
+    private final RoundRepository roundRepository;
 
     private final RoundService roundService;
+    private final LobbyService lobbyService;
     private final TimerService timerService;
     private final ScoreBoardService scoreBoardService;
 
     private List<Game> gamesToBeRun = new ArrayList<Game>();
 
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository, RoundService roundService, TimerService timerService, ScoreBoardService scoreBoardService) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository, RoundRepository roundRepository, RoundService roundService, LobbyService lobbyService, TimerService timerService, ScoreBoardService scoreBoardService) {
         this.gameRepository = gameRepository;
         this.lobbyRepository = lobbyRepository;
         this.userRepository = userRepository;
+        this.roundRepository = roundRepository;
         this.roundService = roundService;
+        this.lobbyService = lobbyService;
         this.timerService = timerService;
         this.scoreBoardService = scoreBoardService;
     }
@@ -70,9 +76,26 @@ public class GameService implements Runnable {
         // change status of said lobby
         lobby.setStatus(LobbyStatus.PLAYING);
 
+        // change status of players
+
+
         // save into the repository
         lobbyRepository.save(lobby);
         lobbyRepository.flush();
+
+        //--------------------------- check an old game is still running & restart -------------------------//
+
+        Optional<Game> oldGame = gameRepository.findById(lobby.getId());
+
+        Game value = null;
+
+        if (oldGame.isEmpty()) { // if not found
+        } else { // if found
+            value = oldGame.get();
+            gameRepository.delete(value);
+            gameRepository.flush();
+        }
+
 
         //--------------------------- create the new game -------------------------//
 
@@ -84,6 +107,13 @@ public class GameService implements Runnable {
         newGame.setGameName(lobby.getLobbyname());
         newGame.setId(lobby.getId());
         newGame.setGameModes(lobby.getGameMode());
+
+        //change status of all users
+        for (String name : newGame.getPlayers()) {
+            User user = userRepository.findByUsername(name);
+            user.setStatus(UserStatus.INGAME);
+            userRepository.saveAndFlush(user);
+        }
 
         // generate Objects from lobby information
         int timePerRound = lobby.getTimer().intValue();
@@ -179,6 +209,32 @@ public class GameService implements Runnable {
         timerService.changePhase(timer);
     }
 
+    public void leaveGame(Long gameId, String userName) {
+        Game gameToUpdate = getGame(gameId);
+
+        User user = userRepository.findByUsername(userName);
+
+        // check if the userId is part of the lobby members
+        String playerNotInGame = "This user is not a member of the game!";
+        if (!gameToUpdate.getPlayers().contains(userName)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(playerNotInGame));
+        }
+        gameToUpdate.deletePlayers(userName);
+        user.setStatus(UserStatus.ONLINE);
+        // delete the game if there are no more members in the game
+        if (gameToUpdate.getPlayers().size() == 0) {
+            gameRepository.delete(gameToUpdate);
+            gameRepository.flush();
+        }
+        else
+            // save into the repository
+            gameRepository.save(gameToUpdate);
+            gameRepository.flush();
+
+        userRepository.save(user);
+        userRepository.flush();
+    }
+
     // (Issue #52 Part I) function to handle when a user has made a guess (should also #56)
     /*public boolean makeGuess(Message message, Game game) {
         if (round.getStatus().equals(SELECTING)) { // check if the phase of the round is correct
@@ -253,6 +309,8 @@ public class GameService implements Runnable {
             }
             i++;
         }
-
+        round = roundService.getRound(game.getRoundId());
+        round.setStatus(RoundStatus.DONE);
+        roundRepository.saveAndFlush(round);
     }
 }
