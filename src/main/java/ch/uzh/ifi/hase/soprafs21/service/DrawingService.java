@@ -125,6 +125,11 @@ public class DrawingService {
         return result;
     }
 
+    public void updateCanvas(Canvas canvas) {
+
+    }
+
+
     /** Add a new brush stroke to an existing drawing while at the same time saving it in the repository
      * and sorting the list within the drawing just to make sure it did not mix up the order of the brushstrokes.
      *
@@ -137,11 +142,11 @@ public class DrawingService {
 
         drawing.getBrushStrokes().add(brushStroke); // add to drawing
 
-        try {
-            Collections.sort(drawing.getBrushStrokes()); // sort list within drawing
-        } catch (ClassCastException e) {
-            System.out.println("You tried to sort a list with objects that can not be compared with one another.");
-        }
+        // try {
+        //     Collections.sort(drawing.getBrushStrokes()); // sort list within drawing
+        // } catch (ClassCastException e) {
+        //     System.out.println("You tried to sort a list with objects that can not be compared with one another.");
+        // }
        // try {
        // drawingRepository.save(drawing);
        // } catch (Exception e){
