@@ -134,9 +134,8 @@ public class DrawingService {
     public void addStroke(Drawing drawing, BrushStroke brushStroke) {
         brushStroke = brushStrokeRepository.save(brushStroke); // save in repository
         brushStrokeRepository.flush();
-        System.out.println(brushStroke.getId());
 
-            drawing.getBrushStrokes().add(brushStroke); // add to drawing
+        drawing.getBrushStrokes().add(brushStroke); // add to drawing
 
         try {
             Collections.sort(drawing.getBrushStrokes()); // sort list within drawing
