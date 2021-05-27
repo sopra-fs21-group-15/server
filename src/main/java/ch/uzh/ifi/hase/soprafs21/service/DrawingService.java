@@ -112,8 +112,17 @@ public class DrawingService {
             }
 
             // get a sublist past the critical point
-            result = drawing.getBrushStrokes().subList(index, maxIndex);
+            System.out.println("Index"+ index);
+            System.out.println("MaxIndex"+ maxIndex);
+            int testvalue = 0;
+            if (maxIndex>index+200){
+                testvalue = index+200;
+            }else{
+                testvalue = maxIndex;
+            }
 
+            result = drawing.getBrushStrokes().subList(index, testvalue);
+            System.out.println("Resul Sublist" + result.toString());
             // sort the list and then return it
             try {
                 Collections.sort(result);
@@ -135,6 +144,8 @@ public class DrawingService {
         brushStroke = brushStrokeRepository.save(brushStroke); // save in repository
         brushStrokeRepository.flush();
 
+
+
         drawing.getBrushStrokes().add(brushStroke); // add to drawing
 
         try {
@@ -153,11 +164,15 @@ public class DrawingService {
        //
         }
 
-    public void save(Drawing drawing){
-        drawingRepository.save(drawing);
-        drawingRepository.flush();
-
+    public void save(Drawing drawing,List<BrushStroke> brushStrokes){
+        List<BrushStroke> allStrokes = new ArrayList<>();
+        allStrokes.addAll(drawing.getBrushStrokes());
+        allStrokes.addAll(brushStrokes);
+        drawing.setBrushStrokes(allStrokes);
+        drawingRepository.saveAndFlush(drawing);
     }
+
+
     // get all rounds
     public List<Round> getRounds() {
         return this.roundRepository.findAll();
