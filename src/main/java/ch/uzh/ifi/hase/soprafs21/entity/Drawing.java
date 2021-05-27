@@ -23,7 +23,7 @@ public class Drawing implements Serializable {
     @Column(nullable = false)
     private String drawerName = "";
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @Fetch(value = FetchMode.SUBSELECT)
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<BrushStroke> brushStrokes = new ArrayList<>();
