@@ -37,6 +37,7 @@ public class GameController {
         this.lobbyService = lobbyService;
         this.chatService = chatService;
         this.timerService = timerService;
+
     }
 
     // API call to create a game from the lobby (requires to be in a lobby first, lobby owner only)
@@ -93,6 +94,8 @@ public class GameController {
             temp = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(preBrushStroke);
             drawingService.addStroke(round.getCurrentDrawing(),temp);
         }
+        drawingService.save(round.getCurrentDrawing());
+
     }
 
     // TODO #42 test and refine mapping for API-calls requesting the drawing
