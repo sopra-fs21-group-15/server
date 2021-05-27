@@ -28,6 +28,12 @@ public class GameServiceTest {
     private LobbyRepository lobbyRepository;
     @Mock
     private GameRepository gameRepository;
+    @Mock
+    private TimerService timerService;
+    @Mock
+    private RoundService roundService;
+    @Mock
+    private  ScoreBoardService scoreBoardService;
 
 
 
@@ -36,8 +42,7 @@ public class GameServiceTest {
     private Lobby testLobby;
     private Game testgame;
 
-    @Autowired
-    private TimerService timerService;
+
 
 
     @BeforeEach
@@ -59,6 +64,7 @@ public class GameServiceTest {
         testgame.setNumberOfRounds(testLobby.getRounds());
         testgame.setTimePerRound(testLobby.getTimer());
         //testgame.setLobbyId(testLobby.getId());
+        //estgame.setTimer(T);
         testgame.setId(4L);
         testgame.setGameModes(GameModes.CLASSIC);
 
@@ -113,7 +119,7 @@ public class GameServiceTest {
  **/
 
     @Test
-    public void start_aLobby_alone_failed(){
+    public void start_aGame_alone_failed(){
         testLobby.setMembers("SoloPlayer");
 
         assertThrows(ResponseStatusException.class, () -> gameService.createGame(testLobby));
@@ -137,14 +143,14 @@ public class GameServiceTest {
         assertEquals(foundgame.getNumberOfRounds(), testgame.getNumberOfRounds());
 
     }
-**/
-/**
+
+
 @Test
     public void test_mocking(){
     int time = gameService.startPhase(testgame);
-      Mockito.when(timerService.begin(Mockito.any())).thenReturn(testgame.getTimer());
+      System.out.println(time);
 
 }
-**/
 
+**/
 }
