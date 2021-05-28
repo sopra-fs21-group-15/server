@@ -77,7 +77,7 @@ public class GameServiceTest {
     }
 
     @Test
-    public void getGame_byGameID(){
+     void getGame_byGameID(){
         Game foundgame = gameService.getGame(testgame.getId());
 
         //assertEquals(foundgame.getLobbyId(), testgame.getLobbyId());
@@ -89,7 +89,7 @@ public class GameServiceTest {
 
     }
     @Test
-    public void getGame_byGameID_failed(){
+     void getGame_byGameID_failed(){
         Mockito.when(gameRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 
         assertThrows(ResponseStatusException.class, () -> gameService.getGame(6L));
@@ -119,7 +119,7 @@ public class GameServiceTest {
  **/
 
     @Test
-    public void start_aGame_alone_failed(){
+     void start_aGame_alone_failed(){
         testLobby.setMembers("SoloPlayer");
 
         assertThrows(ResponseStatusException.class, () -> gameService.createGame(testLobby));

@@ -62,7 +62,7 @@ public class LobbyServiceTest {
     }
 
     @Test
-    public void createLobby_validInputs_success() {
+     void createLobby_validInputs_success() {
         // when -> any object is being save in the userRepository -> return the dummy testUser
 
         Lobby createdLobby = lobbyService.createLobby(testLobby,testUser.getId());
@@ -78,7 +78,7 @@ public class LobbyServiceTest {
 
 
     @Test
-    public void createLobby_duplicateLobbyname_throwsException() {
+     void createLobby_duplicateLobbyname_throwsException() {
         // given -> a first user has already been created
         Lobby createdLobby = lobbyService.createLobby(testLobby, testUser.getId());
 
@@ -89,7 +89,7 @@ public class LobbyServiceTest {
         assertThrows(ResponseStatusException.class, () -> lobbyService.createLobby(testLobby, 1L));
     }
     @Test
-    public void update_Lobby_success(){
+     void update_Lobby_success(){
         Lobby createdLobby = lobbyService.createLobby(testLobby,testUser.getId());
 
         // then
@@ -114,7 +114,7 @@ public class LobbyServiceTest {
     }
 
     @Test
-    public  void joinaPrivateLobby_withPassword_success(){
+      void joinaPrivateLobby_withPassword_success(){
 
         Lobby user = new Lobby();
         user.setPassword("testPassword");
@@ -129,7 +129,7 @@ public class LobbyServiceTest {
     }
 
     @Test
-    public  void joinaPrivateLobby_withwrongPassword_fail(){
+      void joinaPrivateLobby_withwrongPassword_fail(){
         Lobby user = new Lobby();
         user.setPassword("testPassword1");
         user.setLobbyname(testUser.getUsername());
@@ -138,7 +138,7 @@ public class LobbyServiceTest {
 
     }
     @Test
-    public  void joinaPrivateLobby_withoutPassword_fail(){
+      void joinaPrivateLobby_withoutPassword_fail(){
         Lobby user = new Lobby();
         user.setPassword(null);
         user.setLobbyname(testUser.getUsername());
@@ -147,7 +147,7 @@ public class LobbyServiceTest {
 
     }
     @Test
-    public  void joinaFullLobby_fail(){
+      void joinaFullLobby_fail(){
         Lobby user = new Lobby();
         user.setPassword("testPassword1");
         user.setLobbyname(testUser.getUsername());
@@ -158,7 +158,7 @@ public class LobbyServiceTest {
 
 
     @Test
-    public  void removeMembers_fromLobby_success(){
+      void removeMembers_fromLobby_success(){
         testLobby.setSize(3);
         Lobby createdLobby = lobbyService.createLobby(testLobby,testUser.getId());
         createdLobby.setMembers("testUser2");
@@ -175,7 +175,7 @@ public class LobbyServiceTest {
 
     }
     @Test
-    public  void removeaUser_whichissnt_in_theLobby(){
+      void removeaUser_whichissnt_in_theLobby(){
         testLobby.setSize(3);
         Lobby createdLobby = lobbyService.createLobby(testLobby,testUser.getId());
         createdLobby.setMembers("testUser2");
@@ -259,7 +259,7 @@ public class LobbyServiceTest {
     }
 
     @Test
-    public  void publicLobby_lasstemptyspace_success(){
+      void publicLobby_lasstemptyspace_success(){
         testLobby.setPassword(null);
         testLobby.setMembers("1");
         testLobby.setMembers("2");
@@ -278,7 +278,7 @@ public class LobbyServiceTest {
 
     }
     @Test
-    public  void join_in_the_smaeLobbyagain(){
+      void join_in_the_smaeLobbyagain(){
         testLobby.setPassword(null);
         testLobby.setMembers(testUser.getUsername());
         testLobby.setMembers("2");
@@ -294,7 +294,7 @@ public class LobbyServiceTest {
 
     }
     @Test
-    public  void removelastplayer() {
+      void removelastplayer() {
         testLobby.setPassword(null);
         testLobby.setMembers(testUser.getUsername());
 

@@ -62,6 +62,7 @@ public class Game implements Serializable {
     // access Players (User)
     public ArrayList<String> getPlayers() { return this.players; }
     public void setPlayers(ArrayList<String> players) { this.players = players; }
+    public void deletePlayers(String member) { players.remove(member); }
 
     // access game name
     public String getGameName() {

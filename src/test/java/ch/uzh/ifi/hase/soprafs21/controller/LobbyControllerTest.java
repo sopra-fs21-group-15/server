@@ -59,7 +59,7 @@ public class LobbyControllerTest {
 
     // test the getUsers correspondence
     @Test
-    public void givenLobbies_whenGetLobbies_thenReturnJsonArray() throws Exception {
+     void givenLobbies_whenGetLobbies_thenReturnJsonArray() throws Exception {
         // given
         Lobby lobby = new Lobby();
         lobby.setPassword("Firstname Lastname");
@@ -93,7 +93,7 @@ public class LobbyControllerTest {
     // test the create Lobby correspondence
     // /lobby POST: Code 201 --> Correct Input
     @Test
-    public void createLobby_validInput_Lobbycreated() throws Exception {
+     void createLobby_validInput_Lobbycreated() throws Exception {
         // given
         User user = new User();
         user.setId(1L);
@@ -141,7 +141,8 @@ public class LobbyControllerTest {
                 .andExpect(jsonPath("$.timer", is(lobby.getTimer())));
     }
     @Test
-    public void updateLobby_validInput() throws Exception {
+     void updateLobby_validInput() throws Exception {
+
         LobbyPostDTO lobbyPostDTO = new LobbyPostDTO();
         lobbyPostDTO.setSize("6");
         lobbyPostDTO.setRounds("10");
@@ -154,10 +155,10 @@ public class LobbyControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(lobbyPostDTO));
 
-        mockMvc.perform(putRequest).andExpect(status().isNoContent()); }
+        mockMvc.perform(putRequest).andExpect(status().isOk()); }
 
         @Test
-        public void gettheLobby_data() throws Exception{
+         void gettheLobby_data() throws Exception{
 
             // given
             User user = new User();
@@ -207,7 +208,7 @@ public class LobbyControllerTest {
         }
 
     @Test
-    public void JoinaLobby() throws Exception {
+     void JoinaLobby() throws Exception {
         LobbyPostDTO lobbyPostDTO = new LobbyPostDTO();
         lobbyPostDTO.setSize("6");
         lobbyPostDTO.setRounds("10");
@@ -235,7 +236,7 @@ public class LobbyControllerTest {
 
 
     @Test
-    public void Quit_Lobby() throws Exception {
+     void Quit_Lobby() throws Exception {
         Lobby lobby = new Lobby();
         lobby.setId(2L);
         lobby.setPassword("Firstname Lastname");
@@ -262,7 +263,7 @@ public class LobbyControllerTest {
 
 
     @Test
-    public void chatPost() throws Exception {
+     void chatPost() throws Exception {
         Lobby lobby = new Lobby();
         lobby.setId(2L);
         lobby.setPassword("Firstname Lastname");
@@ -292,7 +293,7 @@ public class LobbyControllerTest {
         mockMvc.perform(postRequest).andExpect(status().isOk()); }
 
         @Test
-    public void chatPut() throws Exception {
+     void chatPut() throws Exception {
         Lobby lobby = new Lobby();
         lobby.setId(2L);
         lobby.setPassword("Firstname Lastname");

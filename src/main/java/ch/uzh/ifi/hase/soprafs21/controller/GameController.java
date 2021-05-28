@@ -86,15 +86,17 @@ public class GameController {
         // get the correct game and drawing in which we need to save all the brushstrokes
         Game game = gameService.getGame(gameId);
         Round round = roundService.getRound(game.getRoundId());
-
+        List<BrushStroke> brushStrokeList = new ArrayList<>();
         // convert each and every API brush stroke to an internal representation
-        ArrayList<BrushStroke> value = new ArrayList<>();
         BrushStroke temp;
         for (BrushStrokePutDTO preBrushStroke : brushStrokeListDTO) {
             temp = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(preBrushStroke);
-            value.add(temp);
-            drawingService.addStroke(round.getCurrentDrawing(),value);
+            //drawingService.addStroke(round.getCurrentDrawing(),temp);
+            brushStrokeList.add(temp);
         }
+        //System.out.println(round.getCurrentDrawing().getBrushStrokes().size());
+        drawingService.save(round.getCurrentDrawing(),brushStrokeList);
+
     }
 
     // TODO #42 test and refine mapping for API-calls requesting the drawing
@@ -111,6 +113,7 @@ public class GameController {
         for(BrushStroke i : drawings){
             value.add(DrawingDTOMapper.INSTANCE.convertEntityToDrawingGetDTO(i));
         }
+        System.out.println("length of Brushstrockes"+value.size());
         return value;
     }
 
@@ -259,12 +262,30 @@ public class GameController {
         boolean guess = false;
         if (round.getStatus().equals(DRAWING)) { // check if the phase of the round is correct
             guess = roundService.makeGuess(message,round); // check if the guess is valid and correct
+            gameService.addPoints(game,message);
         }
         if (guess == false) {
             chatService.addNewMessage(gameId, message); // add chat message
         }
         return guess;
     }
+
+/*
+    @PutMapping("/games/{gameId}/guess")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public boolean makeGuess(@RequestBody MessagePostDTO messagePostDTO, @PathVariable Long gameId) {
+        Message message = ChatDTOMapper.INSTANCE.convertMessagePostDTOtoEntity(messagePostDTO); // convert to usable object
+        Game game = gameService.getGame(gameId); // find game
+        Round round = roundService.getRound(game.getRoundId()); // get current round
+        boolean value = roundService.makeGuess(message,round); // check if the guess is valid and correct
+        if (value) {
+            gameService.addPoints(game,message);
+        }
+        return value;
+    }
+ */
+
     /*
     /** (Issue 51) API-call for sending a guess of what the word might be from a user
      * @param gameId = the id of the game we would like to send the guess to
@@ -283,5 +304,20 @@ public class GameController {
         return value;
     }
 */
+
+    // removing a player from the game
+
+    @PutMapping("/games/{gameId}/leavers")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void removeMember(@PathVariable Long gameId, @RequestBody UserPostDTO userPostDTO) {
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        gameService.leaveGame(gameId, userInput.getUsername());
+        lobbyService.removeLobbyMembers(gameId, userInput.getUsername());
+
+    }
+
+
+
 }
 

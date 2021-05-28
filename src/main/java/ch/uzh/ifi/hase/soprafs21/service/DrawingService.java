@@ -112,8 +112,12 @@ public class DrawingService {
             }
 
             // get a sublist past the critical point
-            result = drawing.getBrushStrokes().subList(index, maxIndex);
+            System.out.println("Index"+ index);
+            System.out.println("MaxIndex"+ maxIndex);
 
+
+            result = drawing.getBrushStrokes().subList(index, maxIndex);
+            System.out.println("Resul Sublist" + result.toString());
             // sort the list and then return it
             try {
                 Collections.sort(result);
@@ -146,8 +150,15 @@ public class DrawingService {
             System.out.println("You tried to sort a list with objects that can not be compared with one another.");
         }
 
-        drawingRepository.saveAndFlush(drawing); // update the drawing in the repository
+    public void save(Drawing drawing,List<BrushStroke> brushStrokes){
+        List<BrushStroke> allStrokes = new ArrayList<>();
+        // allStrokes.addAll(drawing.getBrushStrokes());
+        // allStrokes.addAll(brushStrokes);
+        // drawing.setBrushStrokes(allStrokes);
+        drawing.setBrushStrokes(brushStrokes);
+        drawingRepository.saveAndFlush(drawing);
     }
+
 
     // get all rounds
     public List<Round> getRounds() {

@@ -42,7 +42,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void createUser_validInputs_success() {
+     void createUser_validInputs_success() {
         // when -> any object is being save in the userRepository -> return the dummy testUser
         User createdUser = userService.createUser(testUser);
 
@@ -60,7 +60,7 @@ public class UserServiceTest {
 
 
     @Test
-    public void createUser_duplicateName_throwsException() {
+     void createUser_duplicateName_throwsException() {
         // given -> a first user has already been created
         userService.createUser(testUser);
 
@@ -72,7 +72,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void getUsers_byID(){
+     void getUsers_byID(){
         User createdUser = userService.createUser(testUser);
         User foundUser = userService.getUserById(testUser.getId());
 
@@ -84,7 +84,7 @@ public class UserServiceTest {
 
     }
     @Test
-    public void getUsers_byID_unsuccessfull(){
+     void getUsers_byID_unsuccessfull(){
         User createdUser = userService.createUser(testUser);
         User foundUser = userService.getUserById(1000L);
 
@@ -96,7 +96,7 @@ public class UserServiceTest {
 
 
     @Test
-    public  void logoutUser_setUserStatus_toOFFLINE_success(){
+      void logoutUser_setUserStatus_toOFFLINE_success(){
         // given the user is created automatically ONLINE
         User createdUser = userService.createUser(testUser);
 
@@ -109,7 +109,7 @@ public class UserServiceTest {
 
     }
     @Test
-    public void  loginUser_sucessfull(){
+     void  loginUser_sucessfull(){
         // given the a user is created
         User createdUser = userService.createUser(testUser);
         createdUser.setStatus(UserStatus.OFFLINE);
@@ -128,14 +128,14 @@ public class UserServiceTest {
     }
 
     @Test
-    public void loginRequest_Usernotregistered_throwError(){
+     void loginRequest_Usernotregistered_throwError(){
 
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
 
         assertThrows(ResponseStatusException.class, () -> userService.loginRequest(testUser));
     }
     @Test
-    public void loginRequest_wrongPassword_throwError(){
+     void loginRequest_wrongPassword_throwError(){
         User createdUser = userService.createUser(testUser);
 
         User fake_User = new User();
@@ -150,7 +150,7 @@ public class UserServiceTest {
         assertEquals(UserStatus.OFFLINE, fake_User.getStatus());
     }
     @Test
-    public void updateUser_successfull(){
+     void updateUser_successfull(){
         User userchanges = new User();
         userchanges.setUsername("Updated");
         userchanges.setBirthDate("01.01.2000");
@@ -166,7 +166,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void updateUser_successfull_withNullvalues(){
+     void updateUser_successfull_withNullvalues(){
         User userchanges = new User();
         userchanges.setUsername(null);
         userchanges.setBirthDate(null);
@@ -183,7 +183,7 @@ public class UserServiceTest {
 
 
     @Test
-    public void updateUser_unsuccessfull(){
+     void updateUser_unsuccessfull(){
         User existinguser = new User();
         existinguser.setUsername("Updated");
         String unchanged= testUser.getUsername();
@@ -200,7 +200,7 @@ public class UserServiceTest {
 
 }
 @Test
-    public void addUserasFriend_success(){
+     void addUserasFriend_success(){
         User newFriend = new User();
         newFriend.setUsername("Friend1");
         newFriend.setId(2L);
@@ -211,7 +211,7 @@ public class UserServiceTest {
 
 }
 @Test
-    public void add_user_again_fail(){
+     void add_user_again_fail(){
     testUser.setFriendsList("Friend1");
     User newFriend = new User();
     newFriend.setUsername("Friend1");
@@ -222,7 +222,7 @@ public class UserServiceTest {
 
 }
 @Test
-    public void removeUser_fromFL_success(){
+     void removeUser_fromFL_success(){
     User delete = new User();
     delete.setUsername("delete");
     testUser.setFriendsList("delete");
@@ -232,7 +232,7 @@ public class UserServiceTest {
     assertFalse(testUser.getFriendsList().contains(delete.getUsername()));
 }
 @Test
-    public void Remove_random_persone_failed(){
+     void Remove_random_persone_failed(){
     User delete = new User();
     delete.setUsername("delete");
 

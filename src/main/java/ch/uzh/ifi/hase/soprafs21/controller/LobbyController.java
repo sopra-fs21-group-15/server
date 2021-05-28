@@ -64,12 +64,14 @@ public class LobbyController {
     // Put mapping to  /lobbies/{lobbyId} to update the lobby setting in the repository
 
     @PutMapping("/lobbies/{lobbyId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public  void editCurrentLobby(@PathVariable Long lobbyId, @RequestBody LobbyPostDTO lobbyEditDTO) {
+    public Lobby editCurrentLobby(@PathVariable Long lobbyId, @RequestBody LobbyPostDTO lobbyEditDTO) {
         // convert API lobby to internal representation
         Lobby lobbyInput = LobbyDTOMapper.INSTANCE.convertLobbyPostDTOtoEntity(lobbyEditDTO);
         lobbyService.update_lobby(lobbyId, lobbyInput);
+        Lobby returnLobby = lobbyService.getLobby(lobbyId);
+        return returnLobby;
     }
 
     // Get mapping to /lobbies/{lobbyId} to get the lobby by its Id
@@ -105,6 +107,20 @@ public class LobbyController {
     public void removeMember(@PathVariable Long lobbyId, @RequestBody UserPostDTO userPostDTO) {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         lobbyService.removeLobbyMembers(lobbyId, userInput.getUsername());
+    }
+
+    // Back to the lobby
+    @PutMapping("/lobbies/{lobbyId}/return")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public LobbyGetDTO returnMember(@PathVariable Long lobbyId, @RequestBody UserPostDTO userPostDTO) {
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        gameService.leaveGame(lobbyId, userInput.getUsername());
+        lobbyService.returnLobbyMembers(lobbyId, userInput.getUsername());
+
+        Lobby lobby = lobbyService.getLobby(lobbyId);
+        LobbyGetDTO lobbyGetDTO = LobbyDTOMapper.INSTANCE.convertEntityToLobbyGetDTO(lobby);
+        return lobbyGetDTO;
     }
 
     // Mapping for the lobby chats...
