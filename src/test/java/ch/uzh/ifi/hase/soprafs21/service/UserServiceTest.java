@@ -11,6 +11,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -46,7 +48,17 @@ public class UserServiceTest {
         // when -> any object is being save in the userRepository -> return the dummy testUser
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
         Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testUser));
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+        Mockito.when(userRepository.findAll()).thenReturn(Collections.singletonList(testUser));
     }
+    @Test
+    void find_allUser(){
+        List<User> foundUser = userService.getAllUsers();
+
+        assertTrue(foundUser.contains(testUser));
+        
+    }
+
 
     @Test
      void createUser_validInputs_success() {
@@ -100,7 +112,15 @@ public class UserServiceTest {
         assertThrows(ResponseStatusException.class, () -> userService.getUserById(1L));
 
     }
+    @Test
+    void get_User_by_Name_success(){
+        User foundUser = userService.getUserByUserName(testUser);
 
+        assertEquals(testUser.getUsername(), foundUser.getUsername());
+        assertEquals(testUser.getStatus(), foundUser.getStatus());
+        assertEquals(testUser.getBirthDate(), foundUser.getBirthDate());
+
+    }
 
     @Test
       void logoutUser_setUserStatus_toOFFLINE_success(){
@@ -221,6 +241,17 @@ public class UserServiceTest {
 
 }
 @Test
+    void addUserasFriend_failed(){
+    testUser.setFriendsList(testUser2.getUsername());
+    testUser2.setFriendsList(testUser.getUsername());
+    Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser2);
+    Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testUser));
+
+    assertThrows(ResponseStatusException.class, () -> userService.addUserToFriendsList(testUser.getId(), testUser));
+}
+
+
+@Test
      void requestFriendWhenUserIsAlreadyFriend1(){
     testUser.setFriendsList("testUsername2");
 
@@ -272,5 +303,40 @@ void requestFriendWhenRequestWasAlreadySent(){
     Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testUser));
     assertThrows(ResponseStatusException.class, () -> userService.removeUserFromFriendsList(testUser.getId(),testUser2));
 
+    }
+    @Test
+    void Remove_random_person_failed2(){
+        testUser.setFriendsList(testUser2.getUsername());
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser2);
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testUser));
+        assertThrows(ResponseStatusException.class, () -> userService.removeUserFromFriendsList(testUser.getId(),testUser2));
+
+    }
+    @Test
+    void Remove_random_person_failed3(){
+        testUser2.setFriendsList(testUser.getUsername());
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser2);
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testUser));
+        assertThrows(ResponseStatusException.class, () -> userService.removeUserFromFriendsList(testUser.getId(),testUser2));
+
+    }
+    @Test
+    void Remove_Userfrom_Requestlist_success(){
+        testUser.setFriendRequestList(testUser2.getUsername());
+        assertTrue(testUser.getFriendRequestList().contains(testUser2.getUsername()));
+
+        userService.removeUserFromFriendRequestList(testUser.getId(), testUser2);
+
+        assertTrue(testUser.getFriendRequestList().isEmpty());
+
+
+    }
+
+    @Test
+    void Remove_Userfrom_Requestlist_failed() {
+        testUser.setFriendRequestList("testUser2.getUsername()");
+        assertTrue(testUser.getFriendRequestList().contains("testUser2.getUsername()"));
+
+        assertThrows(ResponseStatusException.class, () ->userService.removeUserFromFriendRequestList(testUser.getId(), testUser2));
     }
 }
