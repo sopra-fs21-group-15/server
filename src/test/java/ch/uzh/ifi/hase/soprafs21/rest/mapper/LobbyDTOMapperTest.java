@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class LobbyDTOMapperTest {
     @Test
-    public void testCreateLobby_fromLobbyPostDTO_success() {
+     void testCreateLobby_fromLobbyPostDTO_success() {
         //create LobbypostDTO
         LobbyPostDTO lobbyPostDTO = new LobbyPostDTO();
         lobbyPostDTO.setLobbyname("Test");
@@ -40,7 +40,7 @@ public class LobbyDTOMapperTest {
     }
 
     @Test
-    public void testGetLobby_fromLobby_toLobbyGetDTO_success() {
+     void testGetLobby_fromLobby_toLobbyGetDTO_success() {
         // create Lobby
        Lobby lobby = new Lobby();
        lobby.setRounds(3);

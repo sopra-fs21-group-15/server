@@ -16,7 +16,7 @@ public class GameDTOMapperTest {
 
 
     @Test
-    public void testGetGame_fromGame_toGameGetDTO_success() {
+     void testGetGame_fromGame_toGameGetDTO_success() {
         // create Game
         Game game = new Game();
         game.setGameName("firstname@lastname");
