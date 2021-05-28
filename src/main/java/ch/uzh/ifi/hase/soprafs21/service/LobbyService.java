@@ -155,7 +155,7 @@ public class LobbyService {
         if (lobbyChange.getGameMode() != null) {
             lobbytoupdate.setGameMode(lobbyChange.getGameMode());
         }
-
+        System.out.print(lobbytoupdate.getGameMode());
         // save into the repository
         lobbyRepository.save(lobbytoupdate);
         lobbyRepository.flush();

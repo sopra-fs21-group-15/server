@@ -35,17 +35,14 @@ public class Lobby implements Serializable {
     @Column(nullable = false, unique = true)
     private String token;
 
-    //lobby size per default 4
     @Column(nullable = false)
-    private Integer size = 4;
+    private Integer size;
 
-    //number of rounds per default 4
     @Column(nullable = false)
-    private Integer rounds = 4;
+    private Integer rounds;
 
-    //time per round per default 60
     @Column(nullable = false)
-    private Integer timer = 60;
+    private Integer timer;
 
     //lobby members & their corresponding status; first member is automatically the owner
     @Column(nullable = false)
@@ -57,7 +54,7 @@ public class Lobby implements Serializable {
 
     //game mode
     @Column(nullable = false)
-    private GameModes gameMode = GameModes.CLASSIC;
+    private GameModes gameMode;
 
     public Lobby() {
     }

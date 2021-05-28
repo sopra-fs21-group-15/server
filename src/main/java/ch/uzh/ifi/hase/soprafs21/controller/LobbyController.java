@@ -64,12 +64,14 @@ public class LobbyController {
     // Put mapping to  /lobbies/{lobbyId} to update the lobby setting in the repository
 
     @PutMapping("/lobbies/{lobbyId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public  void editCurrentLobby(@PathVariable Long lobbyId, @RequestBody LobbyPostDTO lobbyEditDTO) {
+    public Lobby editCurrentLobby(@PathVariable Long lobbyId, @RequestBody LobbyPostDTO lobbyEditDTO) {
         // convert API lobby to internal representation
         Lobby lobbyInput = LobbyDTOMapper.INSTANCE.convertLobbyPostDTOtoEntity(lobbyEditDTO);
         lobbyService.update_lobby(lobbyId, lobbyInput);
+        Lobby returnLobby = lobbyService.getLobby(lobbyId);
+        return returnLobby;
     }
 
     // Get mapping to /lobbies/{lobbyId} to get the lobby by its Id
