@@ -14,6 +14,7 @@ public class UserGetDTO {
     private String birthDate;
     private UserStatus status;
     private ArrayList<String> friendsList;
+    private ArrayList<String> friendRequestList;
     private String userTag;
 
 
@@ -69,6 +70,11 @@ public class UserGetDTO {
     public ArrayList<String> getFriendsList() { return  friendsList; }
 
     public void setFriendsList(ArrayList<String> friends) { this.friendsList = friends; }
+
+    // get & set members
+    public ArrayList<String> getFriendRequestList() { return friendRequestList; }
+
+    public void setFriendRequestList(ArrayList<String> friendRequestList) { this.friendRequestList = friendRequestList; }
 
     public String getUserTag() { return userTag; }
 

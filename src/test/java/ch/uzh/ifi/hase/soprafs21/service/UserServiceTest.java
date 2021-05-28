@@ -25,6 +25,8 @@ public class UserServiceTest {
 
     private User testUser;
 
+    private User testUser2;
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
@@ -34,6 +36,11 @@ public class UserServiceTest {
         testUser.setId(1L);
         testUser.setPassword("testPassword");
         testUser.setUsername("testUsername");
+
+        testUser2 = new User();
+        testUser2.setId(2L);
+        testUser2.setPassword("testPassword2");
+        testUser2.setUsername("testUsername2");
 
 
         // when -> any object is being save in the userRepository -> return the dummy testUser
@@ -201,42 +208,69 @@ public class UserServiceTest {
 }
 @Test
      void addUserasFriend_success(){
-        User newFriend = new User();
-        newFriend.setUsername("Friend1");
-        newFriend.setId(2L);
 
-        userService.addUserToFriendsList(testUser.getId(), newFriend);
-        assertTrue(testUser.getFriendsList().contains(newFriend.getUsername()));
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testUser2));
+        userService.addUserToFriendRequestList(testUser2.getId(), testUser);
 
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser2);
+        Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testUser));
+        userService.addUserToFriendsList(testUser.getId(), testUser2);
+        assertTrue(testUser2.getFriendsList().contains(testUser.getUsername()));
+        assertTrue(testUser.getFriendsList().contains(testUser2.getUsername()));
 
 }
 @Test
-     void add_user_again_fail(){
-    testUser.setFriendsList("Friend1");
-    User newFriend = new User();
-    newFriend.setUsername("Friend1");
-    newFriend.setId(2L);
+     void requestFriendWhenUserIsAlreadyFriend1(){
+    testUser.setFriendsList("testUsername2");
 
-    assertThrows(ResponseStatusException.class, () -> userService.addUserToFriendsList(testUser.getId(),newFriend));
-
-
+    Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser2);
+    Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testUser));
+    assertThrows(ResponseStatusException.class, () -> userService.addUserToFriendRequestList(testUser.getId(),testUser2));
 }
+@Test
+void requestFriendWhenUserIsAlreadyFriend2() {
+    testUser2.setFriendsList("testUsername");
+
+    Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+    Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testUser2));
+    assertThrows(ResponseStatusException.class, () -> userService.addUserToFriendRequestList(testUser2.getId(), testUser));
+}
+@Test
+void requestFriendWhenUserIsAlreadyFriend3() {
+    testUser2.setFriendsList("testUsername");
+    testUser.setFriendsList("testUsername2");
+
+    Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+    Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testUser2));
+    assertThrows(ResponseStatusException.class, () -> userService.addUserToFriendRequestList(testUser2.getId(), testUser));
+}
+@Test
+void requestFriendWhenRequestWasAlreadySent(){
+    testUser2.setFriendRequestList("testUsername");
+
+    Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser2);
+    Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testUser));
+    assertThrows(ResponseStatusException.class, () -> userService.addUserToFriendRequestList(testUser.getId(),testUser2));
+}
+
 @Test
      void removeUser_fromFL_success(){
-    User delete = new User();
-    delete.setUsername("delete");
-    testUser.setFriendsList("delete");
+
+    testUser.setFriendsList("testUsername2");
+    testUser2.setFriendsList("testUsername");
     testUser.setFriendsList("Friend1");
-    userService.removeUserFromFriendsList(testUser.getId(),delete);
+    Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser2);
+    Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testUser));
+    userService.removeUserFromFriendsList(testUser.getId(),testUser2);
     assertTrue(testUser.getFriendsList().contains("Friend1"));
-    assertFalse(testUser.getFriendsList().contains(delete.getUsername()));
+    assertFalse(testUser.getFriendsList().contains(testUser2.getUsername()));
 }
 @Test
-     void Remove_random_persone_failed(){
-    User delete = new User();
-    delete.setUsername("delete");
-
-    assertThrows(ResponseStatusException.class, () -> userService.removeUserFromFriendsList(testUser.getId(),delete));
+     void Remove_random_person_failed(){
+    Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser2);
+    Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testUser));
+    assertThrows(ResponseStatusException.class, () -> userService.removeUserFromFriendsList(testUser.getId(),testUser2));
 
     }
 }

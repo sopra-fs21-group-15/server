@@ -284,7 +284,7 @@ public class UserControllerTest {
 
     // test the addingFriends correspondence
 
-    // /users/{userId}/FriendsList PUT: Code 200 --> correct input
+    // /users/{userId}/friends/confirmations PUT: Code 200 --> correct input
     @Test
      void add_friend() throws Exception {
         User user = new User();
@@ -306,9 +306,71 @@ public class UserControllerTest {
 
         User friend = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
 
+        doNothing().when(userService).removeUserFromFriendRequestList(1L, friend);
         doNothing().when(userService).addUserToFriendsList(1L, friend);
 
-        MockHttpServletRequestBuilder putRequest = put("/users/1/friendsList")
+        MockHttpServletRequestBuilder putRequest = put("/users/1/friends/confirmations")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        mockMvc.perform(putRequest).andExpect(status().isOk()); }
+
+    // /users/{userId}/friends/requests PUT: Code 200 --> correct input
+    @Test
+    void add_friend_request() throws Exception {
+        User user = new User();
+        user.setPassword("Firstname Lastname");
+        user.setUsername("firstname@lastname");
+        user.setCreationDate("08-03-2020");
+        user.setBirthDate("01.01.1980");
+        user.setStatus(UserStatus.OFFLINE);
+        user.setId(1L);
+
+
+        UserPostDTO userPostDTO = new UserPostDTO();
+        userPostDTO.setUsername("Friend");
+        userPostDTO.setPassword("Friend");
+        userPostDTO.setBirthDate("01.01.1980");
+        userPostDTO.setUserTag("Hallo");
+
+
+
+        User friend = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+
+        doNothing().when(userService).addUserToFriendRequestList(1L, friend);
+
+        MockHttpServletRequestBuilder putRequest = put("/users/1/friends/requests")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        mockMvc.perform(putRequest).andExpect(status().isNoContent()); }
+
+    // /users/{userId}/friends/rejections PUT: Code 200 --> correct input
+    @Test
+    void reject_Friend_Request() throws Exception {
+        User user = new User();
+        user.setPassword("Firstname Lastname");
+        user.setUsername("firstname@lastname");
+        user.setCreationDate("08-03-2020");
+        user.setBirthDate("01.01.1980");
+        user.setStatus(UserStatus.OFFLINE);
+        user.setFriendsList("Friend");
+        user.setId(1L);
+
+
+        UserPostDTO userPostDTO = new UserPostDTO();
+        userPostDTO.setUsername("Friend");
+        userPostDTO.setPassword("Friend");
+        userPostDTO.setBirthDate("01.01.1980");
+        userPostDTO.setUserTag("Hallo");
+
+
+
+        User friend = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+
+        doNothing().when(userService).removeUserFromFriendRequestList(1L, friend);
+
+        MockHttpServletRequestBuilder putRequest = put("/users/1/friends/rejections")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(userPostDTO));
 
@@ -317,7 +379,7 @@ public class UserControllerTest {
 
     // test the removing Friends correspondence
 
-    // /users/{userId}/removeFriendsList PUT: Code 200 --> correct input
+    // /users/{userId}/friends/deletions PUT: Code 200 --> correct input
     @Test
      void remove_Friend() throws Exception {
         User user = new User();
@@ -342,7 +404,7 @@ public class UserControllerTest {
 
         doNothing().when(userService).removeUserFromFriendsList(1L, friend);
 
-        MockHttpServletRequestBuilder putRequest = put("/users/1/removeFriendList")
+        MockHttpServletRequestBuilder putRequest = put("/users/1/friends/deletions")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(userPostDTO));
 
