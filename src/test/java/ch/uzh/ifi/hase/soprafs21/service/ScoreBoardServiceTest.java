@@ -64,7 +64,7 @@ public class ScoreBoardServiceTest {
     }
 
     @Test
-    public void create_Scoreboard() {
+     void create_Scoreboard() {
         // when -> any object is being save in the userRepository -> return the dummy testUser
 
         ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
@@ -76,13 +76,13 @@ public class ScoreBoardServiceTest {
 
     }
     @Test
-    public void get_Scoreboard_byID_success(){
+     void get_Scoreboard_byID_success(){
         ScoreBoard getScoreboard = scoreBoardService.getScoreBoard(testscoreBoard.getId());
 
         assertEquals(testscoreBoard.getId(), getScoreboard.getId());
     }
 @Test
-    public void get_Scoreboard_byID_failed(){
+     void get_Scoreboard_byID_failed(){
 
 
         Mockito.when(scoreBoardRepository.findById(Mockito.any())).thenReturn(Optional.empty());
@@ -91,20 +91,20 @@ public class ScoreBoardServiceTest {
     }
 
     @Test
-    public void get_players(){
+     void get_players(){
         ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
 
         // then
         Mockito.verify(scoreBoardRepository, Mockito.times(1)).saveAndFlush(Mockito.any());
         ArrayList<String> players = scoreBoardService.getPlayers(createdScoreboard);
 
-        assertEquals(players.get(0), testLobby.getMembers().get(0));
-        assertEquals(players.get(1), testLobby.getMembers().get(1));
-        assertEquals(players.get(2), testLobby.getMembers().get(2));
-        assertEquals(players.get(3), testLobby.getMembers().get(3));
+        assertEquals( testLobby.getMembers().get(0),players.get(0));
+        assertEquals( testLobby.getMembers().get(1),players.get(1));
+        assertEquals( testLobby.getMembers().get(2),players.get(2));
+        assertEquals( testLobby.getMembers().get(3),players.get(3));
     }
     @Test
-    public void set_Players(){
+     void set_Players(){
         ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
 
         // then
@@ -113,80 +113,81 @@ public class ScoreBoardServiceTest {
         players.add("extraUser");
         scoreBoardService.setPlayers(createdScoreboard, players);
 
-        assertEquals(createdScoreboard.getPlayers().size(),5);
-        assertEquals(createdScoreboard.getPlayers().get(4), "extraUser");
+        assertEquals(5,createdScoreboard.getPlayers().size());
+        assertEquals( "extraUser",createdScoreboard.getPlayers().get(4));
     }
 @Test
-    public void update_scoreboard(){
+     void update_scoreboard(){
     ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
-    assertEquals(createdScoreboard.getScore()[0], 0);
-    assertEquals(createdScoreboard.getScore()[1], 0);
-    assertEquals(createdScoreboard.getScore()[2], 0);
-    assertEquals(createdScoreboard.getScore()[3], 0);
+    assertEquals( 0,createdScoreboard.getScore()[0]);
+    assertEquals( 0,createdScoreboard.getScore()[1]);
+    assertEquals( 0,createdScoreboard.getScore()[2]);
+    assertEquals( 0,createdScoreboard.getScore()[3]);
 
     int [] newscores = {200,500,600,50};
     scoreBoardService.updateScore(createdScoreboard, newscores );
-    assertEquals(createdScoreboard.getScore()[0], newscores[0]);
-    assertEquals(createdScoreboard.getScore()[1],newscores[1]);
-    assertEquals(createdScoreboard.getScore()[2], newscores[2]);
-    assertEquals(createdScoreboard.getScore()[3], newscores[3]);
+    assertEquals( newscores[0],createdScoreboard.getScore()[0]);
+    assertEquals( newscores[1],createdScoreboard.getScore()[1]);
+    assertEquals( newscores[2],createdScoreboard.getScore()[2]);
+    assertEquals( newscores[3],createdScoreboard.getScore()[3]);
 
 }
 @Test
-public void update_scoreboard_wrong() {
+ void update_scoreboard_wrong() {
     ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
-    assertEquals(createdScoreboard.getScore()[0], 0);
-    assertEquals(createdScoreboard.getScore()[1], 0);
-    assertEquals(createdScoreboard.getScore()[2], 0);
-    assertEquals(createdScoreboard.getScore()[3], 0);
+    assertEquals( 0,createdScoreboard.getScore()[0]);
+    assertEquals( 0,createdScoreboard.getScore()[1]);
+    assertEquals( 0,createdScoreboard.getScore()[2]);
+    assertEquals( 0,createdScoreboard.getScore()[3]);
 
     int[] newscores = {200, 500, 600,};
     scoreBoardService.updateScore(createdScoreboard, newscores);
-    assertEquals(createdScoreboard.getScore()[0],0);
-    assertEquals(createdScoreboard.getScore()[1],0);
-    assertEquals(createdScoreboard.getScore()[2],0);
-    assertEquals(createdScoreboard.getScore()[3],0);
+    assertEquals( 0,createdScoreboard.getScore()[0]);
+    assertEquals( 0,createdScoreboard.getScore()[1]);
+    assertEquals( 0,createdScoreboard.getScore()[2]);
+    assertEquals( 0,createdScoreboard.getScore()[3]);
 
 }
 
 @Test
-public void setScore_test(){
+ void setScore_test(){
     ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
-    assertEquals(createdScoreboard.getScore()[0], 0);
-    assertEquals(createdScoreboard.getScore()[1], 0);
-    assertEquals(createdScoreboard.getScore()[2], 0);
-    assertEquals(createdScoreboard.getScore()[3], 0);
+    assertEquals( 0,createdScoreboard.getScore()[0]);
+    assertEquals( 0,createdScoreboard.getScore()[1]);
+    assertEquals( 0,createdScoreboard.getScore()[2]);
+    assertEquals( 0,createdScoreboard.getScore()[3]);
 
     int [] newscores = {200,500,600,50};
     scoreBoardService.setScore(createdScoreboard, newscores );
-    assertEquals(createdScoreboard.getScore()[0], newscores[0]);
-    assertEquals(createdScoreboard.getScore()[1],newscores[1]);
-    assertEquals(createdScoreboard.getScore()[2], newscores[2]);
-    assertEquals(createdScoreboard.getScore()[3], newscores[3]);
+    assertEquals( newscores[0],createdScoreboard.getScore()[0]);
+    assertEquals( newscores[1],createdScoreboard.getScore()[1]);
+    assertEquals( newscores[2],createdScoreboard.getScore()[2]);
+    assertEquals( newscores[3],createdScoreboard.getScore()[3]);
+
 
 }
 
     @Test
-    public void setScore_test_wrong(){
+     void setScore_test_wrong(){
         ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
-        assertEquals(createdScoreboard.getScore()[0], 0);
-        assertEquals(createdScoreboard.getScore()[1], 0);
-        assertEquals(createdScoreboard.getScore()[2], 0);
-        assertEquals(createdScoreboard.getScore()[3], 0);
+        assertEquals( 0,createdScoreboard.getScore()[0]);
+        assertEquals( 0,createdScoreboard.getScore()[1]);
+        assertEquals( 0,createdScoreboard.getScore()[2]);
+        assertEquals( 0,createdScoreboard.getScore()[3]);
 
         int [] newscores = {200,500,600};
         scoreBoardService.setScore(createdScoreboard, newscores );
-        assertEquals(createdScoreboard.getScore()[0],0);
-        assertEquals(createdScoreboard.getScore()[1],0);
-        assertEquals(createdScoreboard.getScore()[2],0);
-        assertEquals(createdScoreboard.getScore()[3],0);
+        assertEquals( 0,createdScoreboard.getScore()[0]);
+        assertEquals( 0,createdScoreboard.getScore()[1]);
+        assertEquals( 0,createdScoreboard.getScore()[2]);
+        assertEquals( 0,createdScoreboard.getScore()[3]);
 
     }
 
 
 
 @Test
-    public void test_ranking(){
+     void test_ranking(){
 
     ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
     int[] ranking = {2,4,3,1};
@@ -200,7 +201,7 @@ public void setScore_test(){
 
 }
 @Test
-    public void test_setRanking(){
+     void test_setRanking(){
     ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
     int[] ranking = {2,4,3,1};
     testscoreBoard.setRanking(ranking);
@@ -212,7 +213,7 @@ public void setScore_test(){
 
 }
 @Test
-    public void test_setRanking_wrong(){
+     void test_setRanking_wrong(){
     ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
     int[] ranking = {2,4,3};
     testscoreBoard.setRanking(ranking);
@@ -222,7 +223,7 @@ public void setScore_test(){
     }
 
     @Test
-    public void getScoretest(){
+     void getScoretest(){
         ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
         int [] newscores = {200,500,600,50};
 
@@ -241,7 +242,7 @@ public void setScore_test(){
     }
 
     @Test
-    public void addingPoints_test(){
+     void addingPoints_test(){
         ScoreBoard createdScoreboard = scoreBoardService.createScoreBoard(testLobby);
         int [] newscores = {200,500,600,50};
         createdScoreboard.setScore(newscores);
