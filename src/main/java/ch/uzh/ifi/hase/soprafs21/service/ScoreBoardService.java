@@ -175,5 +175,9 @@ public class ScoreBoardService {
         scoreBoardRepository.saveAndFlush(scoreBoard);
     }
 
+    public void removePlayer (ScoreBoard scoreBoard, String username) {
+        int position = scoreBoard.getPlayers().indexOf(username);
+
+    }
 
 }

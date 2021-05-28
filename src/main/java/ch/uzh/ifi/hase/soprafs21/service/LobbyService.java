@@ -248,6 +248,7 @@ public class LobbyService {
         if(lobbyToUpdate.getMembers().size() == lobbyToUpdate.getSize()) {
             lobbyToUpdate.setStatus(LobbyStatus.FULL);
         }
+        else lobbyToUpdate.setStatus(LobbyStatus.OPEN);
         // save into the repository
         lobbyRepository.save(lobbyToUpdate);
         lobbyRepository.flush();

@@ -87,6 +87,11 @@ public class UserService {
         }
     }
 
+    public User getUserByUserName(User userInput) {
+        User user = userRepository.findByUsername(userInput.getUsername());
+        return user;
+    }
+
 
     /**
      * This is a helper method that will check the uniqueness criteria of the username and the password
@@ -178,44 +183,77 @@ public class UserService {
 
     public void addUserToFriendsList(Long userId, User friend) {
 
-        User userToUpdate = getUserById(userId);
-
-        String userName = friend.getUsername();
+        User user1 = getUserById(userId);
+        User user2 = userRepository.findByUsername(friend.getUsername());
 
         // check if the user is already a friend
         String playerAlreadyInFriendsList = "This user is already your friend!";
-        if (userToUpdate.getFriendsList().contains(userName)) {
+        if (user1.getFriendsList().contains(user2.getUsername()) || user2.getFriendsList().contains(user1.getUsername())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(playerAlreadyInFriendsList));
         }
-        else userToUpdate.setFriendsList(userName);
+        else
+            user1.setFriendsList(user2.getUsername());
+            user2.setFriendsList(user1.getUsername());
+
+        // save into the repository
+        saveUser(user1);
+        saveUser(user2);
+    }
+
+    public void removeUserFromFriendsList(Long userId, User friend) {
+        User user1 = getUserById(userId);
+        User user2 = userRepository.findByUsername(friend.getUsername());
+
+        // check if the user is already a friend
+        String playerAlreadyNotInFriendsList = "This user is already not your friend!";
+        if (!user1.getFriendsList().contains(user2.getUsername()) || !user2.getFriendsList().contains(user1.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(playerAlreadyNotInFriendsList));
+        }
+        else
+            user1.deleteFriendsList(user2.getUsername());
+            user2.deleteFriendsList(user1.getUsername());
+
+        // save into the repository
+        saveUser(user1);
+        saveUser(user2);
+    }
+
+    // send and accept friend requests?
+    public void addUserToFriendRequestList(Long userId, User friend) {
+
+        User requestingUser = getUserById(userId);
+        User userToUpdate = userRepository.findByUsername(friend.getUsername());
+
+        // check if the user is already a friend
+        String playerAlreadyInFriendRequestList = "You already sent a friend request to this user. Please wait for his respond!";
+        String playerAlreadyInFriendsList = "This user is already your friend!";
+        if (userToUpdate.getFriendRequestList().contains(requestingUser.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(playerAlreadyInFriendRequestList));
+        }
+        else if (userToUpdate.getFriendsList().contains(requestingUser.getUsername()) || requestingUser.getFriendsList().contains(userToUpdate.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(playerAlreadyInFriendsList));
+        }
+        else userToUpdate.setFriendRequestList(requestingUser.getUsername());
 
         // save into the repository
         saveUser(userToUpdate);
     }
 
-    public void removeUserFromFriendsList(Long userId, User friend) {
+
+    public void removeUserFromFriendRequestList(Long userId, User friend) {
         User userToUpdate = getUserById(userId);
 
         String userName = friend.getUsername();
 
         // check if the user is already a friend
-        String playerAlreadyNotInFriendsList = "This user is already not your friend!";
-        if (!userToUpdate.getFriendsList().contains(userName)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(playerAlreadyNotInFriendsList));
+        String playerAlreadyNotInFriendRequestList = "This user has not send a friend request to you. Thus cannot be declined/accepted.";
+        if (!userToUpdate.getFriendRequestList().contains(userName)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(playerAlreadyNotInFriendRequestList));
         }
-        else userToUpdate.deleteFriendsList(userName);
+        else userToUpdate.deleteFriendRequestList(userName);
 
         // save into the repository
         saveUser(userToUpdate);
-    }
-
-    // send and accept friend requests?
-    public void sendFriendRequest(Long userId, User friend) {
-        return;
-    }
-
-    public void acceptFriendRequest(Long userId, User friend) {
-        return;
     }
 
 }

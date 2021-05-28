@@ -90,6 +90,17 @@ public class UserController {
         return userGetDTO;
     }
 
+    @GetMapping("/users/userNames")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public UserGetDTO getUserByUserName(@RequestBody UserPostDTO userPostDTO) {
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        User user = userService.getUserByUserName(userInput);
+        // convert internal representation of user back to API
+        UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+        return userGetDTO;
+    }
+
     // Put mapping to /users/{userId} to update the user in the repository with its changes
 
     @PutMapping("/users/{userId}")
@@ -115,18 +126,40 @@ public class UserController {
 
     // Put mapping to add a friend to a user
 
-    @PutMapping("/users/{userId}/friendsList")
+    @PutMapping("/users/{userId}/friends/requests")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public void addFriendRequest(@PathVariable Long userId, @RequestBody UserPostDTO userPostDTO) {
+        User friend = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        userService.addUserToFriendRequestList(userId, friend);
+        User user = userService.getUserById(userId);
+        UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+    }
+
+    @PutMapping("/users/{userId}/friends/confirmations")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public UserGetDTO addFriend(@PathVariable Long userId, @RequestBody UserPostDTO userPostDTO) {
         User friend = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        userService.removeUserFromFriendRequestList(userId, friend);
         userService.addUserToFriendsList(userId, friend);
         User user = userService.getUserById(userId);
         UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
         return userGetDTO;
     }
 
-    @PutMapping("/users/{userId}/removeFriendList")
+    @PutMapping("/users/{userId}/friends/rejections")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public UserGetDTO removeFriendRequest(@PathVariable Long userId, @RequestBody UserPostDTO userPostDTO) {
+        User friend = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        userService.removeUserFromFriendRequestList(userId, friend);
+        User user = userService.getUserById(userId);
+        UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+        return userGetDTO;
+    }
+
+    @PutMapping("/users/{userId}/friends/deletions")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public UserGetDTO removeFriend(@PathVariable Long userId, @RequestBody UserPostDTO userPostDTO) {
@@ -136,5 +169,7 @@ public class UserController {
         UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
         return userGetDTO;
     }
+
+
 }
 

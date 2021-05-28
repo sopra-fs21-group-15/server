@@ -13,14 +13,6 @@ public class UserPostDTO {
 
     private String userTag;
 
-    private ArrayList<String> friends;
-
-    public void setFriends(ArrayList<String> friends) {
-        this.friends = friends;
-    }
-
-    public ArrayList<String> getFriends(){return friends; }
-
     public String getPassword() {
         return password;
     }

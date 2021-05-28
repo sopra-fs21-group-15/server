@@ -50,6 +50,10 @@ public class User implements Serializable {
     @Column(nullable = false)
     private ArrayList<String> friendsList = new ArrayList<String>();
 
+    //the not yet accepted friend requests
+    @Column(nullable = false)
+    private ArrayList<String> friendRequestList = new ArrayList<String>();
+
     public Long getId() {
         return id;
     }
@@ -121,4 +125,10 @@ public class User implements Serializable {
 
     public void deleteFriendsList(String friend) { friendsList.remove(friend); }
 
+    //get, set & delete friendRequestList & their status
+    public void setFriendRequestList(String friend) { this.friendRequestList.add(friend); }
+
+    public ArrayList<String> getFriendRequestList() { return friendRequestList; }
+
+    public void deleteFriendRequestList(String friend) { friendRequestList.remove(friend); }
 }
