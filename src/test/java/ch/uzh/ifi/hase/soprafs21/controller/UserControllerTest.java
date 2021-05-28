@@ -47,7 +47,7 @@ public class UserControllerTest {
 
     // test the getUsers correspondence
     @Test
-    public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
+     void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
         // given
         User user = new User();
         user.setPassword("Firstname Lastname");
@@ -73,7 +73,7 @@ public class UserControllerTest {
     // test the createUser correspondence
     // /users POST: Code 201 --> Correct Input
     @Test
-    public void createUser_validInput_userCreated() throws Exception {
+     void createUser_validInput_userCreated() throws Exception {
         // given
         User user = new User();
         user.setId(1L);
@@ -104,7 +104,7 @@ public class UserControllerTest {
 
     // /users POST: Code 409 --> Wrong Input
     @Test
-    public void createUser_invalidInput_existingUserCreated() throws Exception {
+     void createUser_invalidInput_existingUserCreated() throws Exception {
         // given
         User existing_user = new User();
         existing_user.setId(1L);
@@ -156,7 +156,7 @@ public class UserControllerTest {
     // test the loginUser correspondence
     // /login PUT: Code 204 --> correct input
     @Test
-    public void loginUser_validInput_userLoggedIn() throws Exception {
+     void loginUser_validInput_userLoggedIn() throws Exception {
         // given
         User user = new User();
         user.setId(1L);
@@ -187,7 +187,7 @@ public class UserControllerTest {
 
     // /login PUT: Code 404 --> wrong input
     @Test
-    public void loginUser_invalidInput() throws Exception {
+     void loginUser_invalidInput() throws Exception {
         // given
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setPassword("Test Password");
@@ -210,7 +210,7 @@ public class UserControllerTest {
     // /users/{userId} GET: Code 200 --> correct input
 
     @Test
-    public void getUser_validInput() throws Exception {
+     void getUser_validInput() throws Exception {
         // given
         User user = new User();
         user.setPassword("Firstname Lastname");
@@ -235,7 +235,7 @@ public class UserControllerTest {
     // /users/{userId} GET: Code 404 --> wrong input
 
     @Test
-    public void getUser_notExistingUser() throws Exception {
+     void getUser_notExistingUser() throws Exception {
 
         given(userService.getUserById(Mockito.anyLong())).willThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
@@ -250,7 +250,7 @@ public class UserControllerTest {
     // /users/{userId} PUT: Code 204 --> correct input
 
     @Test
-    public void updateUser_validInput() throws Exception {
+     void updateUser_validInput() throws Exception {
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setUsername("username");
         userPostDTO.setBirthDate("01.01.1980");
@@ -267,7 +267,7 @@ public class UserControllerTest {
 
 
         @Test
-        public void logoutUser_validInput() throws Exception{
+         void logoutUser_validInput() throws Exception{
         UserPostDTO userPostDTO = new UserPostDTO();
             userPostDTO.setPassword("Test Password");
             userPostDTO.setUsername("testUsername");
@@ -286,7 +286,7 @@ public class UserControllerTest {
 
     // /users/{userId}/FriendsList PUT: Code 200 --> correct input
     @Test
-    public void add_friend() throws Exception {
+     void add_friend() throws Exception {
         User user = new User();
         user.setPassword("Firstname Lastname");
         user.setUsername("firstname@lastname");
@@ -319,7 +319,7 @@ public class UserControllerTest {
 
     // /users/{userId}/removeFriendsList PUT: Code 200 --> correct input
     @Test
-    public void remove_Friend() throws Exception {
+     void remove_Friend() throws Exception {
         User user = new User();
         user.setPassword("Firstname Lastname");
         user.setUsername("firstname@lastname");
