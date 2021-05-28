@@ -60,28 +60,28 @@ public class ChatServiceTest {
     }
 
     @Test
-    public void getGame_byGameID(){
+     void getGame_byGameID(){
         Chat foundchat = chatService.getChat(testChat.getChatId());
 
         assertEquals(foundchat.getMessage().get(0), testMessage);
 
     }
     @Test
-    public void getGame_byGameID_failed(){
+     void getGame_byGameID_failed(){
         Mockito.when(chatRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 
         assertThrows(ResponseStatusException.class, () -> chatService.getChat(6L));
 
     }
     @Test
-    public void createChat_success(){
+     void createChat_success(){
         chatService.createChat(1L);
         Mockito.verify(chatRepository,Mockito.times(1)).save(Mockito.any());
 
     }
 
     @Test
-    public void add_message(){
+     void add_message(){
         Chat chat = chatService.getChat(testChat.getChatId());
         String time2 = LocalTime.now().toString();
         Message testMessage2 = new Message();
@@ -95,14 +95,14 @@ public class ChatServiceTest {
 
     }
     @Test
-    public void create_newMessage(){
+     void create_newMessage(){
         Message newMessage = chatService.createMessage(testMessage);
         assertEquals(newMessage.getMessage(),testMessage.getMessage());
         assertEquals(newMessage.getTimeStamp(), testMessage.getTimeStamp());
     }
 
     @Test
-    public void getNewMessages_Test(){
+     void getNewMessages_Test(){
 
         String searchedtimer = "2021-05-17 14:54:10:000";
 
@@ -126,7 +126,7 @@ public class ChatServiceTest {
 
 
     @Test
-    public void getaemptyChatback_ifthereareNoMessages(){
+     void getaemptyChatback_ifthereareNoMessages(){
 
         String searchedtimer = "2021-05-17 14:54:10:000";
 
@@ -145,7 +145,7 @@ public class ChatServiceTest {
 
 
     @Test
-    public void getNewMessages_noMessage(){
+     void getNewMessages_noMessage(){
 
         String searchedtimer = "2021-05-17 15:54:10:000";
 
@@ -168,7 +168,7 @@ public class ChatServiceTest {
 
     }
     @Test
-    public void getNewMessages_allMessage(){
+     void getNewMessages_allMessage(){
 
         String searchedtimer = "2021-05-17 12:54:10:000";
 
