@@ -301,6 +301,7 @@ public class GameService implements Runnable {
                 roundService.resetHasGuessed(round);
                 roundService.resetGotPoints(round);
                 playerIndex++;
+                numberOfPlayers = game.getPlayers().size();
             }
             roundIndex++;
         }

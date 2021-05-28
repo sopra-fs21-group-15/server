@@ -262,7 +262,10 @@ public class GameController {
         boolean guess = false;
         if (round.getStatus().equals(DRAWING)) { // check if the phase of the round is correct
             guess = roundService.makeGuess(message,round); // check if the guess is valid and correct
-            gameService.addPoints(game,message);
+            if (guess) {
+                gameService.addPoints(game,message);
+            }
+
         }
         if (guess == false) {
             chatService.addNewMessage(gameId, message); // add chat message
@@ -284,7 +287,7 @@ public class GameController {
         }
         return value;
     }
- */
+*/
 
     /*
     /** (Issue 51) API-call for sending a guess of what the word might be from a user
