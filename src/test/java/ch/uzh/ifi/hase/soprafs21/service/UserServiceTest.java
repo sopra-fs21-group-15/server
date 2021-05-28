@@ -48,7 +48,7 @@ public class UserServiceTest {
         // when -> any object is being save in the userRepository -> return the dummy testUser
         Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
         Mockito.when(userRepository.findById(Mockito.any())).thenReturn(java.util.Optional.ofNullable(testUser));
-        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+
         Mockito.when(userRepository.findAll()).thenReturn(Collections.singletonList(testUser));
     }
     @Test
@@ -56,7 +56,7 @@ public class UserServiceTest {
         List<User> foundUser = userService.getAllUsers();
 
         assertTrue(foundUser.contains(testUser));
-        
+
     }
 
 
@@ -114,6 +114,7 @@ public class UserServiceTest {
     }
     @Test
     void get_User_by_Name_success(){
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
         User foundUser = userService.getUserByUserName(testUser);
 
         assertEquals(testUser.getUsername(), foundUser.getUsername());
