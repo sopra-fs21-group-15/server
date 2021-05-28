@@ -1,7 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.rest.mapper;
 import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.GameGetDTO;
-import ch.uzh.ifi.hase.soprafs21.rest.dto.UserPostDTO;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

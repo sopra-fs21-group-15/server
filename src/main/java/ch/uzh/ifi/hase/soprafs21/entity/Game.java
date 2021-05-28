@@ -1,10 +1,14 @@
 package ch.uzh.ifi.hase.soprafs21.entity;
 
 import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
+import ch.uzh.ifi.hase.soprafs21.constant.RoundStatus;
+import ch.uzh.ifi.hase.soprafs21.service.GameService;
+import ch.uzh.ifi.hase.soprafs21.service.RoundService;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 @Entity
 @Table(name = "GAME")
@@ -111,22 +115,6 @@ public class Game implements Serializable {
     // access to the timer
     public Timer getTimer() { return this.timer; }
     public void setTimer(Timer timer) { this.timer = timer; }
-
-    /**
-     * Back-end specific methods needed for functionality
-     */
-    //public void updatePoints(long[] points) { scoreBoard.updateScore(points); }
-
-    //public void addStroke(long user_id, BrushStroke brushStroke) { this.rounds.get(roundTracker - 1).addStroke(user_id, brushStroke); }
-    // public void addStroke(String userName, BrushStroke brushStroke) { this.rounds.get(roundTracker - 1).addStroke(userName, brushStroke); }
-    //public void addStroke(String userName, BrushStroke brushStroke) { this.rounds.addStroke(userName, brushStroke); }
-
-    //public Drawing getDrawing(LocalDateTime timeStamp) { return rounds.get(roundTracker-1).getDrawing(timeStamp); }
-    //public Drawing getDrawing(LocalDateTime timeStamp) { return rounds.getDrawing(timeStamp); }
-
-    //public int getLength() { return rounds.get(roundTracker-1).getLength(); }
-    // public int getLength() { return rounds.getLength(); }
-
 
     /**
      * Back-end specific methods for quality of life

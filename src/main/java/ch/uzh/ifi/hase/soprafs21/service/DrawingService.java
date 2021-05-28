@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs21.service;
 
 import ch.uzh.ifi.hase.soprafs21.entity.BrushStroke;
 import ch.uzh.ifi.hase.soprafs21.entity.Drawing;
+import ch.uzh.ifi.hase.soprafs21.entity.Game;
 import ch.uzh.ifi.hase.soprafs21.entity.Round;
 import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import ch.uzh.ifi.hase.soprafs21.repository.BrushStrokeRepository;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -47,22 +49,14 @@ public class DrawingService {
 
     // get a specific drawing
     public Drawing getDrawing(Long drawingId) {
-        List<Drawing> drawings = getDrawings();
+        Optional<Drawing> potDrawing = drawingRepository.findById(drawingId);
 
-        Drawing drawingFound = null;
-        for (Drawing i : drawings) {
-            if (drawingId.equals(i.getId())) {
-                drawingFound = i;
-            }
-        }
-
-        // if we do not find the drawing
-        String nonExistingDrawing = "This drawing does not exist. Please search for an existing drawing.";
-        if (drawingFound == null) {
+        if (potDrawing.isEmpty()) { // if not found
+            String nonExistingDrawing = "This drawing does not exist. Please search for an existing drawing.";
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, nonExistingDrawing);
+        } else { // if found
+            return potDrawing.get();
         }
-
-        return drawingFound;
     }
 
     // get all brush strokes
@@ -70,16 +64,14 @@ public class DrawingService {
 
     // get a specific brush stroke
     public BrushStroke getBrushStroke(Long brushStrokeId) {
-        List<BrushStroke> brushStrokes = getBrushStroke();
+        Optional<BrushStroke> potBrushStroke = brushStrokeRepository.findById(brushStrokeId);
 
-        BrushStroke brushStrokeFound = null;
-        for (BrushStroke i : brushStrokes) {
-            if (brushStrokeId.equals(i.getId())) {
-                brushStrokeFound = i;
-            }
+        if (potBrushStroke.isEmpty()) { // if not found
+            String nonExistingBrushStroke = "This Brushstroke does not exist. Please search for an existing drawing.";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, nonExistingBrushStroke);
+        } else { // if found
+            return potBrushStroke.get();
         }
-
-        return brushStrokeFound;
     }
 
     /** Get the latest brushstrokes of a drawing past a certain time
@@ -114,7 +106,7 @@ public class DrawingService {
             // get a sublist past the critical point
             System.out.println("Index"+ index);
             System.out.println("MaxIndex"+ maxIndex);
-         
+
 
             result = drawing.getBrushStrokes().subList(index, maxIndex);
             System.out.println("Resul Sublist" + result.toString());
@@ -133,41 +125,25 @@ public class DrawingService {
      * and sorting the list within the drawing just to make sure it did not mix up the order of the brushstrokes.
      *
      * @param drawing = the drawing we would like to add brush stroke to
-     * @param brushStroke = the brush stroke we are supposed to add
+     * @param brushStrokes = the brush strokes we are supposed to add
      */
-    public void addStroke(Drawing drawing, BrushStroke brushStroke) {
-        brushStroke = brushStrokeRepository.save(brushStroke); // save in repository
-        brushStrokeRepository.flush();
+    public void addStrokes(Drawing drawing, ArrayList<BrushStroke> brushStrokes) {
+        List<BrushStroke> allStrokes = new ArrayList<>();
+        allStrokes.addAll(drawing.getBrushStrokes());
+        allStrokes.addAll(brushStrokes);
 
-
-
-        drawing.getBrushStrokes().add(brushStroke); // add to drawing
-
+        // for safety we check if it works
         try {
-            Collections.sort(drawing.getBrushStrokes()); // sort list within drawing
-        } catch (ClassCastException e) {
+            Collections.sort(allStrokes); // sort list within drawing
+        }
+        catch (ClassCastException e) {
             System.out.println("You tried to sort a list with objects that can not be compared with one another.");
         }
-       // try {
-       // drawingRepository.save(drawing);
-       // } catch (Exception e){
-       //     e.printStackTrace();
-       //
-       // }
-       // drawingRepository.flush();// update the drawing in the repository
-       //
-       //
-        }
 
-    public void save(Drawing drawing,List<BrushStroke> brushStrokes){
-        List<BrushStroke> allStrokes = new ArrayList<>();
-        // allStrokes.addAll(drawing.getBrushStrokes());
-        // allStrokes.addAll(brushStrokes);
-        // drawing.setBrushStrokes(allStrokes);
-        drawing.setBrushStrokes(brushStrokes);
+        // save the changes for the drawing
+        drawing.setBrushStrokes(allStrokes);
         drawingRepository.saveAndFlush(drawing);
     }
-
 
     // get all rounds
     public List<Round> getRounds() {
@@ -187,20 +163,4 @@ public class DrawingService {
 
         return roundFound;
     }
-
-
-
-
-    /*
-    public Drawing getDrawing(LocalDateTime timeStamp) {
-        int index = 0;
-        while(brushStrokes.get(index).getTimeStamp().isBefore(timeStamp)) {
-            index++;
-        }
-        ArrayList<BrushStroke> temp = new ArrayList<BrushStroke>(brushStrokes.subList(index,brushStrokes.size()-1));
-        Drawing value = new Drawing();
-        value.setBrushStrokes(temp);
-        value.setDrawerId(0);
-        return value;
-    }*/
 }

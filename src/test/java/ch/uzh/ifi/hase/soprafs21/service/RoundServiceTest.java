@@ -63,7 +63,7 @@ public class RoundServiceTest {
         boolean[] drawn = {false, false, false, false};
         boolean[] guessed = {false, false, false, false};
 
-        testGame = new Game();
+        testGame = new Game(gameService);
         testGame.setGameModes(GameModes.CLASSIC);
         testGame.setId(1L);
         testGame.setTimePerRound(60);
