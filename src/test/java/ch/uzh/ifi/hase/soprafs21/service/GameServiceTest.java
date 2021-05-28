@@ -57,7 +57,7 @@ public class GameServiceTest {
         testLobby.setRounds(5);
 
 
-        testgame = new Game(gameService);
+        testgame = new Game();
         testgame.setGameName("test");
         testgame.setNumberOfRounds(testLobby.getRounds());
         testgame.setTimePerRound(testLobby.getTimer());
