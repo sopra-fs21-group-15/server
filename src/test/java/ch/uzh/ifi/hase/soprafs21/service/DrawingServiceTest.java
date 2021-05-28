@@ -2,12 +2,10 @@ package ch.uzh.ifi.hase.soprafs21.service;
 
 
 import ch.uzh.ifi.hase.soprafs21.constant.Colours;
-import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 import ch.uzh.ifi.hase.soprafs21.constant.RoundStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.*;
 import ch.uzh.ifi.hase.soprafs21.repository.BrushStrokeRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.DrawingRepository;
-import ch.uzh.ifi.hase.soprafs21.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.RoundRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,10 +15,11 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -89,7 +88,7 @@ public class DrawingServiceTest {
         testBrushstroke.setSize(3);
         testBrushstroke.setY(2);
         testBrushstroke.setX(15);
-        testBrushstroke.setTimeStamp("13:54:00");
+        testBrushstroke.setTimeStamp("2021-05-17 14:57:10:000");
 
         ArrayList<BrushStroke> brushstrokes = new ArrayList();
         brushstrokes.add(testBrushstroke);
@@ -100,13 +99,12 @@ public class DrawingServiceTest {
         testdrawing.setBrushStrokes(brushstrokes);
 
 
-
-
-
         // when -> any object is being save in the userRepository -> return the dummy testUser and the dummy testlobby
         Mockito.when(roundRepository.findAll()).thenReturn(Collections.singletonList(testround));
         Mockito.when(drawingRepository.findAll()).thenReturn(Collections.singletonList(testdrawing));
         Mockito.when(brushStrokeRepository.findAll()).thenReturn(Collections.singletonList(testBrushstroke));
+        Mockito.when(drawingRepository.findById(Mockito.anyLong())).thenReturn(java.util.Optional.ofNullable(testdrawing));
+        Mockito.when(brushStrokeRepository.findById(Mockito.anyLong())).thenReturn(java.util.Optional.ofNullable(testBrushstroke));
 
     }
 
@@ -138,9 +136,94 @@ public class DrawingServiceTest {
     }
 
     @Test
+    void getDrawing_byID_success(){
+        Drawing foundDrawing= drawingService.getDrawing(testdrawing.getId());
+
+        assertEquals(testdrawing.getBrushStrokes(), foundDrawing.getBrushStrokes());
+        assertEquals(testdrawing.getDrawerName(), foundDrawing.getDrawerName());
+        assertEquals(testdrawing.getId(), foundDrawing.getId());
+
+
+    }
+
+    @Test
     void getDrawing_byID_failed() {
-        Mockito.when(drawingRepository.findAll()).thenReturn(Collections.emptyList());
+        Mockito.when(drawingRepository.findById(Mockito.anyLong())).thenReturn(java.util.Optional.empty());
 
         assertThrows(ResponseStatusException.class, () -> drawingService.getDrawing(6L));
     }
+
+
+
+
+
+    @Test
+    void test_the_save_of_thebrushStrokes() {
+        BrushStroke Stroke2 = new BrushStroke();
+        Stroke2.setId(3L);
+        Stroke2.setColour(Colours.BLACK.toString());
+        Stroke2.setSize(4);
+        Stroke2.setY(5);
+        Stroke2.setX(22);
+        Stroke2.setTimeStamp("2021-05-17 14:57:10:100");
+
+        ArrayList<BrushStroke> newStrokes = new ArrayList<>();
+        newStrokes.add(testBrushstroke);
+        newStrokes.add(Stroke2);
+
+        Mockito.when(drawingRepository.saveAndFlush(Mockito.any())).thenReturn(testdrawing);
+        drawingService.addStrokes(testdrawing, newStrokes);
+
+        assertTrue(testdrawing.getBrushStrokes().contains(testBrushstroke));
+        assertTrue(testdrawing.getBrushStrokes().contains(Stroke2));
+    }
+
+    @Test
+    void get_thenewDrawings() {
+        List<BrushStroke> ThreeStroke = new ArrayList<>();
+        testBrushstroke.setTimeStamp("2021-05-17 14:57:10:000");
+        ThreeStroke.add(testBrushstroke);
+
+        BrushStroke Stroke2 = new BrushStroke();
+        Stroke2.setId(3L);
+        Stroke2.setColour(Colours.BLACK.toString());
+        Stroke2.setSize(4);
+        Stroke2.setY(5);
+        Stroke2.setX(22);
+        Stroke2.setTimeStamp("2021-05-17 14:57:12:100");
+
+        BrushStroke Stroke3 = new BrushStroke();
+        Stroke3.setId(3L);
+        Stroke3.setColour(Colours.BLACK.toString());
+        Stroke3.setSize(4);
+        Stroke3.setY(5);
+        Stroke3.setX(22);
+        Stroke3.setTimeStamp("2021-05-17 14:57:11:000");
+
+         ThreeStroke.add(Stroke2);
+         ThreeStroke.add(Stroke3);
+
+        testdrawing.setBrushStrokes(ThreeStroke);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS");
+        LocalDateTime dateTime = LocalDateTime.parse("2021-05-17 14:57:11:000", formatter);
+
+        List<BrushStroke> emptylist = drawingService.getDrawing(testdrawing, dateTime);
+
+
+        assertFalse(emptylist.contains(testBrushstroke));
+        assertTrue(emptylist.contains(Stroke3));
+        assertTrue(emptylist.contains(Stroke2));
+
+    }
+
+    @Test
+    void get_no_newDrawings_Emptydrawing() {
+        List<BrushStroke> empty = new ArrayList<>();
+        testdrawing.setBrushStrokes(empty);
+        List<BrushStroke> emptylist = drawingService.getDrawing(testdrawing, LocalDateTime.now());
+        assertTrue(emptylist.isEmpty());
+
+    }
 }
+
