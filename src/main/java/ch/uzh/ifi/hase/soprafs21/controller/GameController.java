@@ -86,16 +86,16 @@ public class GameController {
         // get the correct game and drawing in which we need to save all the brushstrokes
         Game game = gameService.getGame(gameId);
         Round round = roundService.getRound(game.getRoundId());
-        List<BrushStroke> brushStrokeList = new ArrayList<>();
+
         // convert each and every API brush stroke to an internal representation
         BrushStroke temp;
+        ArrayList<BrushStroke> brushStrokeList = new ArrayList<>();
         for (BrushStrokePutDTO preBrushStroke : brushStrokeListDTO) {
             temp = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(preBrushStroke);
-            //drawingService.addStroke(round.getCurrentDrawing(),temp);
             brushStrokeList.add(temp);
         }
         //System.out.println(round.getCurrentDrawing().getBrushStrokes().size());
-        drawingService.save(round.getCurrentDrawing(),brushStrokeList);
+        drawingService.addStrokes(round.getCurrentDrawing(),brushStrokeList);
 
     }
 
