@@ -112,12 +112,10 @@ public class DrawingService {
             }
 
             // get a sublist past the critical point
-            System.out.println("Index"+ index);
-            System.out.println("MaxIndex"+ maxIndex);
          
 
             result = drawing.getBrushStrokes().subList(index, maxIndex);
-            System.out.println("Resul Sublist" + result.toString());
+
             // sort the list and then return it
             try {
                 Collections.sort(result);
