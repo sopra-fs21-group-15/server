@@ -11,6 +11,7 @@ import ch.uzh.ifi.hase.soprafs21.rest.mapper.LobbyDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.service.ChatService;
 import ch.uzh.ifi.hase.soprafs21.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
+import ch.uzh.ifi.hase.soprafs21.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,11 +21,13 @@ import java.util.List;
 @RestController
 public class LobbyController {
 
+    private final UserService userService;
     private final LobbyService lobbyService;
     private final GameService gameService;
     private final ChatService chatService;
 
-    LobbyController(LobbyService lobbyService, GameService gameService, ChatService chatService) {
+    LobbyController(UserService userService, LobbyService lobbyService, GameService gameService, ChatService chatService) {
+        this.userService = userService;
         this.lobbyService = lobbyService;
         this.gameService = gameService;
         this.chatService = chatService;
@@ -56,7 +59,10 @@ public class LobbyController {
 
         // create lobby
         Lobby createdLobby = lobbyService.createLobby(lobbyInput, userId);
+
         chatService.createChat(createdLobby.getId());
+        Message botMessage = chatService.enteringLobbyMessage(createdLobby.getId(),userService.getUserById(userId).getUsername());
+
         // convert internal representation of lobby back to API
         return LobbyDTOMapper.INSTANCE.convertEntityToLobbyGetDTO(createdLobby);
     }
@@ -95,6 +101,7 @@ public class LobbyController {
         Lobby lobbyInput = LobbyDTOMapper.INSTANCE.convertLobbyPostDTOtoEntity(lobbyEnterDTO);
         lobbyService.addLobbyMembers(lobbyId, lobbyInput);
         Lobby lobby = lobbyService.getLobby(lobbyId);
+        Message botMessage = chatService.enteringLobbyMessage(lobbyId,lobbyInput.getLobbyname());
         LobbyGetDTO lobbyGetDTO = LobbyDTOMapper.INSTANCE.convertEntityToLobbyGetDTO(lobby);
         return lobbyGetDTO;
     }
@@ -107,6 +114,7 @@ public class LobbyController {
     public void removeMember(@PathVariable Long lobbyId, @RequestBody UserPostDTO userPostDTO) {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         lobbyService.removeLobbyMembers(lobbyId, userInput.getUsername());
+        Message botMessage = chatService.leavingLobbyMessage(lobbyId,userInput.getUsername());
     }
 
     // Back to the lobby
@@ -119,6 +127,7 @@ public class LobbyController {
         lobbyService.returnLobbyMembers(lobbyId, userInput.getUsername());
 
         Lobby lobby = lobbyService.getLobby(lobbyId);
+        Message botMessage = chatService.enteringLobbyMessage(lobbyId,userInput.getUsername());
         LobbyGetDTO lobbyGetDTO = LobbyDTOMapper.INSTANCE.convertEntityToLobbyGetDTO(lobby);
         return lobbyGetDTO;
     }
@@ -146,4 +155,13 @@ public class LobbyController {
         chatService.addNewMessage(lobbyId, message);
     }
 
+    @GetMapping("/lobbies/{lobbyId}/chats")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ChatGetDTO getChat(@PathVariable Long lobbyId) {
+        String all = "2000-01-01 00:00:00:001";
+        Chat newMessages = chatService.getNewMessages(lobbyId, all);
+        ChatGetDTO newChat = ChatDTOMapper.INSTANCE.convertEntityToChatGetDTO(newMessages);
+        return newChat;
+    }
 }

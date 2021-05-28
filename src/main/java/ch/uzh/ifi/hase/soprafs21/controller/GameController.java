@@ -269,8 +269,19 @@ public class GameController {
         }
         if (guess == false) {
             chatService.addNewMessage(gameId, message); // add chat message
+            Message botMessage = chatService.guessingWordMessage(gameId,message.getWriterName());
         }
         return guess;
+    }
+
+    @GetMapping("/games/{gameId}/chats")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ChatGetDTO getChat(@PathVariable Long gameId) {
+        String all = "2000-01-01 00:00:00:001";
+        Chat newMessages = chatService.getNewMessages(gameId, all);
+        ChatGetDTO newChat = ChatDTOMapper.INSTANCE.convertEntityToChatGetDTO(newMessages);
+        return newChat;
     }
 
 /*
@@ -317,7 +328,7 @@ public class GameController {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         gameService.leaveGame(gameId, userInput.getUsername());
         lobbyService.removeLobbyMembers(gameId, userInput.getUsername());
-
+        Message botMessage = chatService.leavingGameMessage(gameId,userInput.getUsername());
     }
 
 
