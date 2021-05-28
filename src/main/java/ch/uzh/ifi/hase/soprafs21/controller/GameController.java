@@ -37,7 +37,6 @@ public class GameController {
         this.lobbyService = lobbyService;
         this.chatService = chatService;
         this.timerService = timerService;
-
     }
 
     // API call to create a game from the lobby (requires to be in a lobby first, lobby owner only)
@@ -87,16 +86,16 @@ public class GameController {
         // get the correct game and drawing in which we need to save all the brushstrokes
         Game game = gameService.getGame(gameId);
         Round round = roundService.getRound(game.getRoundId());
-        List<BrushStroke> brushStrokeList = new ArrayList<>();
+
         // convert each and every API brush stroke to an internal representation
         BrushStroke temp;
+        ArrayList<BrushStroke> brushStrokeList = new ArrayList<>();
         for (BrushStrokePutDTO preBrushStroke : brushStrokeListDTO) {
             temp = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(preBrushStroke);
-            //drawingService.addStroke(round.getCurrentDrawing(),temp);
             brushStrokeList.add(temp);
         }
         //System.out.println(round.getCurrentDrawing().getBrushStrokes().size());
-        drawingService.save(round.getCurrentDrawing(),brushStrokeList);
+        drawingService.addStrokes(round.getCurrentDrawing(),brushStrokeList);
 
     }
 
@@ -167,6 +166,20 @@ public class GameController {
     }
 */
 
+    
+    @PutMapping("/games/{gameId}/guess")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public boolean makeGuess(@RequestBody MessagePostDTO messagePostDTO, @PathVariable Long gameId) {
+        Message message = ChatDTOMapper.INSTANCE.convertMessagePostDTOtoEntity(messagePostDTO); // convert to usable object
+        Game game = gameService.getGame(gameId); // find game
+        Round round = roundService.getRound(game.getRoundId()); // get current round
+        boolean value = roundService.makeGuess(message,round); // check if the guess is valid and correct
+        if (value) {
+            gameService.addPoints(game,message);
+        }
+        return value;
+    }
 
     /*
     /** (Issue #35) API call to get the current options the drawer can chose from right now has right now. Checks if

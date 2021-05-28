@@ -137,37 +137,7 @@ public class DrawingServiceTest {
         assertNull(drawingService.getRound(6L));
 
     }
-    @Test
-    void getBrushstroke_byID_success(){
-        BrushStroke foundBrushstroke = drawingService.getBrushStroke(testBrushstroke.getId());
 
-        assertEquals(testBrushstroke.getTimeStamp(), foundBrushstroke.getTimeStamp());
-        assertEquals(testBrushstroke.getColour(), foundBrushstroke.getColour());
-        assertEquals(testBrushstroke.getY(), foundBrushstroke.getY());
-        assertEquals(testBrushstroke.getSize(), foundBrushstroke.getSize());
-        assertEquals(testBrushstroke.getX(),foundBrushstroke.getX());
-        assertEquals(testBrushstroke.getId(),foundBrushstroke.getId());
-
-
-    }
-    @Test
-    void getBrushstroke_byID_failed() {
-        Mockito.when(brushStrokeRepository.findAll()).thenReturn(Collections.emptyList());
-
-        assertNull(drawingService.getBrushStroke(6L));
-
-    }
-
-    @Test
-    void getDrawing_byID_success(){
-        Drawing foundDrawing = drawingService.getDrawing(testdrawing.getId());
-
-        assertEquals(testdrawing.getId(), foundDrawing.getId());
-        assertEquals(testdrawing.getDrawerName(), testdrawing.getDrawerName());
-        assertEquals(testdrawing.getBrushStrokes(), foundDrawing.getBrushStrokes());
-
-
-    }
     @Test
     void getDrawing_byID_failed() {
         Mockito.when(drawingRepository.findAll()).thenReturn(Collections.emptyList());

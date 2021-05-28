@@ -6,6 +6,8 @@ import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.*;
 import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import ch.uzh.ifi.hase.soprafs21.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs21.rest.mapper.BrushStrokeDTOMapper;
+import org.mapstruct.factory.Mappers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import ch.uzh.ifi.hase.soprafs21.repository.*;
@@ -137,7 +140,6 @@ public class GameService implements Runnable {
             gamesToBeRun.add(newGame);
             Thread t = new Thread(this);
             t.start();
-            //gamesToBeRun.remove(newGame);
         }
 
         log.debug("Created and started new game with given information: {}", newGame);
@@ -235,43 +237,36 @@ public class GameService implements Runnable {
         userRepository.flush();
     }
 
-    // (Issue #52 Part I) function to handle when a user has made a guess (should also #56)
-    /*public boolean makeGuess(Message message, Game game) {
-        if (round.getStatus().equals(SELECTING)) { // check if the phase of the round is correct
-            String notCorrectPhase = "This round is currently in selecting. Wait for the phase to end before getting information about the word.";
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notCorrectPhase));
-        } else { // get the current length of the word
-            return round.getWord().length();
-        }
 
-        boolean
-
-        if(isNotPainter && isRightWord) {
-            return true;
-        } else {
-            return false;
-        }
-    }*/
-
-    /** core method, this method runs the game in the background
-     *
+    /**
+     * Back-end specific methods needed to run the game in the background
      */
     @Override
     public void run() {
-        Game game = gamesToBeRun.get(0);
-        int i = 0, n = game.getNumberOfRounds(); // index and total number of rounds
-        int h = 0, m = game.getPlayers().size(); // index and total number of players
+        Game game;
+
+        /**
+         * pick the first game out of the list, even if it is not the one we originated from as long as everybody
+         * takes one, everything should be run
+         *
+         */
+        synchronized (gamesToBeRun) {
+            game = gamesToBeRun.get(0);
+            gamesToBeRun.remove(0);
+        }
+        int roundIndex = 0, numberOfRounds = game.getNumberOfRounds(); // index and total number of rounds
+        int playerIndex = 0, numberOfPlayers = game.getPlayers().size(); // index and total number of players
         int waitingTime;
         Round round;
 
-        while(i < n) { // for each round
-            h = 0;
+        while(roundIndex < numberOfRounds) { // for each round
+            playerIndex = 0;
             round = roundService.createRound(game);
-            game.setRoundTracker(i);
-            while(h < m) { // for each player
+            game.setRoundTracker(roundIndex);
+            while(playerIndex < numberOfPlayers) { // for each player
                 // pick a new drawer and select
                 roundService.setNewPainter(round);
-                roundService.setRoundIndex(round,h);
+                roundService.setRoundIndex(round,playerIndex);
                 roundService.resetChoice(round);
                 roundService.changePhase(round);
                 waitingTime = startPhase(game);
@@ -279,7 +274,7 @@ public class GameService implements Runnable {
                 try {
                     TimeUnit.MILLISECONDS.sleep(waitingTime);
                 } catch (InterruptedException e) {
-                        // needs to be implemented -> player has chosen a word before the timer ran out
+                    // needs to be implemented -> player has chosen a word before the timer ran out
                 }
                 // select word drawer pick or pick one yourself
                 endPhase(game);
@@ -305,12 +300,33 @@ public class GameService implements Runnable {
                 scoreBoardService.addPoints(game.getScoreBoard(),round.getDrawerName(),painterPoints);
                 roundService.resetHasGuessed(round);
                 roundService.resetGotPoints(round);
-                h++;
+                playerIndex++;
             }
-            i++;
+            roundIndex++;
         }
         round = roundService.getRound(game.getRoundId());
         round.setStatus(RoundStatus.DONE);
         roundRepository.saveAndFlush(round);
     }
+
+
+
+    // (Issue #52 Part I) function to handle when a user has made a guess (should also #56)
+    /*public boolean makeGuess(Message message, Game game) {
+        if (round.getStatus().equals(SELECTING)) { // check if the phase of the round is correct
+            String notCorrectPhase = "This round is currently in selecting. Wait for the phase to end before getting information about the word.";
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(notCorrectPhase));
+        } else { // get the current length of the word
+            return round.getWord().length();
+        }
+
+        boolean
+
+        if(isNotPainter && isRightWord) {
+            return true;
+        } else {
+            return false;
+        }
+    }*/
+
 }
