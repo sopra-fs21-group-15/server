@@ -142,6 +142,7 @@ public class LobbyControllerTest {
     }
     @Test
     public void updateLobby_validInput() throws Exception {
+
         LobbyPostDTO lobbyPostDTO = new LobbyPostDTO();
         lobbyPostDTO.setSize("6");
         lobbyPostDTO.setRounds("10");
@@ -154,7 +155,7 @@ public class LobbyControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(lobbyPostDTO));
 
-        mockMvc.perform(putRequest).andExpect(status().isNoContent()); }
+        mockMvc.perform(putRequest).andExpect(status().isOk()); }
 
         @Test
         public void gettheLobby_data() throws Exception{
