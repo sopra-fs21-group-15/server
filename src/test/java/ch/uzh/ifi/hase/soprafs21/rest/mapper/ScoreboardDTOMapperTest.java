@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class ScoreboardDTOMapperTest {
     @Test
-    public void testScoreboard_fromScoreboard_toScoreboardGetDTO() {
+     void testScoreboard_fromScoreboard_toScoreboardGetDTO() {
         // create Scoreboard
 
         ScoreBoard scoreBoard = new ScoreBoard();

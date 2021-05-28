@@ -16,7 +16,7 @@ public class DrawingDTOMapperTest {
 
 
     @Test
-    public void testGetDrawing_fromBrushstroke_toDrawingGetDTO_success() {
+     void testGetDrawing_fromBrushstroke_toDrawingGetDTO_success() {
         // create brushstroke
         BrushStroke brushStroke = new BrushStroke();
         brushStroke.setX(5);

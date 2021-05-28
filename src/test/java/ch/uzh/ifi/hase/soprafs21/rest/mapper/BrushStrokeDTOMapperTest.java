@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class BrushStrokeDTOMapperTest {
     @Test
-    public void testBrushStroke__fromBrushStrokePutDTO_toBrushstroke_success() {
+     void testBrushStroke__fromBrushStrokePutDTO_toBrushstroke_success() {
     //create BrushstrokePutDTO
         BrushStrokePutDTO brushStrokePutDTO = new BrushStrokePutDTO();
         brushStrokePutDTO.setColour("Black");

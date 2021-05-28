@@ -55,7 +55,7 @@ public class TimerServiceTest {
     }
 
     @Test
-    public void getTimer_By_ID_Success(){
+     void getTimer_By_ID_Success(){
         Timer foundTimer = timerService.getTimer(testTimer.getId());
 
         assertEquals(foundTimer.getId(), testTimer.getId());
@@ -65,20 +65,20 @@ public class TimerServiceTest {
 
     }
     @Test
-    public void getTimer_By_ID_failed(){
+     void getTimer_By_ID_failed(){
         Mockito.when(timerRepository.findById(Mockito.any())).thenReturn(Optional.empty());
 
         assertThrows(ResponseStatusException.class, () -> timerService.getTimer(6L));
     }
     @Test
-    public void Changetonotdrawing(){
+     void Changetonotdrawing(){
         timerService.changePhase(testTimer);
 
         assertFalse(testTimer.getIsDrawing());
 
     }
     @Test
-    public void changeto_DrawingPhase(){
+     void changeto_DrawingPhase(){
         testTimer.setIsDrawing(false);
 
         timerService.changePhase(testTimer);
@@ -87,7 +87,7 @@ public class TimerServiceTest {
     }
 
     @Test
-    public void create_new_Timer(){
+     void create_new_Timer(){
         testTimer.setDrawingTimeSpan(50);
         Mockito.when(timerRepository.save(Mockito.any())).thenReturn(testTimer);
 
@@ -99,7 +99,7 @@ public class TimerServiceTest {
     }
 
     @Test
-    public void testbegin(){
+     void testbegin(){
         testTimer.setStart(null);
         timerService.begin(testTimer);
 
@@ -108,14 +108,14 @@ public class TimerServiceTest {
     }
 
     @Test
-    public void testbegin_secondcondition(){
+     void testbegin_secondcondition(){
         timerService.begin(testTimer);
         timerService.begin(testTimer);
         assertNotNull(testTimer.getStart());
     }
 
     @Test
-    public void testreset(){
+     void testreset(){
         timerService.begin(testTimer);
         assertNotNull(testTimer.getStart());
         timerService.reset(testTimer);
@@ -124,28 +124,28 @@ public class TimerServiceTest {
 
     }
     @Test
-    public void testreset_secondcondition()    {
+     void testreset_secondcondition()    {
         testTimer.setStart(null);
         timerService.reset(testTimer);
         assertNull(testTimer.getStart());
     }
 
     @Test
-    public void testremainigtime_ofafinished_game(){
+     void testremainigtime_ofafinished_game(){
         int time = timerService.remainingTime(testTimer);
 
         assertEquals(time, 0);
     }
 
     @Test
-    public void testremainig_DrawingTime(){
+     void testremainig_DrawingTime(){
         timerService.begin(testTimer);
         int time=timerService.remainingTime(testTimer);
         assertTrue(time>0);
         assertTrue(time/1000<=testTimer.getDrawingTimeSpan());
     }
     @Test
-    public void testremainig_Selectingtime(){
+     void testremainig_Selectingtime(){
         testTimer.setIsDrawing(false);
         timerService.begin(testTimer);
         int time=timerService.remainingTime(testTimer);
@@ -159,7 +159,7 @@ public class TimerServiceTest {
 
 
     @Test
-    public void test_getEnd(){
+     void test_getEnd(){
         Timer testtimer2 = new Timer(30);
         testtimer2.setSelectTimeSpan(25);
         testtimer2.setIsDrawing(true);
