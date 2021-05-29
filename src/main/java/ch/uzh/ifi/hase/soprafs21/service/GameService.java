@@ -48,7 +48,7 @@ public class GameService implements Runnable {
     private final TimerService timerService;
     private final ScoreBoardService scoreBoardService;
 
-    private List<Game> gamesToBeRun = new ArrayList<Game>();
+    public List<Game> gamesToBeRun = new ArrayList<Game>();
 
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository, RoundRepository roundRepository, RoundService roundService, LobbyService lobbyService, TimerService timerService, ScoreBoardService scoreBoardService) {

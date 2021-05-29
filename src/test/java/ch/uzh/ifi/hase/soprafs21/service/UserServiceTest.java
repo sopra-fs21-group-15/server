@@ -161,6 +161,7 @@ public class UserServiceTest {
         User userchanges = new User();
         userchanges.setUsername("Updated");
         userchanges.setBirthDate("01.01.2000");
+        userchanges.setUserTag("newUserTag");
 
         assertNotEquals(testUser.getUsername(), userchanges.getUsername());
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
@@ -168,6 +169,7 @@ public class UserServiceTest {
 
         assertEquals(testUser.getUsername(), userchanges.getUsername());
         assertEquals(testUser.getBirthDate(), userchanges.getBirthDate());
+        assertEquals(testUser.getUserTag(), userchanges.getUserTag());
 
 
     }
@@ -177,6 +179,7 @@ public class UserServiceTest {
         User userchanges = new User();
         userchanges.setUsername(null);
         userchanges.setBirthDate(null);
+        userchanges.setUserTag(null);
 
         assertNotEquals(testUser.getUsername(), userchanges.getUsername());
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
@@ -184,6 +187,7 @@ public class UserServiceTest {
 
         assertEquals(testUser.getUsername(), testUser.getUsername());
         assertEquals(testUser.getBirthDate(), testUser.getBirthDate());
+        assertEquals(testUser.getUserTag(), testUser.getUserTag());
 
 
     }
