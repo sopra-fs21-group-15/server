@@ -172,7 +172,7 @@ public class LobbyService {
         String lobby_is_full = "You cannot enter. The lobby is already full!";
 
         // check if the lobby is not full
-        if(lobbytoupdate.getStatus() == LobbyStatus.OPEN) {
+        if(lobbytoupdate.getStatus() == LobbyStatus.FULL) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(lobby_is_full));
         }
         String lobby_is_playing = "You cannot enter. The lobby is already playing!";
