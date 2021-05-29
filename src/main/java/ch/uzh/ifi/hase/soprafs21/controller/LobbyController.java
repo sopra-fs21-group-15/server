@@ -61,7 +61,7 @@ public class LobbyController {
         Lobby createdLobby = lobbyService.createLobby(lobbyInput, userId);
 
         chatService.createChat(createdLobby.getId());
-        Message botMessage = chatService.enteringLobbyMessage(createdLobby.getId(),userService.getUserById(userId).getUsername());
+        chatService.enteringLobbyMessage(createdLobby.getId(),userService.getUserById(userId).getUsername());
 
         // convert internal representation of lobby back to API
         return LobbyDTOMapper.INSTANCE.convertEntityToLobbyGetDTO(createdLobby);
@@ -101,7 +101,7 @@ public class LobbyController {
         Lobby lobbyInput = LobbyDTOMapper.INSTANCE.convertLobbyPostDTOtoEntity(lobbyEnterDTO);
         lobbyService.addLobbyMembers(lobbyId, lobbyInput);
         Lobby lobby = lobbyService.getLobby(lobbyId);
-        Message botMessage = chatService.enteringLobbyMessage(lobbyId,lobbyInput.getLobbyname());
+        chatService.enteringLobbyMessage(lobbyId,lobbyInput.getLobbyname());
         LobbyGetDTO lobbyGetDTO = LobbyDTOMapper.INSTANCE.convertEntityToLobbyGetDTO(lobby);
         return lobbyGetDTO;
     }
@@ -114,7 +114,7 @@ public class LobbyController {
     public void removeMember(@PathVariable Long lobbyId, @RequestBody UserPostDTO userPostDTO) {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         lobbyService.removeLobbyMembers(lobbyId, userInput.getUsername());
-        Message botMessage = chatService.leavingLobbyMessage(lobbyId,userInput.getUsername());
+        chatService.leavingLobbyMessage(lobbyId,userInput.getUsername());
     }
 
     // Back to the lobby
@@ -127,7 +127,7 @@ public class LobbyController {
         lobbyService.returnLobbyMembers(lobbyId, userInput.getUsername());
 
         Lobby lobby = lobbyService.getLobby(lobbyId);
-        Message botMessage = chatService.enteringLobbyMessage(lobbyId,userInput.getUsername());
+        chatService.enteringLobbyMessage(lobbyId,userInput.getUsername());
         LobbyGetDTO lobbyGetDTO = LobbyDTOMapper.INSTANCE.convertEntityToLobbyGetDTO(lobby);
         return lobbyGetDTO;
     }

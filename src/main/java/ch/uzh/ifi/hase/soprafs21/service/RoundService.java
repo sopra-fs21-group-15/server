@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
+import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 import ch.uzh.ifi.hase.soprafs21.entity.*;
 import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import ch.uzh.ifi.hase.soprafs21.repository.DrawingRepository;
@@ -49,6 +50,9 @@ public class RoundService {
         return value;
     }
 
+    public int getRandomNumber(int min, int max) {
+        return (int) ((Math.random() * (max - min)) + min);
+    }
 
     /**
      * Here starts the important part. This are the methods that implement the functionalities needed in the back-end
@@ -74,6 +78,33 @@ public class RoundService {
 
         // get all the players (might get updated)
         round.setPlayers(game.getPlayers());
+
+/*        ArrayList<String> words = new ArrayList<>();
+        int choices = new Standard().getNumberOfChoices();
+        //decide in dependence of the mode which wordlist is accessed
+        if (game.getGameModes() == GameModes.CLASSIC || game.getGameModes() == GameModes.SPEED) {
+            // generate words for this round
+
+            Words wordGenerator = new Words();
+            for (int i = 0; i < n * choices; i++) {
+                words.add(wordGenerator.getRandomWord());
+            }
+            round.setWords(words);
+        }*/
+ /*       else if (game.getGameModes() == GameModes.POKEMON) {
+            // generate three random nb between 1 & 493
+            for (int i = 0; i < n * choices; i++) {
+                int pokeIndex = getRandomNumber(1, 493);
+                try {
+                String url = 'https://pokeapi.co/api/v2/pokemon/' + pokeIndex ;
+                const response = await api.get(url);
+                words.add(response.name)
+                }
+                catch(error) {
+                    alert(`Something went wrong while fetching the lobby: \n${handleError(error)}`);
+                }
+            }
+        }*/
 
         // generate words for this round
         ArrayList<String> words = new ArrayList<>();

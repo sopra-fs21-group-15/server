@@ -269,7 +269,7 @@ public class GameController {
         }
         if (guess == false) {
             chatService.addNewMessage(gameId, message); // add chat message
-            Message botMessage = chatService.guessingWordMessage(gameId,message.getWriterName());
+            chatService.guessingWordMessage(gameId,message.getWriterName());
         }
         return guess;
     }
@@ -328,7 +328,7 @@ public class GameController {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         gameService.leaveGame(gameId, userInput.getUsername());
         lobbyService.removeLobbyMembers(gameId, userInput.getUsername());
-        Message botMessage = chatService.leavingGameMessage(gameId,userInput.getUsername());
+        chatService.leavingGameMessage(gameId,userInput.getUsername());
     }
 
 
