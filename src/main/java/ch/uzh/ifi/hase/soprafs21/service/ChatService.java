@@ -125,43 +125,39 @@ public class ChatService {
     }
 
     // generating a message when entering the lobby
-    public Message enteringLobbyMessage(Long chatId, String userName) {
+    public void enteringLobbyMessage(Long chatId, String userName) {
         Message botMessage = generateBotMessage();
         String message = userName + " has entered the lobby.";
         botMessage.setMessage(message);
         getChat(chatId).setMessage(botMessage);
         messageRepository.saveAndFlush(botMessage);
-        return botMessage;
     }
 
     // generating a message when leaving the lobby
-    public Message leavingLobbyMessage(Long chatId, String userName) {
+    public void leavingLobbyMessage(Long chatId, String userName) {
         Message botMessage = generateBotMessage();
         String message = userName + " has left the lobby.";
         botMessage.setMessage(message);
         getChat(chatId).setMessage(botMessage);
         messageRepository.saveAndFlush(botMessage);
-        return botMessage;
     }
 
     // generating a message when leaving the game
-    public Message leavingGameMessage(Long chatId, String userName) {
+    public void leavingGameMessage(Long chatId, String userName) {
         Message botMessage = generateBotMessage();
         String message = userName + " has left the game.";
         botMessage.setMessage(message);
         getChat(chatId).setMessage(botMessage);
         messageRepository.saveAndFlush(botMessage);
-        return botMessage;
     }
 
     // generating a message when guessing the word correct
-    public Message guessingWordMessage(Long chatId, String userName) {
+    public void guessingWordMessage(Long chatId, String userName) {
         Message botMessage = generateBotMessage();
         String message = userName + " has guessed the word.";
         botMessage.setMessage(message);
         getChat(chatId).setMessage(botMessage);
         messageRepository.saveAndFlush(botMessage);
-        return botMessage;
     }
 
 }

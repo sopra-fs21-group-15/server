@@ -13,6 +13,7 @@ import ch.uzh.ifi.hase.soprafs21.rest.mapper.LobbyDTOMapper;
 import ch.uzh.ifi.hase.soprafs21.service.ChatService;
 import ch.uzh.ifi.hase.soprafs21.service.GameService;
 import ch.uzh.ifi.hase.soprafs21.service.LobbyService;
+import ch.uzh.ifi.hase.soprafs21.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -47,6 +48,9 @@ public class LobbyControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private UserService userService;
 
     @MockBean
     private GameService gameService;
@@ -124,6 +128,8 @@ public class LobbyControllerTest {
 
         given(lobbyService.createLobby(Mockito.any(),Mockito.any())).willReturn(lobby);
 
+        given(userService.getUserById(Mockito.any())).willReturn(user);
+        doNothing().when(chatService).enteringLobbyMessage(2L, user.getUsername());
 
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder postRequest = post("/lobbies/1")
@@ -226,6 +232,7 @@ public class LobbyControllerTest {
         lobby.setMembers("Test");
 
         doNothing().when(lobbyService).addLobbyMembers(2L, lobbyInput);
+        doNothing().when(chatService).enteringLobbyMessage(2L, lobbyInput.getLobbyname());
         MockHttpServletRequestBuilder putRequest = put("/lobbies/2/joiners")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(lobby));
@@ -253,7 +260,7 @@ public class LobbyControllerTest {
         quit.setPassword("abc");
 
         User quiting = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(quit);
-
+        doNothing().when(chatService).leavingLobbyMessage(2L, quiting.getUsername());
         MockHttpServletRequestBuilder putRequest = put("/lobbies/2/leavers")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(lobby));
