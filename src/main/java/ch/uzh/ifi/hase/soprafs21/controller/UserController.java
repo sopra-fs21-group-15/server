@@ -133,12 +133,11 @@ public class UserController {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         User friend = userService.getUserByUserName(userInput);
         User user = userService.getUserById(userId);
-        if (friend.getFriendRequestList().contains(user.getUsername())){
+        if (user.getFriendRequestList().contains(friend.getUsername())){
             userService.removeUserFromFriendRequestList(friend.getId(), user);
             userService.removeUserFromFriendRequestList(userId, userInput);
             userService.addUserToFriendsList(userId, userInput);
         }
-
         userService.addUserToFriendRequestList(userId, userInput);
         UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
     }
