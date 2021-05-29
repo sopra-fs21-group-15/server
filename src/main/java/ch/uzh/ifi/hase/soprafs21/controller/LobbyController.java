@@ -155,13 +155,4 @@ public class LobbyController {
         chatService.addNewMessage(lobbyId, message);
     }
 
-    @GetMapping("/lobbies/{lobbyId}/chats")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public ChatGetDTO getChat(@PathVariable Long lobbyId) {
-        String all = "2000-01-01 00:00:00:001";
-        Chat newMessages = chatService.getNewMessages(lobbyId, all);
-        ChatGetDTO newChat = ChatDTOMapper.INSTANCE.convertEntityToChatGetDTO(newMessages);
-        return newChat;
-    }
 }

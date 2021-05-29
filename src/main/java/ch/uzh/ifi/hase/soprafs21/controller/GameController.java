@@ -165,7 +165,7 @@ public class GameController {
         return correct;
     }
 */
-
+/*
     
     @PutMapping("/games/{gameId}/guess")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -180,7 +180,7 @@ public class GameController {
         }
         return value;
     }
-
+*/
     /*
     /** (Issue #35) API call to get the current options the drawer can chose from right now has right now. Checks if
      * the game is currently in the selection phase and checks if the person sending the request is the drawer at this
@@ -265,24 +265,14 @@ public class GameController {
             if (guess) {
                 gameService.addPoints(game,message);
             }
-
         }
-        if (guess == false) {
+        if (!guess) {
             chatService.addNewMessage(gameId, message); // add chat message
             chatService.guessingWordMessage(gameId,message.getWriterName());
         }
         return guess;
     }
 
-    @GetMapping("/games/{gameId}/chats")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public ChatGetDTO getChat(@PathVariable Long gameId) {
-        String all = "2000-01-01 00:00:00:001";
-        Chat newMessages = chatService.getNewMessages(gameId, all);
-        ChatGetDTO newChat = ChatDTOMapper.INSTANCE.convertEntityToChatGetDTO(newMessages);
-        return newChat;
-    }
 
 /*
     @PutMapping("/games/{gameId}/guess")
