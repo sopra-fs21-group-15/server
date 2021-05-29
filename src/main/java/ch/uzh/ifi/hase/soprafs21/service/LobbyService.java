@@ -172,8 +172,13 @@ public class LobbyService {
         String lobby_is_full = "You cannot enter. The lobby is already full!";
 
         // check if the lobby is not full
-        if(lobbytoupdate.getStatus() == LobbyStatus.FULL) {
+        if(lobbytoupdate.getStatus() == LobbyStatus.OPEN) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(lobby_is_full));
+        }
+        String lobby_is_playing = "You cannot enter. The lobby is already playing!";
+        // check if the lobby is playing
+        if(lobbytoupdate.getStatus() == LobbyStatus.PLAYING) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(lobby_is_playing));
         }
 
         // check if the password is correct
@@ -204,7 +209,7 @@ public class LobbyService {
 
     }
 
-    public void removeLobbyMembers(Long lobbyId, String userName) {
+    public void removeLobbyMembers(Long lobbyId, String userName, Boolean leavingGame) {
 
         Lobby lobbytoupdate = getLobby(lobbyId);
         User user = userRepository.findByUsername(userName);
@@ -216,9 +221,10 @@ public class LobbyService {
         }
         lobbytoupdate.deleteMembers(userName);
         user.setStatus(UserStatus.ONLINE);
-        // set the lobby to OPEN
-        lobbytoupdate.setStatus(LobbyStatus.OPEN);
-
+        // set the lobby to OPEN if the player is not leaving from a game
+        if (!leavingGame) {
+            lobbytoupdate.setStatus(LobbyStatus.OPEN);
+        }
 
         // delete the lobby if there are no more members in the lobby
         if (lobbytoupdate.getMembers().size() == 0) {

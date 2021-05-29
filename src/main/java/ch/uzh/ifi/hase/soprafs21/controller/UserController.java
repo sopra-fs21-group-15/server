@@ -140,10 +140,14 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public UserGetDTO addFriend(@PathVariable Long userId, @RequestBody UserPostDTO userPostDTO) {
-        User friend = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-        userService.removeUserFromFriendRequestList(userId, friend);
-        userService.addUserToFriendsList(userId, friend);
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        User friend = userService.getUserByUserName(userInput);
+        userService.removeUserFromFriendRequestList(userId, userInput);
+        userService.addUserToFriendsList(userId, userInput);
         User user = userService.getUserById(userId);
+        if (friend.getFriendRequestList().contains(user.getUsername())){
+            userService.removeUserFromFriendRequestList(friend.getId(), user);
+        }
         UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
         return userGetDTO;
     }

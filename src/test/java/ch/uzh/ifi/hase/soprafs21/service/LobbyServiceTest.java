@@ -165,7 +165,7 @@ public class LobbyServiceTest {
         createdLobby.setMembers("delete");
 
 
-        lobbyService.removeLobbyMembers(testLobby.getId(), "delete");
+        lobbyService.removeLobbyMembers(testLobby.getId(), "delete", false);
         Mockito.verify(userRepository, Mockito.times(2)).save(Mockito.any());
 
         assertEquals(LobbyStatus.OPEN, createdLobby.getStatus());
@@ -180,7 +180,7 @@ public class LobbyServiceTest {
         Lobby createdLobby = lobbyService.createLobby(testLobby,testUser.getId());
         createdLobby.setMembers("testUser2");
 
-        assertThrows(ResponseStatusException.class, ()->lobbyService.removeLobbyMembers(testLobby.getId(), "user"));
+        assertThrows(ResponseStatusException.class, ()->lobbyService.removeLobbyMembers(testLobby.getId(), "user", false));
 
     }
 
@@ -259,7 +259,7 @@ public class LobbyServiceTest {
     }
 
     @Test
-      void publicLobby_lasstemptyspace_success(){
+      void publicLobby_lastEmptySpace_success(){
         testLobby.setPassword(null);
         testLobby.setMembers("1");
         testLobby.setMembers("2");
@@ -298,7 +298,7 @@ public class LobbyServiceTest {
         testLobby.setPassword(null);
         testLobby.setMembers(testUser.getUsername());
 
-        lobbyService.removeLobbyMembers(testLobby.getId(), testUser.getUsername());
+        lobbyService.removeLobbyMembers(testLobby.getId(), testUser.getUsername(), true);
 
 
         Mockito.verify(lobbyRepository, Mockito.times(1)).delete(Mockito.any());

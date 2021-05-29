@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -58,6 +59,18 @@ public class RoundService {
      * Here starts the important part. This are the methods that implement the functionalities needed in the back-end
      * to make the game work.
      */
+/*
+    private String getPokemons(int dexIndex)
+    {
+        final String uri = "https://pokeapi.co/api/v2/pokemon/" + dexIndex;
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        Object result = restTemplate.getForObject(uri, String.class);
+        System.out.println(result);
+    }
+*/
+
     // a method to create a new round
     public Round createRound(Game game) {
 

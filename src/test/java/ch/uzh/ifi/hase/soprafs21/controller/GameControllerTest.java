@@ -289,7 +289,7 @@ public class GameControllerTest {
 
         given(gameService.getGame(Mockito.any())).willReturn(game);
         given(roundService.getRound(Mockito.any())).willReturn(round);
-        given(roundService.makeGuess(Mockito.any(), Mockito.any())).willReturn(true);
+        given(roundService.makeGuess(Mockito.any(), Mockito.any())).willReturn(false);
 
         Message message = chatService.createMessage(inputMessage);
         chatService.addNewMessage(game.getId(), message );

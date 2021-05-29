@@ -264,11 +264,12 @@ public class GameController {
             guess = roundService.makeGuess(message,round); // check if the guess is valid and correct
             if (guess) {
                 gameService.addPoints(game,message);
+                chatService.guessingWordMessage(gameId,message.getWriterName());
             }
         }
         if (!guess) {
             chatService.addNewMessage(gameId, message); // add chat message
-            chatService.guessingWordMessage(gameId,message.getWriterName());
+
         }
         return guess;
     }
@@ -317,7 +318,7 @@ public class GameController {
     public void removeMember(@PathVariable Long gameId, @RequestBody UserPostDTO userPostDTO) {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         gameService.leaveGame(gameId, userInput.getUsername());
-        lobbyService.removeLobbyMembers(gameId, userInput.getUsername());
+        lobbyService.removeLobbyMembers(gameId, userInput.getUsername(), true);
         chatService.leavingGameMessage(gameId,userInput.getUsername());
     }
 

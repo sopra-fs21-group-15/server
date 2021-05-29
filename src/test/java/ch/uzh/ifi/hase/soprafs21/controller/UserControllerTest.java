@@ -339,6 +339,8 @@ public class UserControllerTest {
 
         doNothing().when(userService).addUserToFriendRequestList(1L, friend);
 
+
+
         MockHttpServletRequestBuilder putRequest = put("/users/1/friends/requests")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(userPostDTO));
