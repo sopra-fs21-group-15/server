@@ -127,7 +127,6 @@ public class LobbyControllerTest {
 
 
         given(lobbyService.createLobby(Mockito.any(),Mockito.any())).willReturn(lobby);
-
         given(userService.getUserById(Mockito.any())).willReturn(user);
         doNothing().when(chatService).enteringLobbyMessage(2L, user.getUsername());
 
@@ -260,7 +259,9 @@ public class LobbyControllerTest {
         quit.setPassword("abc");
 
         User quiting = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(quit);
+
         doNothing().when(chatService).leavingLobbyMessage(2L, quiting.getUsername());
+
         MockHttpServletRequestBuilder putRequest = put("/lobbies/2/leavers")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(lobby));
