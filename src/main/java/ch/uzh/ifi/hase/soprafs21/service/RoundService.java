@@ -19,6 +19,7 @@ import ch.uzh.ifi.hase.soprafs21.controller.PokémonController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
+import org.json.JSONObject;
 
 import static ch.uzh.ifi.hase.soprafs21.constant.RoundStatus.*;
 
@@ -110,18 +111,12 @@ public class RoundService {
        else if (game.getGameModes() == GameModes.POKEMON) {
             // generate three random nb between 1 & 493
             for (int i = 0; i < n * choices; i++) {
-                int pokeIndex = getRandomNumber(1, 493);
+                int pokeIndex = getRandomNumber(1, 151);
                 String url = "https://pokeapi.co/api/v2/pokemon/" + pokeIndex;
                 try {
                     String responseString = PokémonController.getHTML(url);
-                    System.out.println(responseString);
-                    ScriptEngineManager manager = new ScriptEngineManager();
-                    ScriptEngine engine = manager.getEngineByName("javascript");
-                    System.out.println(engine);
-                    engine.eval("jsonObject = " + responseString);
-                    Object pokemon = engine.eval("jsonObject.name");
-                    System.out.println(pokemon);
-                    words.add(pokemon.toString());
+                    JSONObject jo = new JSONObject(responseString);
+                    words.add(jo.getString("name"));
                 }
                 catch (Exception e) {
                     System.out.println(e.getMessage());
