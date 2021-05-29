@@ -137,7 +137,9 @@ public class UserController {
             userService.removeUserFromFriendRequestList(userId, userInput);
             userService.addUserToFriendsList(userId, userInput);
         }
-        userService.addUserToFriendRequestList(userId, userInput);
+        else {
+            userService.addUserToFriendRequestList(userId, userInput);
+        }
         UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
     }
 

@@ -229,12 +229,13 @@ public class UserService {
         User userToUpdate = userRepository.findByUsername(friend.getUsername());
 
         // check if the user is already a friend
+
         String playerAlreadyInFriendRequestList = "You already sent a friend request to this user. Please wait for his respond!";
-        String playerAlreadyInFriendsList = "This user is already your friend!";
         if (userToUpdate.getFriendRequestList().contains(requestingUser.getUsername())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(playerAlreadyInFriendRequestList));
         }
-        else if (userToUpdate.getFriendsList().contains(requestingUser.getUsername()) || requestingUser.getFriendsList().contains(userToUpdate.getUsername())) {
+        String playerAlreadyInFriendsList = "This user is already your friend!";
+        if (userToUpdate.getFriendsList().contains(requestingUser.getUsername()) || requestingUser.getFriendsList().contains(userToUpdate.getUsername())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(playerAlreadyInFriendsList));
         }
         else userToUpdate.setFriendRequestList(requestingUser.getUsername());
