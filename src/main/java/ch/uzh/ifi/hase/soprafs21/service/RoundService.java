@@ -11,11 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import javax.script.*;
+
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import ch.uzh.ifi.hase.soprafs21.controller.PokémonController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
+import org.json.JSONObject;
 
 import static ch.uzh.ifi.hase.soprafs21.constant.RoundStatus.*;
 
@@ -92,7 +96,7 @@ public class RoundService {
         // get all the players (might get updated)
         round.setPlayers(game.getPlayers());
 
-/*        ArrayList<String> words = new ArrayList<>();
+        ArrayList<String> words = new ArrayList<>();
         int choices = new Standard().getNumberOfChoices();
         //decide in dependence of the mode which wordlist is accessed
         if (game.getGameModes() == GameModes.CLASSIC || game.getGameModes() == GameModes.SPEED) {
@@ -103,29 +107,30 @@ public class RoundService {
                 words.add(wordGenerator.getRandomWord());
             }
             round.setWords(words);
-        }*/
- /*       else if (game.getGameModes() == GameModes.POKEMON) {
+        }
+       else if (game.getGameModes() == GameModes.POKEMON) {
             // generate three random nb between 1 & 493
             for (int i = 0; i < n * choices; i++) {
-                int pokeIndex = getRandomNumber(1, 493);
+                int pokeIndex = getRandomNumber(1, 151);
+                String url = "https://pokeapi.co/api/v2/pokemon/" + pokeIndex;
                 try {
-                String url = 'https://pokeapi.co/api/v2/pokemon/' + pokeIndex ;
-                const response = await api.get(url);
-                words.add(response.name)
+                    String responseString = PokémonController.getHTML(url);
+                    JSONObject jo = new JSONObject(responseString);
+                    words.add(jo.getString("name"));
                 }
-                catch(error) {
-                    alert(`Something went wrong while fetching the lobby: \n${handleError(error)}`);
+                catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    words.add("NotPikachu");
                 }
             }
-        }*/
-
+        }
         // generate words for this round
-        ArrayList<String> words = new ArrayList<>();
+ /*       ArrayList<String> words = new ArrayList<>();
         Words wordGenerator = new Words();
         int choices = new Standard().getNumberOfChoices();
         for (int i = 0; i < n * choices; i++) {
             words.add(wordGenerator.getRandomWord());
-        }
+        }*/
         round.setWords(words);
 
         // continue with setting the fields in order
