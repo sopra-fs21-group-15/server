@@ -331,7 +331,13 @@ public class RoundService {
         for (int points : round.getGotPoints() ) {
             total += points;
         }
-        return total / (round.getPlayers().size() - 1);
+        int points = 0;
+        if(round.getPlayers().size() == 1) {
+            points = total/round.getPlayers().size();
+        }
+        else
+            points = total / (round.getPlayers().size() - 1);
+        return points;
     }
 
     // TODO *41 see if function handling is up to the standarts

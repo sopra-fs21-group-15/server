@@ -24,6 +24,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -326,6 +327,13 @@ public class UserControllerTest {
         user.setStatus(UserStatus.OFFLINE);
         user.setId(1L);
 
+        User friend = new User();
+        user.setPassword("friend");
+        user.setUsername("Friend");
+        user.setCreationDate("09-03-2020");
+        user.setBirthDate("01.01.1980");
+        user.setStatus(UserStatus.OFFLINE);
+        user.setId(2L);
 
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setUsername("Friend");
@@ -335,9 +343,15 @@ public class UserControllerTest {
 
 
 
-        User friend = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+        given(userService.getUserByUserName(Mockito.any())).willReturn(friend);
+        given(userService.getUserById(Mockito.any())).willReturn(user);
 
-        doNothing().when(userService).addUserToFriendRequestList(1L, friend);
+
+        doNothing().when(userService).removeUserFromFriendRequestList(friend.getId(), user);
+        doNothing().when(userService).removeUserFromFriendRequestList(user.getId(), userInput);
+        doNothing().when(userService).addUserToFriendsList(user.getId(), userInput);
+        doNothing().when(userService).addUserToFriendRequestList(1L, userInput);
 
 
 
