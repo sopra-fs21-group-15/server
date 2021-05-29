@@ -134,7 +134,6 @@ public class UserController {
         User friend = userService.getUserByUserName(userInput);
         User user = userService.getUserById(userId);
         if (user.getFriendRequestList().contains(friend.getUsername())){
-            userService.removeUserFromFriendRequestList(friend.getId(), user);
             userService.removeUserFromFriendRequestList(userId, userInput);
             userService.addUserToFriendsList(userId, userInput);
         }
