@@ -90,6 +90,7 @@ public class GameServiceTest {
         testgame.setId(4L);
         testgame.setGameModes(GameModes.CLASSIC);
         testgame.setRoundTracker(0);
+        testgame.setTestphase(true);
 
         testRound = new Round();
         testRound.setId(13L);
@@ -112,6 +113,7 @@ public class GameServiceTest {
         Mockito.when(lobbyRepository.save(Mockito.any())).thenReturn(testLobby);
         Mockito.when(lobbyRepository.findById(Mockito.any())).thenReturn(Optional.ofNullable(testLobby));
         Mockito.when(gameRepository.findById(Mockito.any())).thenReturn(Optional.ofNullable(testgame));
+        Mockito.when(gameRepository.save(Mockito.any())).thenReturn(testgame);
 
 
     }
@@ -175,7 +177,7 @@ public class GameServiceTest {
         assertEquals(LobbyStatus.PLAYING, testLobby.getStatus());
 
     }
-    /**
+/**
     @Test
     void create_game_success2(){
         testLobby.setMembers("User1");
@@ -190,25 +192,14 @@ public class GameServiceTest {
         Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
 
 
-        Mockito.doNothing().when(thread).start();
+        Mockito.verify(gameRepository).save(Mockito.any());
 
-        Long newgameID = gameService.createGame(testLobby);
+        assertThrows(ResponseStatusException.class, () ->gameService.createGame(testLobby));
 
-        Game foundgame = gameService.getGame(newgameID);
-
-
-        assertEquals( testgame.getTimePerRound(),foundgame.getTimePerRound());
-        assertEquals(testgame.getGameName(),foundgame.getGameName());
-        assertEquals(testgame.getGameModes(),foundgame.getGameModes());
-        assertEquals( testgame.getNumberOfRounds(),foundgame.getNumberOfRounds());
-        assertEquals(testgame.getScoreBoard(), foundgame.getScoreBoard());
-        assertEquals(testgame.getTimer(), foundgame.getTimer());
-        assertEquals(UserStatus.INGAME, testUser.getStatus());
-        assertEquals(LobbyStatus.PLAYING, testLobby.getStatus());
 
 
     }
-    **/
+**/
 
     @Test
     public void test_runMethode1(){
@@ -222,7 +213,7 @@ public class GameServiceTest {
         Mockito.when(roundService.getRound(Mockito.any())).thenReturn(testRound);
         Mockito.when(roundRepository.saveAndFlush(Mockito.any())).thenReturn(testRound);
 
-        gameService.gamesToBeRun.add(testgame);
+        gameService.set_testgames(testgame);
         gameService.run();
 
 
@@ -230,7 +221,7 @@ public class GameServiceTest {
         assertEquals(RoundStatus.DONE, testRound.getStatus());
 
     }
-    /**
+
     @Test
     public void test_runMethode2(){
         ArrayList<String> players = new ArrayList<String>();
@@ -247,13 +238,13 @@ public class GameServiceTest {
         Mockito.when(roundService.createRound(Mockito.any())).thenReturn(testRound);
         Mockito.doNothing().when(scoreBoardService).addPoints(Mockito.any(), Mockito.any(), Mockito.anyInt());
         Mockito.doNothing().when(roundService).setNewPainter(Mockito.any());
-        Mockito.doNothing().when(roundService).setRoundIndex(Mockito.any(), Mockito.any());
+
         Mockito.doNothing().when(roundService).resetChoice(Mockito.any());
         Mockito.doNothing().when(roundService).changePhase(Mockito.any());
-        Mockito.doNothing().when(scoreBoardService).addPoints(Mockito.any(),Mockito.any(), Mockito.any());
+        
 
 
-        gameService.gamesToBeRun.add(testgame);
+        gameService.set_testgames(testgame);
         gameService.run();
 
 
@@ -262,7 +253,7 @@ public class GameServiceTest {
 
     }
 
-**/
+
 
 
     @Test
@@ -306,16 +297,12 @@ public class GameServiceTest {
         assertThrows(ResponseStatusException.class, () ->gameService.leaveGame(testgame.getId(), "NotMember"));
 
     }
+    /*
+    *@Test
+    void addpoints_methode(){
+
+    }
+*/
 
 
-
-    /**
-@Test
-    public void test_mocking(){
-    int time = gameService.startPhase(testgame);
-      System.out.println(time);
-
-}
-
-**/
 }

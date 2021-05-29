@@ -48,7 +48,7 @@ public class GameService implements Runnable {
     private final TimerService timerService;
     private final ScoreBoardService scoreBoardService;
 
-    public List<Game> gamesToBeRun = new ArrayList<Game>();
+    private List<Game> gamesToBeRun = new ArrayList<Game>();
 
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository, RoundRepository roundRepository, RoundService roundService, LobbyService lobbyService, TimerService timerService, ScoreBoardService scoreBoardService) {
@@ -134,13 +134,13 @@ public class GameService implements Runnable {
          // saves the given entity but data is only persisted in the database once flush() is called
         newGame = gameRepository.save(newGame);
         gameRepository.flush();
-
+         if(!newGame.getTestphase())  {
         // create a separate thread that runs the game in the background
         synchronized (gamesToBeRun) {
             gamesToBeRun.add(newGame);
             Thread t = new Thread(this);
             t.start();
-        }
+        }}
 
         log.debug("Created and started new game with given information: {}", newGame);
         return newGame.getId();
@@ -250,6 +250,7 @@ public class GameService implements Runnable {
          * takes one, everything should be run
          *
          */
+
         synchronized (gamesToBeRun) {
             game = gamesToBeRun.get(0);
             gamesToBeRun.remove(0);
@@ -309,6 +310,10 @@ public class GameService implements Runnable {
         roundRepository.saveAndFlush(round);
     }
 
+
+    public void set_testgames(Game testgame){
+        gamesToBeRun.add(testgame);
+ }
 
 
     // (Issue #52 Part I) function to handle when a user has made a guess (should also #56)
