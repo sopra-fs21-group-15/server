@@ -21,8 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 //I commented this test out, since I could not fix it and it was not required for this milestone!
 public class GameServiceTest {
@@ -264,6 +263,52 @@ public class GameServiceTest {
     }
 
 **/
+
+
+    @Test
+    void test_game_leaving_success(){
+        ArrayList<String> players = new ArrayList<String>();
+        players.add(testUser.getUsername());
+        players.add("User2");
+        players.add("User3");
+        testgame.setPlayers(players);
+
+
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+        gameService.leaveGame(testgame.getId(), testUser.getUsername());
+
+        assertFalse(testgame.getPlayers().contains(testUser.getUsername()));
+        assertEquals(UserStatus.ONLINE,testUser.getStatus());
+        assertEquals(2,testgame.getPlayers().size());
+    }
+
+    @Test
+    void remove_lastPlayer(){
+        ArrayList<String> players = new ArrayList<String>();
+        players.add(testUser.getUsername());
+        testgame.setPlayers(players);
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+        gameService.leaveGame(testgame.getId(), testUser.getUsername());
+        Mockito.verify(gameRepository).delete(Mockito.any());
+
+    }
+
+    @Test
+    void test_game_leaving_failed(){
+        ArrayList<String> players = new ArrayList<String>();
+        players.add(testUser.getUsername());
+        players.add("User2");
+        players.add("User3");
+        testgame.setPlayers(players);
+
+
+        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
+        assertThrows(ResponseStatusException.class, () ->gameService.leaveGame(testgame.getId(), "NotMember"));
+
+    }
+
+
+
     /**
 @Test
     public void test_mocking(){
