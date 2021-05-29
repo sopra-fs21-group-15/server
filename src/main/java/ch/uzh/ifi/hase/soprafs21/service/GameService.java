@@ -223,6 +223,7 @@ public class GameService implements Runnable {
         }
         gameToUpdate.deletePlayers(userName);
         user.setStatus(UserStatus.ONLINE);
+
         // delete the game if there are no more members in the game
         if (gameToUpdate.getPlayers().size() == 0) {
             gameRepository.delete(gameToUpdate);
@@ -302,6 +303,7 @@ public class GameService implements Runnable {
                 roundService.resetHasGuessed(round);
                 roundService.resetGotPoints(round);
                 playerIndex++;
+                numberOfPlayers = game.getPlayers().size();
             }
             roundIndex++;
         }

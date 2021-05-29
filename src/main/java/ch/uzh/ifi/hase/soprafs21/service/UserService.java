@@ -163,6 +163,10 @@ public class UserService {
             userToUpdate.setBirthDate(userChange.getBirthDate());
         }
 
+        if (userChange.getUserTag() != null){
+            userToUpdate.setUserTag(userChange.getUserTag());
+        }
+
         if (userChange.getUsername() != null){
             //If user exists already you cannot change the name!
             checkIfUsernameTaken(userChange);

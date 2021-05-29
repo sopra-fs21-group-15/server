@@ -262,12 +262,26 @@ public class GameController {
         boolean guess = false;
         if (round.getStatus().equals(DRAWING)) { // check if the phase of the round is correct
             guess = roundService.makeGuess(message,round); // check if the guess is valid and correct
-            gameService.addPoints(game,message);
+            if (guess) {
+                gameService.addPoints(game,message);
+            }
+
         }
         if (guess == false) {
             chatService.addNewMessage(gameId, message); // add chat message
+            chatService.guessingWordMessage(gameId,message.getWriterName());
         }
         return guess;
+    }
+
+    @GetMapping("/games/{gameId}/chats")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ChatGetDTO getChat(@PathVariable Long gameId) {
+        String all = "2000-01-01 00:00:00:001";
+        Chat newMessages = chatService.getNewMessages(gameId, all);
+        ChatGetDTO newChat = ChatDTOMapper.INSTANCE.convertEntityToChatGetDTO(newMessages);
+        return newChat;
     }
 
 /*
@@ -284,7 +298,7 @@ public class GameController {
         }
         return value;
     }
- */
+*/
 
     /*
     /** (Issue 51) API-call for sending a guess of what the word might be from a user
@@ -314,7 +328,7 @@ public class GameController {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         gameService.leaveGame(gameId, userInput.getUsername());
         lobbyService.removeLobbyMembers(gameId, userInput.getUsername());
-
+        chatService.leavingGameMessage(gameId,userInput.getUsername());
     }
 
 

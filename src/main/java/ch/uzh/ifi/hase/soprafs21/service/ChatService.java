@@ -40,8 +40,9 @@ public class ChatService {
 
         if (optionalChat.isEmpty()) { // if not found
             String nonExistingChat = "The chat you have been looking for does not exist.";
-           throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingChat));
-        } else { // if found
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingChat));
+        }
+        else { // if found
             chat = optionalChat.get();
         }
 
@@ -68,28 +69,27 @@ public class ChatService {
         return newMessage;
     }
 
-    
- public Chat getNewMessages(Long chatId, String timeStamp) {
 
-     Chat chat = getChat(chatId);
+    public Chat getNewMessages(Long chatId, String timeStamp) {
 
-     int index = 0;
+        Chat chat = getChat(chatId);
+        int index = 0;
 
-     List<Message> newMessages = new ArrayList<>();
+        List<Message> newMessages = new ArrayList<>();
 
-     // check if chat is empty
+        // check if chat is empty
 
-     if (!(chat.getMessage().isEmpty())) {
+        if (!(chat.getMessage().isEmpty())) {
 
-         DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
-         Message message = chat.getMessage().get(index);
+            DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
+            Message message = chat.getMessage().get(index);
 
-         LocalDateTime messageTime = LocalDateTime.parse(message.getTimeStamp(), formatter);
+            LocalDateTime messageTime = LocalDateTime.parse(message.getTimeStamp(), formatter);
 
-         LocalDateTime searchedTime = LocalDateTime.parse(timeStamp, formatter);
+            LocalDateTime searchedTime = LocalDateTime.parse(timeStamp, formatter);
 
             // search for newer messages
-            for (int i = 0; i <= chat.getMessage().size()-1; i++) {
+            for (int i = 0; i <= chat.getMessage().size() - 1; i++) {
                 message = chat.getMessage().get(i);
                 messageTime = LocalDateTime.parse(message.getTimeStamp(), formatter);
                 if (messageTime.isBefore(searchedTime) || messageTime.isEqual(searchedTime)) {
@@ -99,15 +99,65 @@ public class ChatService {
             // send back List of Messages or Chat?
             newMessages = new ArrayList<>(chat.getMessage().subList(index, chat.getMessage().size()));
 
-     }
+        }
+        Chat newChat = new Chat();
+        newChat.setChatId(chatId);
+        newChat.setMessages(newMessages);
 
-     Chat newChat = new Chat();
+        return newChat;
+    }
 
-     newChat.setChatId(chatId);
+    // for generating the right time for a bot message
+    private String getCurrentDateString() {
+        String dateString = LocalDateTime.now().toString();
+        String convert = dateString.substring(0, 10) + " " + dateString.substring(11, 19) + ":" + dateString.substring(20, 23);
+        return convert;
+    }
 
-     newChat.setMessages(newMessages);
+    ;
 
-     return newChat;
- }
+    // for generating a bot message
+    private Message generateBotMessage() {
+        Message botMessage = new Message();
+        botMessage.setTimeStamp(getCurrentDateString());
+        botMessage.setWriterName("BOT");
+        return botMessage;
+    }
+
+    // generating a message when entering the lobby
+    public void enteringLobbyMessage(Long chatId, String userName) {
+        Message botMessage = generateBotMessage();
+        String message = userName + " has entered the lobby.";
+        botMessage.setMessage(message);
+        getChat(chatId).setMessage(botMessage);
+        messageRepository.saveAndFlush(botMessage);
+    }
+
+    // generating a message when leaving the lobby
+    public void leavingLobbyMessage(Long chatId, String userName) {
+        Message botMessage = generateBotMessage();
+        String message = userName + " has left the lobby.";
+        botMessage.setMessage(message);
+        getChat(chatId).setMessage(botMessage);
+        messageRepository.saveAndFlush(botMessage);
+    }
+
+    // generating a message when leaving the game
+    public void leavingGameMessage(Long chatId, String userName) {
+        Message botMessage = generateBotMessage();
+        String message = userName + " has left the game.";
+        botMessage.setMessage(message);
+        getChat(chatId).setMessage(botMessage);
+        messageRepository.saveAndFlush(botMessage);
+    }
+
+    // generating a message when guessing the word correct
+    public void guessingWordMessage(Long chatId, String userName) {
+        Message botMessage = generateBotMessage();
+        String message = userName + " has guessed the word.";
+        botMessage.setMessage(message);
+        getChat(chatId).setMessage(botMessage);
+        messageRepository.saveAndFlush(botMessage);
+    }
 
 }

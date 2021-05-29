@@ -33,6 +33,7 @@ public interface DTOMapper {
     @Mapping(source = "status", target = "status")
     @Mapping(source = "friendsList", target = "friendsList") //map the members upwards!
     @Mapping(source = "friendRequestList", target = "friendRequestList") //map the friend request list upwards!
+    @Mapping(source = "userTag",target = "userTag")
     UserGetDTO convertEntityToUserGetDTO(User user);
 
 }
