@@ -127,7 +127,7 @@ public class DrawingService {
      */
     public void addStrokes(Drawing drawing, ArrayList<BrushStroke> brushStrokes) {
         List<BrushStroke> allStrokes = new ArrayList<>();
-        allStrokes.addAll(drawing.getBrushStrokes());
+        // allStrokes.addAll(drawing.getBrushStrokes());
         allStrokes.addAll(brushStrokes);
 
         // for safety we check if it works
