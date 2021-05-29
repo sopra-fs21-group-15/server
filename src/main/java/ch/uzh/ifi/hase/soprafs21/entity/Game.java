@@ -35,6 +35,9 @@ public class Game implements Serializable {
     @Column(nullable = false)
     private int timePerRound;
 
+    @Column(nullable = false)
+    private boolean testphase;
+
     // generated values in the back-end
 
     @Column(nullable = false)
@@ -52,6 +55,9 @@ public class Game implements Serializable {
     //private ArrayList<Round> rounds = new ArrayList<>();
     // private Round rounds = new Round();
 
+    public Game() { // default constructor for mapper
+       this.testphase=false;
+    }
     /**
      * Basic getter and setter methods for the mapper (needed for front-end)
      */
@@ -115,6 +121,8 @@ public class Game implements Serializable {
     // access to the timer
     public Timer getTimer() { return this.timer; }
     public void setTimer(Timer timer) { this.timer = timer; }
+    public boolean getTestphase(){return this.testphase;}
+    public void setTestphase(boolean testphase) {this.testphase = testphase;}
 
     /**
      * Back-end specific methods for quality of life
