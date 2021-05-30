@@ -56,8 +56,6 @@ public class Lobby implements Serializable {
     @Column(nullable = false)
     private GameModes gameMode;
 
-    public Lobby() {
-    }
 
     public Long getId() {
         return id;

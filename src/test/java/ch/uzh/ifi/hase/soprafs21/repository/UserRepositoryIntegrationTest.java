@@ -63,14 +63,10 @@ public class UserRepositoryIntegrationTest {
         Optional<User> found = userRepository.findById(user.getId());
 
         // then
-            
-
-          assertEquals(found.get().getPassword(), user.getPassword());
-          assertEquals(found.get().getUsername(), user.getUsername());
-          assertEquals(found.get().getToken(), user.getToken());
-          assertEquals(found.get().getStatus(), user.getStatus());
-
-       
+        assertEquals(found.get().getPassword(), user.getPassword());
+        assertEquals(found.get().getUsername(), user.getUsername());
+        assertEquals(found.get().getToken(), user.getToken());
+        assertEquals(found.get().getStatus(), user.getStatus());
     }
 
 }
