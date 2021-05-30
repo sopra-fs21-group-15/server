@@ -19,9 +19,21 @@ parse the JSON-response we use the external Java library org.json.JSONObject.
 
 ## High-level components (3 most important ones)
 
-1.
-2.
-3.
+1. [GameController](src/ch/uzh/ifi/hase/soprafs21/controller/GameController.java) The game controller handles almost
+   all the API calls that are made during the game and is vital to the app and its functionality. Some of the most used
+   calls get evaluated and answered in this class. One of which is called *update* and it returns all the information
+   about the game someone could ask for. Like which of the player is leading, what is the current word everybody is
+   trying to guess and who is drawing right now. The most used API call is being handled here as well. It is the call
+   requesting the drawing itself.
+2. [GameService](src/ch/uzh/ifi/hase/soprafs21/service/GameService.java)
+   While the controller handles all the requests and calls the real work gets done by the services. One of the most
+   interconnected services is the GameService. If it is not doing it itself it ordered another service to do it. Among
+   executing all the task that the controller throws at it, the service also runs the game in the background on its own.
+   Making sure the rounds end on time and even the drawer gets his/her fair share of points.
+3. [LobbyService](src/ch/uzh/ifi/hase/soprafs21/service/LobbyService.java) While the GameService is needed once the game
+   starts, the LobbyService does all the work that gets us there. Among handling and executing the request send by its
+   own controller it makes sure everything stays in order. People get the lobby they requested as long as all
+   restrictions for privacy are met.
 
 ## Launch & Deployment
 

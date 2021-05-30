@@ -94,7 +94,6 @@ public class GameController {
             temp = BrushStrokeDTOMapper.INSTANCE.convertBrushStrokePutDTOtoEntity(preBrushStroke);
             brushStrokeList.add(temp);
         }
-        //System.out.println(round.getCurrentDrawing().getBrushStrokes().size());
         drawingService.addStrokes(round.getCurrentDrawing(),brushStrokeList);
 
     }
