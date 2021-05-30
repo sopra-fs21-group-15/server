@@ -252,7 +252,7 @@ public class ChatServiceTest {
         assertTrue(testChat.getMessage().get(0).getMessage().contains("word."));
 
     }
-    /**
+
     @Test
     void get_Drawer_Message(){
         List<Message> nomessage= new ArrayList<>();
@@ -288,7 +288,7 @@ public class ChatServiceTest {
 
 
      }
-     */
+
 
 
 }
