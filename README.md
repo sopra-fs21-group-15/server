@@ -1,4 +1,4 @@
-# SoPra FS21 - Pictionary Client
+# SoPra FS21 - Pictionary Server
 
 ## Introduction
 This is the back-end of our UZH-pictionairy-game.
