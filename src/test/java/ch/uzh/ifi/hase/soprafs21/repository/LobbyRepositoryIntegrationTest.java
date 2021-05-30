@@ -23,7 +23,7 @@ public class LobbyRepositoryIntegrationTest {
 
     @Autowired
     private  LobbyRepository lobbyRepository;
-
+/**
    @Test
    public void findByName_success() {
         // given
