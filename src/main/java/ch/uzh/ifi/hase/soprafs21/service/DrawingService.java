@@ -62,17 +62,7 @@ public class DrawingService {
     // get all brush strokes
     public List<BrushStroke> getBrushStroke() { return this.brushStrokeRepository.findAll(); }
 
-    // get a specific brush stroke
-    public BrushStroke getBrushStroke(Long brushStrokeId) {
-        Optional<BrushStroke> potBrushStroke = brushStrokeRepository.findById(brushStrokeId);
 
-        if (potBrushStroke.isEmpty()) { // if not found
-            String nonExistingBrushStroke = "This Brushstroke does not exist. Please search for an existing drawing.";
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, nonExistingBrushStroke);
-        } else { // if found
-            return potBrushStroke.get();
-        }
-    }
 
     /** Get the latest brushstrokes of a drawing past a certain time
      * The method is used to update the picture users see in the front end. They send us the time at which they last
