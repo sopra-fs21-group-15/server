@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -158,8 +159,8 @@ public class GameService implements Runnable {
         String part1 = message.getTimeStamp().substring(offSet,offSet+8); // hours, minute and seconds
         String part2 = message.getTimeStamp().substring(offSet+8,offSet+12).replace(":","."); // milliseconds
         String part3 = "000000"; // added zeros for nanoseconds
-        LocalTime time = LocalTime.parse(part1 + part2 + part3); // transforming into LocalTime object
-        //LocalTime time = LocalTime.now(ZoneId.of("UTC")); // used whenever we are testing
+        //LocalTime time = LocalTime.parse(part1 + part2 + part3); // transforming into LocalTime object
+        LocalTime time = LocalTime.now(ZoneId.of("UTC")); // used whenever we are testing
 
         // pass it to the service
         int points = timerService.remainingTime(timer,time);
@@ -270,11 +271,12 @@ public class GameService implements Runnable {
             while(playerIndex < numberOfPlayers) { // for each player
                 // pick a new drawer and select
                 roundService.setNewPainter(round);
-                chatService.currentDrawerMessage(round.getId(), round.getDrawerName());
+                chatService.currentDrawerMessage(game.getId(), round.getDrawerName());
                 roundService.setRoundIndex(round,playerIndex);
                 roundService.resetChoice(round);
                 roundService.changePhase(round);
                 waitingTime = startPhase(game);
+                System.out.println(waitingTime);
                 // wait for drawer to chose a word
                 try {
                     TimeUnit.MILLISECONDS.sleep(waitingTime);
@@ -303,7 +305,7 @@ public class GameService implements Runnable {
                 int painterPoints = roundService.computeRewardPainter(round);
 
                 scoreBoardService.addPoints(game.getScoreBoard(),round.getDrawerName(),painterPoints);
-                chatService.revealingSolutionMessage(round.getId(), round.getWord());
+                chatService.revealingSolutionMessage(game.getId(), round.getWord());
                 roundService.resetHasGuessed(round);
                 roundService.resetGotPoints(round);
                 playerIndex++;

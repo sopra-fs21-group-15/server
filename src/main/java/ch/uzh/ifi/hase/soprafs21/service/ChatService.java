@@ -132,6 +132,7 @@ public class ChatService {
     public void currentDrawerMessage(Long chatId, String userName) {
         Message botMessage = generateBotMessage();
         String message = "The current drawer is " + userName + ".";
+        botMessage.setMessage(message);
         getChat(chatId).setMessage(botMessage);
         messageRepository.saveAndFlush(botMessage);
     }
@@ -140,6 +141,7 @@ public class ChatService {
     public void revealingSolutionMessage(Long chatId, String answer) {
         Message botMessage = generateBotMessage();
         String message = "The correct word was " + answer +".";
+        botMessage.setMessage(message);
         getChat(chatId).setMessage(botMessage);
         messageRepository.saveAndFlush(botMessage);
     }
