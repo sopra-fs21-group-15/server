@@ -281,12 +281,23 @@ public class GameServiceTest {
         assertThrows(ResponseStatusException.class, () ->gameService.leaveGame(testgame.getId(), "NotMember"));
 
     }
-    /*
-    *@Test
+
+    @Test
     void addpoints_methode(){
 
+        Message testMessage= new Message();
+        testMessage.setMessage("abc");
+        testMessage.setTimeStamp("2021-05-17 14:52:10:000");
+        testgame.setTimer(testTimer);
+
+        Mockito.when(timerService.remainingTime(Mockito.any(), Mockito.any())).thenReturn(15);
+        Mockito.doNothing().when(scoreBoardService).addPoints(Mockito.any(), Mockito.any(), Mockito.anyInt());
+        Mockito.when(roundService.getRound(Mockito.any())).thenReturn(testRound);
+        Mockito.doNothing().when(roundService).addPoints(Mockito.any(), Mockito.any(), Mockito.anyInt());
+        gameService.addPoints(testgame, testMessage);
+
     }
-*/
+
 
 
 }
