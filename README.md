@@ -74,7 +74,7 @@ certain topic, like our Pokemon mode)
 
 ## Authors and acknowledgement
 
-This project is based on https://github.com/HASEL-UZH/sopra-fs21-template-client
+This project is based on https://github.com/HASEL-UZH/sopra-fs21-template-server
 
 **Authors of this project**
 
