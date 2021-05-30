@@ -241,7 +241,7 @@ public class GameServiceTest {
 
         Mockito.doNothing().when(roundService).resetChoice(Mockito.any());
         Mockito.doNothing().when(roundService).changePhase(Mockito.any());
-        
+
 
 
         gameService.set_testgames(testgame);
