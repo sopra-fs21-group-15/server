@@ -7,6 +7,7 @@ import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
 import ch.uzh.ifi.hase.soprafs21.repository.LobbyRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,33 +39,29 @@ import static org.junit.jupiter.api.Assertions.*;
 
         @Autowired
         private LobbyService lobbyService;
+        @Autowired
+        private UserService userService;
 
 
 
         @BeforeEach
         public void setup() {
-
-
             userRepository.deleteAll();
             lobbyRepository.deleteAll();
         }
 
-       /**
+
+
+
         @Test
-        void createUser_validInputs_success() {
+        void createLobby_validInputs_success() {
             // given
             assertNull(lobbyRepository.findByLobbyname("testUsername"));
 
             User testUser = new User();
-            testUser.setId(1L);
-            testUser.setToken("a");
-            testUser.setFriendRequestList("request");
-            testUser.setFriendsList("friend");
-            testUser.setStatus(UserStatus.ONLINE);
-            testUser.setCreationDate("02.02.1995");
             testUser.setPassword("testPassword");
             testUser.setUsername("testUsername");
-            userRepository.saveAndFlush(testUser);
+            User newUser = userService.createUser(testUser);
 
 
             // when
@@ -79,7 +76,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
             // when
-            Lobby createdLobby = lobbyService.createLobby(testLobby, testUser.getId());
+            Lobby createdLobby = lobbyService.createLobby(testLobby, newUser.getId());
 
             // then
             assertEquals(testLobby.getId(), createdLobby.getId());
@@ -93,21 +90,15 @@ import static org.junit.jupiter.api.Assertions.*;
             assertEquals(LobbyStatus.OPEN, createdLobby.getStatus());
         }
 
-     /**
+
      @Test
      void createUser_duplicateUsername_throwsException() {
         assertNull(lobbyRepository.findByLobbyname("testUsername"));
 
-        User testUser = new User();
-        testUser.setId(1L);
-        testUser.setToken("a");
-        testUser.setFriendRequestList("request");
-        testUser.setFriendsList("friend");
-        testUser.setStatus(UserStatus.ONLINE);
-        testUser.setCreationDate("02.02.1995");
-        testUser.setPassword("testPassword");
-        testUser.setUsername("testUsername");
-        userRepository.saveAndFlush(testUser);
+         User testUser = new User();
+         testUser.setPassword("testPassword");
+         testUser.setUsername("testUsername");
+         User newUser = userService.createUser(testUser);
 
 
         // when
@@ -122,19 +113,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
         // when
-         Lobby createdLobby = lobbyService.createLobby(testLobby, testUser.getId());
+         Lobby createdLobby = lobbyService.createLobby(testLobby, newUser.getId());
         // attempt to create second user with same username
 
-        User testUser2 = new User();
-        testUser2.setId(2L);
-        testUser2.setToken("c");
-        testUser2.setFriendRequestList("request");
-        testUser2.setFriendsList("friend");
-        testUser2.setStatus(UserStatus.ONLINE);
-        testUser2.setCreationDate("02.02.1995");
-        testUser2.setPassword("testPassword");
-        testUser2.setUsername("testUsername2");
-        userRepository.saveAndFlush(testUser2);
+         User testUser3 = new User();
+         testUser3.setPassword("testPassword");
+         testUser3.setUsername("testUsername3");
+         User newUser2 = userService.createUser(testUser3);
 
 
         Lobby testLobby2 = new Lobby();
@@ -148,8 +133,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
         // check that an error is thrown
-        assertThrows(ResponseStatusException.class, () -> lobbyService.createLobby(testLobby2,testUser2.getId()));
-    }    **/
+        assertThrows(ResponseStatusException.class, () -> lobbyService.createLobby(testLobby2,newUser2.getId()));
+    }
 
    
 }
