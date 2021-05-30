@@ -96,6 +96,34 @@ public class TimerServiceTest {
         assertEquals(newTimer.getDrawingTimeSpan(), testTimer.getDrawingTimeSpan());
         assertEquals(newTimer.getSelectTimeSpan(), testTimer.getSelectTimeSpan());
         assertEquals(newTimer.getIsDrawing(), testTimer.getIsDrawing());
+        assertTrue(testTimer.toString().contains("drawing"));
+    }
+
+    @Test
+    void create_new_Timer2(){
+        testTimer.setIsDrawing(false);
+        testTimer.setDrawingTimeSpan(50);
+        Mockito.when(timerRepository.save(Mockito.any())).thenReturn(testTimer);
+
+        Timer newTimer = timerService.createTimer(50);
+
+        assertEquals(newTimer.getDrawingTimeSpan(), testTimer.getDrawingTimeSpan());
+        assertEquals(newTimer.getSelectTimeSpan(), testTimer.getSelectTimeSpan());
+        assertEquals(newTimer.getIsDrawing(), testTimer.getIsDrawing());
+        assertTrue(testTimer.toString().contains("selecting"));
+    }
+    @Test
+    void create_new_Timer3(){
+        testTimer.setStart(null);
+        testTimer.setDrawingTimeSpan(50);
+        Mockito.when(timerRepository.save(Mockito.any())).thenReturn(testTimer);
+
+        Timer newTimer = timerService.createTimer(50);
+
+        assertEquals(newTimer.getDrawingTimeSpan(), testTimer.getDrawingTimeSpan());
+        assertEquals(newTimer.getSelectTimeSpan(), testTimer.getSelectTimeSpan());
+        assertEquals(newTimer.getIsDrawing(), testTimer.getIsDrawing());
+        assertTrue(testTimer.toString().contains("can be run"));
     }
 
     @Test

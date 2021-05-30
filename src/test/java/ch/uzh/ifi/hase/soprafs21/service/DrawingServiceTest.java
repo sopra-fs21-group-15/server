@@ -173,7 +173,7 @@ public class DrawingServiceTest {
 
         Mockito.when(drawingRepository.saveAndFlush(Mockito.any())).thenReturn(testdrawing);
         drawingService.addStrokes(testdrawing, newStrokes);
-
+        assertTrue(Stroke2.toString().contains("x = 22"));
         assertTrue(testdrawing.getBrushStrokes().contains(testBrushstroke));
         assertTrue(testdrawing.getBrushStrokes().contains(Stroke2));
     }
