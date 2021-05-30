@@ -47,11 +47,12 @@ public class GameService implements Runnable {
     private final LobbyService lobbyService;
     private final TimerService timerService;
     private final ScoreBoardService scoreBoardService;
+    private final ChatService chatService;
 
     private List<Game> gamesToBeRun = new ArrayList<Game>();
 
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository, RoundRepository roundRepository, RoundService roundService, LobbyService lobbyService, TimerService timerService, ScoreBoardService scoreBoardService) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository, RoundRepository roundRepository, RoundService roundService, LobbyService lobbyService, TimerService timerService, ScoreBoardService scoreBoardService, ChatService chatService) {
         this.gameRepository = gameRepository;
         this.lobbyRepository = lobbyRepository;
         this.userRepository = userRepository;
@@ -60,6 +61,7 @@ public class GameService implements Runnable {
         this.lobbyService = lobbyService;
         this.timerService = timerService;
         this.scoreBoardService = scoreBoardService;
+        this.chatService = chatService;
     }
 
     /** Huge method to create a game from the lobby id given to us. All the information should be stored and
@@ -268,6 +270,7 @@ public class GameService implements Runnable {
             while(playerIndex < numberOfPlayers) { // for each player
                 // pick a new drawer and select
                 roundService.setNewPainter(round);
+                chatService.currentDrawerMessage(round.getId(), round.getDrawerName());
                 roundService.setRoundIndex(round,playerIndex);
                 roundService.resetChoice(round);
                 roundService.changePhase(round);
@@ -300,6 +303,7 @@ public class GameService implements Runnable {
                 int painterPoints = roundService.computeRewardPainter(round);
 
                 scoreBoardService.addPoints(game.getScoreBoard(),round.getDrawerName(),painterPoints);
+                chatService.revealingSolutionMessage(round.getId(), round.getWord());
                 roundService.resetHasGuessed(round);
                 roundService.resetGotPoints(round);
                 playerIndex++;

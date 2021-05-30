@@ -128,6 +128,22 @@ public class ChatService {
         return botMessage;
     }
 
+    // generating a message telling everyone who the drawer is
+    public void currentDrawerMessage(Long chatId, String userName) {
+        Message botMessage = generateBotMessage();
+        String message = "The current drawer is " + userName + ".";
+        getChat(chatId).setMessage(botMessage);
+        messageRepository.saveAndFlush(botMessage);
+    }
+
+    // generating a message at the end of a round revealing the solution
+    public void revealingSolutionMessage(Long chatId, String answer) {
+        Message botMessage = generateBotMessage();
+        String message = "The correct word was " + answer +".";
+        getChat(chatId).setMessage(botMessage);
+        messageRepository.saveAndFlush(botMessage);
+    }
+
     // generating a message when entering the lobby
     public void enteringLobbyMessage(Long chatId, String userName) {
         Message botMessage = generateBotMessage();
