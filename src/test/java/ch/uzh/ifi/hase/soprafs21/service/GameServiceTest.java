@@ -177,31 +177,10 @@ public class GameServiceTest {
         assertEquals(testgame.getTimer(), foundgame.getTimer());
         assertEquals(UserStatus.INGAME, testUser.getStatus());
         assertEquals(LobbyStatus.PLAYING, testLobby.getStatus());
+        assertTrue(foundgame.toString().contains("5"));
 
     }
-/**
-    @Test
-    void create_game_success2(){
-        testLobby.setMembers("User1");
-        testLobby.setMembers("User2");
-        testLobby.setMembers("User3");
 
-
-        Mockito.when(gameRepository.findById(Mockito.any())).thenReturn(Optional.empty());
-        Mockito.when(timerService.createTimer(testLobby.getTimer())).thenReturn(testTimer);
-        Mockito.when(scoreBoardService.createScoreBoard(Mockito.any())).thenReturn(testScoreboard);
-        Mockito.when(gameRepository.save(Mockito.any())).thenReturn(testgame);
-        Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(testUser);
-
-
-        Mockito.verify(gameRepository).save(Mockito.any());
-
-        assertThrows(ResponseStatusException.class, () ->gameService.createGame(testLobby));
-
-
-
-    }
-**/
 
     @Test
     public void test_runMethode1(){

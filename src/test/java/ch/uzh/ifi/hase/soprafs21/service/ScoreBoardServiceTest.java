@@ -73,6 +73,7 @@ public class ScoreBoardServiceTest {
         Mockito.verify(scoreBoardRepository, Mockito.times(1)).saveAndFlush(Mockito.any());
 
         assertEquals(testLobby.getMembers(), createdScoreboard.getPlayers());
+        assertTrue(createdScoreboard.toString().contains("Player"));
 
     }
     @Test
