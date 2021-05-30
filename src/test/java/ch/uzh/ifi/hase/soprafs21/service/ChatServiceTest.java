@@ -252,5 +252,43 @@ public class ChatServiceTest {
         assertTrue(testChat.getMessage().get(0).getMessage().contains("word."));
 
     }
+    /**
+    @Test
+    void get_Drawer_Message(){
+        List<Message> nomessage= new ArrayList<>();
+        testChat.setMessages(nomessage);
+        Mockito.when(chatRepository.saveAndFlush(Mockito.any())).thenReturn(testChat);
+
+
+        assertTrue(testChat.getMessage().isEmpty());
+        chatService.currentDrawerMessage(testChat.getChatId(), "User1");
+
+        assertFalse(testChat.getMessage().isEmpty());
+        assertEquals("BOT",testChat.getMessage().get(0).getWriterName());
+        assertTrue(testChat.getMessage().get(0).getMessage().contains("User1"));
+        assertTrue(testChat.getMessage().get(0).getMessage().contains("drawer"));
+
+
+    }
+
+     @Test
+     void get_Solution_Message(){
+     List<Message> nomessage= new ArrayList<>();
+     testChat.setMessages(nomessage);
+     Mockito.when(chatRepository.saveAndFlush(Mockito.any())).thenReturn(testChat);
+
+
+     assertTrue(testChat.getMessage().isEmpty());
+     chatService.revealingSolutionMessage(testChat.getChatId(), "User1");
+
+     assertFalse(testChat.getMessage().isEmpty());
+     assertEquals("BOT",testChat.getMessage().get(0).getWriterName());
+     assertTrue(testChat.getMessage().get(0).getMessage().contains("User1"));
+     assertTrue(testChat.getMessage().get(0).getMessage().contains("correct"));
+
+
+     }
+     */
+
 
 }
