@@ -40,7 +40,9 @@ public class GameServiceTest {
     @Mock
     private RoundService roundService;
     @Mock
-    private  ScoreBoardService scoreBoardService;
+    private ScoreBoardService scoreBoardService;
+    @Mock
+    private ChatService chatService;
     @Mock
     private Thread thread;
 
@@ -238,6 +240,9 @@ public class GameServiceTest {
         Mockito.when(roundService.createRound(Mockito.any())).thenReturn(testRound);
         Mockito.doNothing().when(scoreBoardService).addPoints(Mockito.any(), Mockito.any(), Mockito.anyInt());
         Mockito.doNothing().when(roundService).setNewPainter(Mockito.any());
+
+        Mockito.doNothing().when(chatService).currentDrawerMessage(Mockito.any(), Mockito.anyString());
+        Mockito.doNothing().when(chatService).revealingSolutionMessage(Mockito.any(), Mockito.anyString());
 
         Mockito.doNothing().when(roundService).resetChoice(Mockito.any());
         Mockito.doNothing().when(roundService).changePhase(Mockito.any());

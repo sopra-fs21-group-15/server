@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalTime;
+import java.time.ZoneId;
 
 @Entity
 @Table(name = "TIMER")
@@ -96,7 +97,7 @@ public class Timer implements Serializable {
             state = "can be run";
         } else {
             state = "is running, remaining time: ";
-            LocalTime rightNow = LocalTime.now();
+            LocalTime rightNow = LocalTime.now(ZoneId.of("UTC"));
             double tempMilli = Math.floor((rightNow.getNano() - getStart().getNano()) / Math.pow(10.0,6.0)) / Math.pow(10.0,3.0);
             double tempSec = rightNow.getSecond() - start.getSecond();
             double value = Math.floor((time - (tempSec + tempMilli)) * 1000) / 1000;

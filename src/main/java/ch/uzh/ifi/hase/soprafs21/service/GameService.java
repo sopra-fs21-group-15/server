@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,11 +48,12 @@ public class GameService implements Runnable {
     private final LobbyService lobbyService;
     private final TimerService timerService;
     private final ScoreBoardService scoreBoardService;
+    private final ChatService chatService;
 
     private List<Game> gamesToBeRun = new ArrayList<Game>();
 
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository, RoundRepository roundRepository, RoundService roundService, LobbyService lobbyService, TimerService timerService, ScoreBoardService scoreBoardService) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, LobbyRepository lobbyRepository, UserRepository userRepository, RoundRepository roundRepository, RoundService roundService, LobbyService lobbyService, TimerService timerService, ScoreBoardService scoreBoardService, ChatService chatService) {
         this.gameRepository = gameRepository;
         this.lobbyRepository = lobbyRepository;
         this.userRepository = userRepository;
@@ -60,6 +62,7 @@ public class GameService implements Runnable {
         this.lobbyService = lobbyService;
         this.timerService = timerService;
         this.scoreBoardService = scoreBoardService;
+        this.chatService = chatService;
     }
 
     /** Huge method to create a game from the lobby id given to us. All the information should be stored and
@@ -157,7 +160,7 @@ public class GameService implements Runnable {
         String part2 = message.getTimeStamp().substring(offSet+8,offSet+12).replace(":","."); // milliseconds
         String part3 = "000000"; // added zeros for nanoseconds
         //LocalTime time = LocalTime.parse(part1 + part2 + part3); // transforming into LocalTime object
-        LocalTime time = LocalTime.now(); // used whenever we are testing
+        LocalTime time = LocalTime.now(ZoneId.of("UTC")); // used whenever we are testing
 
         // pass it to the service
         int points = timerService.remainingTime(timer,time);
@@ -268,6 +271,7 @@ public class GameService implements Runnable {
             while(playerIndex < numberOfPlayers) { // for each player
                 // pick a new drawer and select
                 roundService.setNewPainter(round);
+                chatService.currentDrawerMessage(game.getId(), round.getDrawerName());
                 roundService.setRoundIndex(round,playerIndex);
                 roundService.resetChoice(round);
                 roundService.changePhase(round);
@@ -300,6 +304,7 @@ public class GameService implements Runnable {
                 int painterPoints = roundService.computeRewardPainter(round);
 
                 scoreBoardService.addPoints(game.getScoreBoard(),round.getDrawerName(),painterPoints);
+                chatService.revealingSolutionMessage(game.getId(), round.getWord());
                 roundService.resetHasGuessed(round);
                 roundService.resetGotPoints(round);
                 playerIndex++;

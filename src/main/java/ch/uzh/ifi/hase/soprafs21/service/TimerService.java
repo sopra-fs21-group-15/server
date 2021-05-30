@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
@@ -39,7 +40,7 @@ public class TimerService {
 
         if (potTimer.isEmpty()) { // if not found
             String nonExistingTimer = "The timer you have been looking for does not exist. Please search for an existing timer.";
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format(nonExistingTimer));
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, nonExistingTimer);
         } else { // if found
             value = potTimer.get();
         }
@@ -68,7 +69,7 @@ public class TimerService {
     // start the timer if it is not already running
     public void begin(Timer timer){
         if(isReady(timer)) {
-            timer.setStart(LocalTime.now());
+            timer.setStart(LocalTime.now(ZoneId.of("UTC")));
             timerRepository.saveAndFlush(timer);
         }
     }
@@ -86,10 +87,13 @@ public class TimerService {
         return timer.getStart() == null;
     }
 
+    // check if the time we were supposed to wait has passed
+    public boolean done(Timer timer) { return remainingTime(timer) == 0; }
+
     // get the time at which this round will end
     public String getEnd(Timer timer) {
         Long time = (long) remainingTime(timer);
-        LocalDateTime end = LocalDateTime.now().plus(time, ChronoUnit.MILLIS);
+        LocalDateTime end = LocalDateTime.now(ZoneId.of("UTC")).plus(time, ChronoUnit.MILLIS);
         DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
         return end.format(formatter);
     }
@@ -101,7 +105,7 @@ public class TimerService {
      * @return remaining time in this mode
      */
     public int remainingTime(Timer timer){
-        LocalTime rightNow = LocalTime.now();
+        LocalTime rightNow = LocalTime.now(ZoneId.of("UTC"));
         return remainingTime(timer,rightNow);
     }
 
