@@ -619,7 +619,7 @@ public class GameControllerTest {
 
 
 
-        MockHttpServletRequestBuilder putRequest = get("/games/2/score")
+        MockHttpServletRequestBuilder putRequest = put("/games/2/choices/Player1/0")
                 .contentType(MediaType.APPLICATION_JSON);
 
 
