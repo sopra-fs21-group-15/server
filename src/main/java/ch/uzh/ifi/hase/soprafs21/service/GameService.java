@@ -276,7 +276,6 @@ public class GameService implements Runnable {
                 roundService.resetChoice(round);
                 roundService.changePhase(round);
                 waitingTime = startPhase(game);
-                System.out.println(waitingTime);
                 // wait for drawer to chose a word
                 try {
                     TimeUnit.MILLISECONDS.sleep(waitingTime);
