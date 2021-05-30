@@ -277,13 +277,16 @@ public class GameService implements Runnable {
                 roundService.changePhase(round);
                 startPhase(game);
                 // wait for drawer to chose a word
-                try {
-                    while(!timerService.done(game.getTimer()) && round.getWord() == null){
-                        TimeUnit.SECONDS.sleep(1);
-                        round = roundService.getRound(round.getId());
+                if(!game.getTestphase()) {
+                    try {
+                        while (!timerService.done(game.getTimer()) && round.getWord() == null) {
+                            TimeUnit.SECONDS.sleep(1);
+                            round = roundService.getRound(round.getId());
+                        }
                     }
-                } catch (InterruptedException e) {
-                    // needs to be implemented -> player has chosen a word before the timer ran out
+                    catch (InterruptedException e) {
+                        // needs to be implemented -> player has chosen a word before the timer ran out
+                    }
                 }
                 // select word drawer pick or pick one yourself
                 endPhase(game);
@@ -294,20 +297,23 @@ public class GameService implements Runnable {
                 // let players draw and guess the word
                 roundService.changePhase(round);
                 startPhase(game);
-                try {
-                    haveGuessed = 0;
-                    while(!timerService.done(game.getTimer()) && haveGuessed < numberOfPlayers - 1){
-                        TimeUnit.SECONDS.sleep(1);
+                if(!game.getTestphase()) {
+                    try {
                         haveGuessed = 0;
-                        round = roundService.getRound(round.getId());
-                        for(int i = 0; i < round.getHasGuessed().length; i++) {
-                            if(round.getHasGuessed()[i] == true) {
-                                haveGuessed++;
+                        while (!timerService.done(game.getTimer()) && haveGuessed < numberOfPlayers - 1) {
+                            TimeUnit.SECONDS.sleep(1);
+                            haveGuessed = 0;
+                            round = roundService.getRound(round.getId());
+                            for (int i = 0; i < round.getHasGuessed().length; i++) {
+                                if (round.getHasGuessed()[i] == true) {
+                                    haveGuessed++;
+                                }
                             }
                         }
                     }
-                } catch (InterruptedException e) {
-                    // needs to be implemented -> all player have guessed the word correctly before the timer ran out
+                    catch (InterruptedException e) {
+                        // needs to be implemented -> all player have guessed the word correctly before the timer ran out
+                    }
                 }
                 // finish this round, pass the results
                 endPhase(game);
