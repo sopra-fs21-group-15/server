@@ -88,7 +88,7 @@ public class TimerService {
     }
 
     // check if the time we were supposed to wait has passed
-    public boolean done(Timer timer) { return remainingTime(timer) == 0; }
+    public boolean done(Timer timer) { return remainingTime(timer) == 0 && !isReady(timer); }
 
     // get the time at which this round will end
     public String getEnd(Timer timer) {
