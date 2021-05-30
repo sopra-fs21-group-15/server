@@ -178,6 +178,7 @@ public class RoundService {
         boolean[] newHasDrawn = round.getHasDrawn();
         newHasDrawn[value] = true;
         round.setHasDrawn(newHasDrawn);
+        roundRepository.saveAndFlush(round);
     }
 
     // change index of the round so the API calls go to a different object in the array
