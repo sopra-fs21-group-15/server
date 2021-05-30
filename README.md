@@ -1,34 +1,31 @@
-# SoPra RESTful Service Template FS21
+# SoPra FS21 - Pictionary Client
 
-## Getting started with Spring Boot
+## Introduction
+This is the back-end of our UZH-pictionairy-game.
+It is a multiplayer draw and guessing game for up to 10 Players per game.
 
--   Documentation: https://docs.spring.io/spring-boot/docs/current/reference/html/index.html
--   Guides: http://spring.io/guides
-    -   Building a RESTful Web Service: http://spring.io/guides/gs/rest-service/
-    -   Building REST services with Spring: http://spring.io/guides/tutorials/bookmarks/
+As a painter you choose from a set of random words and then try your best to
+draw it with a variety of painting tools. Your friends will see the drawing in
+real time and have to guess the word. The faster, the more points you will get.
 
-## Setup this Template with your IDE of choice
+You can choose between a classic mode which will provide you with just any random
+words, and a Pokemon mode in which you will have to draw different Pokemon.
 
-Download your IDE of choice: (e.g., [Eclipse](http://www.eclipse.org/downloads/), [IntelliJ](https://www.jetbrains.com/idea/download/)), [Visual Studio Code](https://code.visualstudio.com/) and make sure Java 15 is installed on your system (for Windows-users, please make sure your JAVA_HOME environment variable is set to the correct version of Java).
+## Technologies
 
-1. File -> Open... -> SoPra Server Template
-2. Accept to import the project as a `gradle project`
+The back-end uses the Java Spring Framework.
+The Pokemon-mode uses an external REST API to get the name of a Pokemon. To
+parse the JSON-response we use the external Java library org.json.JSONObject.
 
-To build right click the `build.gradle` file and choose `Run Build`
+## High-level components (3 most important ones)
 
-### VS Code
-The following extensions will help you to run it more easily:
--   `pivotal.vscode-spring-boot`
--   `vscjava.vscode-spring-initializr`
--   `vscjava.vscode-spring-boot-dashboard`
--   `vscjava.vscode-java-pack`
--   `richardwillis.vscode-gradle`
+1.
+2.
+3.
 
-**Note:** You'll need to build the project first with Gradle, just click on the `build` command in the _Gradle Tasks_ extension. Then check the _Spring Boot Dashboard_ extension if it already shows `soprafs21` and hit the play button to start the server. If it doesn't show up, restart VS Code and check again.
+## Launch & Deployment
 
-## Building with Gradle
-
-You can use the local Gradle Wrapper to build the application.
+**Requirements: Java 15**
 
 Plattform-Prefix:
 
@@ -36,64 +33,45 @@ Plattform-Prefix:
 -   Linux: `./gradlew`
 -   Windows: `./gradlew.bat`
 
-More Information about [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html) and [Gradle](https://gradle.org/docs/).
-
-### Build
+#### Build
 
 ```bash
+# Add --continuous if you want to automatically rebuild on changes
+# Add -xtest to exclude the tests
 ./gradlew build
 ```
 
-### Run
+#### Run
 
 ```bash
 ./gradlew bootRun
 ```
 
-### Test
+#### Test
 
 ```bash
 ./gradlew test
 ```
 
-### Development Mode
+## Roadmap
 
-You can start the backend in development mode, this will automatically trigger a new build and reload the application
-once the content of a file has been changed and you save the file.
+* Make application securer by adding token authentication with every API call
+to make it impossible to send unauthorised API-calls with a tampered client
+* Add more modes (Different themes in which you have to draw words about a
+certain topic, like our Pokemon mode)
 
-Start two terminal windows and run:
+## Authors and acknowledgement
 
-`./gradlew build --continuous`
+This project is based on https://github.com/HASEL-UZH/sopra-fs21-template-client
 
-and in the other one:
+**Authors of this project**
 
-`./gradlew bootRun`
+* Christen, Kilian (Github: Kilian-Christen)
+* Giesch, Simon (Github: Wahlbar)
+* Harambasic, Josip (Github: JosipHarambasic)
+* Schmatloch, Niklas Alexander (Github: niklassc7)
+* Wernli, Anthony (Github: pbofataf7)
 
-If you want to avoid running all tests with every change, use the following command instead:
+## License
 
-`./gradlew build --continuous -xtest`
-
-## API Endpoint Testing
-
-### Postman
-
--   We highly recommend to use [Postman](https://www.getpostman.com) in order to test your API Endpoints.
-
-## Debugging
-
-If something is not working and/or you don't know what is going on. We highly recommend that you use a debugger and step
-through the process step-by-step.
-
-To configure a debugger for SpringBoot's Tomcat servlet (i.e. the process you start with `./gradlew bootRun` command),
-do the following:
-
-1. Open Tab: **Run**/Edit Configurations
-2. Add a new Remote Configuration and name it properly
-3. Start the Server in Debug mode: `./gradlew bootRun --debug-jvm`
-4. Press `Shift + F9` or the use **Run**/Debug"Name of your task"
-5. Set breakpoints in the application where you need it
-6. Step through the process one step at a time
-
-## Testing
-
-Have a look here: https://www.baeldung.com/spring-boot-testing
+[AGPLv3](LICENSE)
