@@ -156,8 +156,8 @@ public class GameService implements Runnable {
         String part1 = message.getTimeStamp().substring(offSet,offSet+8); // hours, minute and seconds
         String part2 = message.getTimeStamp().substring(offSet+8,offSet+12).replace(":","."); // milliseconds
         String part3 = "000000"; // added zeros for nanoseconds
-        //LocalTime time = LocalTime.parse(part1 + part2 + part3); // transforming into LocalTime object
-        LocalTime time = LocalTime.now(); // used whenever we are testing
+        LocalTime time = LocalTime.parse(part1 + part2 + part3); // transforming into LocalTime object
+        //LocalTime time = LocalTime.now(ZoneId.of("UTC")); // used whenever we are testing
 
         // pass it to the service
         int points = timerService.remainingTime(timer,time);

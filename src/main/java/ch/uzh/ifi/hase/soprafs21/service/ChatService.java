@@ -14,10 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Transactional
@@ -109,7 +112,8 @@ public class ChatService {
 
     // for generating the right time for a bot message
     private String getCurrentDateString() {
-        String dateString = LocalDateTime.now().toString();
+        LocalDateTime rightNow = LocalDateTime.now(ZoneId.of("UTC"));
+        String dateString = rightNow.toString();
         String convert = dateString.substring(0, 10) + " " + dateString.substring(11, 19) + ":" + dateString.substring(20, 23);
         return convert;
     }
