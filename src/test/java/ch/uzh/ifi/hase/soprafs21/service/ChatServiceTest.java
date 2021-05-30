@@ -89,11 +89,13 @@ public class ChatServiceTest {
         Message testMessage2 = new Message();
         testMessage2.setMessage("new Text");
         testMessage2.setTimeStamp(time2);
+        testMessage2.setMessageId(67L);
 
         chatService.addNewMessage(chat.getChatId(), testMessage2);
 
         assertTrue(chat.getMessage().contains(testMessage));
         assertTrue(chat.getMessage().contains(testMessage2));
+        assertEquals(testMessage2.getMessageId(), chat.getMessage().get(1).getMessageId());
 
     }
     @Test
