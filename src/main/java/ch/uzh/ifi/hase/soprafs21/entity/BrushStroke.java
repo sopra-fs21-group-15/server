@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs21.helper.Standard;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 @Entity
@@ -63,7 +64,7 @@ public class BrushStroke implements Serializable, Comparable {
         this.colour = c;
 
         // the time it was created
-        LocalDateTime currentTime = LocalDateTime.now();
+        LocalDateTime currentTime = LocalDateTime.now(ZoneId.of("UTC"));
         DateTimeFormatter formatter = new Standard().getDateTimeFormatter();
         this.timeStamp = currentTime.format(formatter);
     }
