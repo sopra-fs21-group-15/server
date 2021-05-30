@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs21.repository;
 
+import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
 import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
@@ -35,6 +36,8 @@ public class LobbyRepositoryIntegrationTest {
         lobby.setTimer(60);
         lobby.setRounds(4);
         lobby.setToken("1");
+        lobby.setStatus(LobbyStatus.FULL);
+        lobby.setGameMode(GameModes.CLASSIC);
 
 
        System.out.println("----------------------------------");
@@ -54,7 +57,7 @@ public class LobbyRepositoryIntegrationTest {
         assertEquals(found.getMembers(), lobby.getMembers());
         
     }
-   **/
+
 /**
 
 @Test

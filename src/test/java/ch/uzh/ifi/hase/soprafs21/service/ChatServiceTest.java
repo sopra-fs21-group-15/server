@@ -17,6 +17,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -189,5 +191,104 @@ public class ChatServiceTest {
         assertTrue(getMessages.getMessage().contains(newMessage1));
 
     }
+    @Test
+    void test_enteringLobbyMessage(){
+        List<Message> nomessage= new ArrayList<>();
+        testChat.setMessages(nomessage);
+        Mockito.when(chatRepository.saveAndFlush(Mockito.any())).thenReturn(testChat);
+
+
+        assertTrue(testChat.getMessage().isEmpty());
+        chatService.enteringLobbyMessage(testChat.getChatId(), "User1");
+        assertFalse(testChat.getMessage().isEmpty());
+        assertEquals("BOT",testChat.getMessage().get(0).getWriterName());
+        assertTrue(testChat.getMessage().get(0).getMessage().contains("User1"));
+        assertTrue(testChat.getMessage().get(0).getMessage().contains("entered"));
+
+    }
+    @Test
+    void test_leavingLobbyMessage(){
+        List<Message> nomessage= new ArrayList<>();
+        testChat.setMessages(nomessage);
+        Mockito.when(chatRepository.saveAndFlush(Mockito.any())).thenReturn(testChat);
+
+
+        assertTrue(testChat.getMessage().isEmpty());
+        chatService.leavingLobbyMessage(testChat.getChatId(), "User1");
+        assertFalse(testChat.getMessage().isEmpty());
+        assertEquals("BOT",testChat.getMessage().get(0).getWriterName());
+        assertTrue(testChat.getMessage().get(0).getMessage().contains("User1"));
+        assertTrue(testChat.getMessage().get(0).getMessage().contains("left the lobby"));
+
+    }
+    @Test
+    void test_leavingGameMessage(){
+        List<Message> nomessage= new ArrayList<>();
+        testChat.setMessages(nomessage);
+        Mockito.when(chatRepository.saveAndFlush(Mockito.any())).thenReturn(testChat);
+
+
+        assertTrue(testChat.getMessage().isEmpty());
+        chatService.leavingGameMessage(testChat.getChatId(), "User1");
+        assertFalse(testChat.getMessage().isEmpty());
+        assertEquals("BOT",testChat.getMessage().get(0).getWriterName());
+        assertTrue(testChat.getMessage().get(0).getMessage().contains("User1"));
+        assertTrue(testChat.getMessage().get(0).getMessage().contains("left the game"));
+
+    }
+    @Test
+    void test_quessing_message(){
+        List<Message> nomessage= new ArrayList<>();
+        testChat.setMessages(nomessage);
+        Mockito.when(chatRepository.saveAndFlush(Mockito.any())).thenReturn(testChat);
+
+
+        assertTrue(testChat.getMessage().isEmpty());
+        chatService.guessingWordMessage(testChat.getChatId(), "User1");
+
+        assertFalse(testChat.getMessage().isEmpty());
+        assertEquals("BOT",testChat.getMessage().get(0).getWriterName());
+        assertTrue(testChat.getMessage().get(0).getMessage().contains("User1"));
+        assertTrue(testChat.getMessage().get(0).getMessage().contains("word."));
+
+    }
+
+    @Test
+    void get_Drawer_Message(){
+        List<Message> nomessage= new ArrayList<>();
+        testChat.setMessages(nomessage);
+        Mockito.when(chatRepository.saveAndFlush(Mockito.any())).thenReturn(testChat);
+
+
+        assertTrue(testChat.getMessage().isEmpty());
+        chatService.currentDrawerMessage(testChat.getChatId(), "User1");
+
+        assertFalse(testChat.getMessage().isEmpty());
+        assertEquals("BOT",testChat.getMessage().get(0).getWriterName());
+        assertTrue(testChat.getMessage().get(0).getMessage().contains("User1"));
+        assertTrue(testChat.getMessage().get(0).getMessage().contains("drawer"));
+
+
+    }
+
+     @Test
+     void get_Solution_Message(){
+     List<Message> nomessage= new ArrayList<>();
+     testChat.setMessages(nomessage);
+     Mockito.when(chatRepository.saveAndFlush(Mockito.any())).thenReturn(testChat);
+
+
+     assertTrue(testChat.getMessage().isEmpty());
+     chatService.revealingSolutionMessage(testChat.getChatId(), "User1");
+
+     assertFalse(testChat.getMessage().isEmpty());
+     assertEquals("BOT",testChat.getMessage().get(0).getWriterName());
+     assertTrue(testChat.getMessage().get(0).getMessage().contains("User1"));
+     assertTrue(testChat.getMessage().get(0).getMessage().contains("correct"));
+
+
+     }
+
+
 
 }

@@ -1,7 +1,11 @@
 package ch.uzh.ifi.hase.soprafs21.service;
 
+import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
+import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
 import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs21.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs21.entity.User;
+import ch.uzh.ifi.hase.soprafs21.repository.LobbyRepository;
 import ch.uzh.ifi.hase.soprafs21.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @WebAppConfiguration
 @SpringBootTest
-public class UserServiceIntegrationTest {
+public class  UserServiceIntegrationTest{
 
     @Qualifier("userRepository")
     @Autowired
@@ -37,7 +41,7 @@ public class UserServiceIntegrationTest {
 
 
     @Test
-     void createUser_validInputs_success() {
+    void createUser_validInputs_success() {
         // given
         assertNull(userRepository.findByUsername("testUsername"));
 

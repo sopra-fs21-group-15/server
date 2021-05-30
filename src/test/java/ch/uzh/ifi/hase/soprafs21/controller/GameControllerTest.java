@@ -1,8 +1,5 @@
 package ch.uzh.ifi.hase.soprafs21.controller;
-import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
-import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
-import ch.uzh.ifi.hase.soprafs21.constant.RoundStatus;
-import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs21.constant.*;
 import ch.uzh.ifi.hase.soprafs21.entity.*;
 import ch.uzh.ifi.hase.soprafs21.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs21.rest.mapper.ChatDTOMapper;
@@ -29,12 +26,16 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import ch.uzh.ifi.hase.soprafs21.constant.GameModes;
+import ch.uzh.ifi.hase.soprafs21.constant.LobbyStatus;
+import ch.uzh.ifi.hase.soprafs21.constant.RoundStatus;
+import ch.uzh.ifi.hase.soprafs21.constant.UserStatus;
 
 @WebMvcTest(GameController.class)
 public class GameControllerTest {
@@ -334,6 +335,360 @@ public class GameControllerTest {
 
 
 
+
+    @Test
+    void length_request() throws Exception {
+
+        Game game = new Game();
+        game.setId(2L);
+        game.setRoundId(5L);
+
+        ArrayList<String> players = new ArrayList<String>();
+        players.add("Player 1");
+        players.add("Player 2");
+        players.add("Player 3");
+        players.add("Player 4");
+
+        game.setPlayers(players);
+
+
+
+        BrushStroke brushStroke= new BrushStroke();
+        brushStroke.setId(3L);
+        brushStroke.setY(4);
+        brushStroke.setSize(15);
+        brushStroke.setColour("Black");
+        brushStroke.setX(5);
+        brushStroke.setTimeStamp("2021-05-17 14:52:10:000");
+       List<BrushStroke> brush = new ArrayList<>();
+       brush.add(brushStroke);
+       Drawing drawing = new Drawing();
+       drawing.setDrawerName("Player1");
+       drawing.setId(1L);
+       drawing.setBrushStrokes(brush);
+
+       List<Drawing> picture = new ArrayList<>();
+       picture.add(drawing);
+
+        Round round = new Round();
+        round.setId(5L);
+        round.setStatus(RoundStatus.DRAWING);
+        round.setWord("abc");
+        round.setDrawings(picture);
+
+
+
+       given(roundService.getRound(Mockito.any())).willReturn(round);
+        given(gameService.getGame(Mockito.any())).willReturn(game);
+
+
+        MockHttpServletRequestBuilder putRequest = get("/games/2/length")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(round));
+
+
+        mockMvc.perform(putRequest).andExpect(status().isOk()); }
+
+    @Test
+    void painting_putrequest() throws Exception {
+
+        Game game = new Game();
+        game.setId(2L);
+        game.setRoundId(5L);
+
+        ArrayList<String> players = new ArrayList<String>();
+        players.add("Player 1");
+        players.add("Player 2");
+        players.add("Player 3");
+        players.add("Player 4");
+
+        game.setPlayers(players);
+
+
+
+        BrushStrokePutDTO brushStrokeDTO= new BrushStrokePutDTO();
+        brushStrokeDTO.setY(4);
+        brushStrokeDTO.setSize(15);
+        brushStrokeDTO.setColour("Black");
+        brushStrokeDTO.setX(5);
+        brushStrokeDTO.setTimeStamp("2021-05-17 14:52:10:000");
+
+        List<BrushStrokePutDTO> brushDTO = new ArrayList<>();
+        brushDTO.add(brushStrokeDTO);
+
+        BrushStroke brushStroke= new BrushStroke();
+        brushStroke.setId(3L);
+        brushStroke.setY(4);
+        brushStroke.setSize(15);
+        brushStroke.setColour("Black");
+        brushStroke.setX(5);
+        brushStroke.setTimeStamp("2021-05-17 14:52:10:000");
+        List<BrushStroke> brush = new ArrayList<>();
+        brush.add(brushStroke);
+        Drawing drawing = new Drawing();
+        drawing.setDrawerName("Player1");
+        drawing.setId(1L);
+        drawing.setBrushStrokes(brush);
+
+        List<Drawing> picture = new ArrayList<>();
+        picture.add(drawing);
+
+
+
+
+        Round round = new Round();
+        round.setId(5L);
+        round.setStatus(RoundStatus.DRAWING);
+        round.setWord("abc");
+        round.setDrawings(picture);
+
+
+
+        given(roundService.getRound(Mockito.any())).willReturn(round);
+        given(gameService.getGame(Mockito.any())).willReturn(game);
+
+
+        MockHttpServletRequestBuilder putRequest = put("/games/2/drawing")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(brushDTO));
+
+
+        mockMvc.perform(putRequest).andExpect(status().isNoContent()); }
+
+    @Test
+    void painting_postrequest() throws Exception {
+
+        Game game = new Game();
+        game.setId(2L);
+        game.setRoundId(5L);
+
+        ArrayList<String> players = new ArrayList<String>();
+        players.add("Player 1");
+        players.add("Player 2");
+        players.add("Player 3");
+        players.add("Player 4");
+
+        game.setPlayers(players);
+
+
+
+        TimeStringGetDTO timeStringGetDTO = new TimeStringGetDTO();
+        timeStringGetDTO.setTimeString("2021-05-17 14:52:09:000");
+
+        BrushStroke brushStroke= new BrushStroke();
+        brushStroke.setId(3L);
+        brushStroke.setY(4);
+        brushStroke.setSize(15);
+        brushStroke.setColour("Black");
+        brushStroke.setX(5);
+        brushStroke.setTimeStamp("2021-05-17 14:52:10:000");
+        List<BrushStroke> brush = new ArrayList<>();
+        brush.add(brushStroke);
+        Drawing drawing = new Drawing();
+        drawing.setDrawerName("Player1");
+        drawing.setId(1L);
+        drawing.setBrushStrokes(brush);
+
+        List<Drawing> picture = new ArrayList<>();
+        picture.add(drawing);
+
+
+
+
+        Round round = new Round();
+        round.setId(5L);
+        round.setStatus(RoundStatus.DRAWING);
+        round.setWord("abc");
+        round.setDrawings(picture);
+
+
+
+        given(roundService.getRound(Mockito.any())).willReturn(round);
+        given(gameService.getGame(Mockito.any())).willReturn(game);
+
+
+        MockHttpServletRequestBuilder putRequest = post("/games/2/drawing")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(timeStringGetDTO));
+
+
+        mockMvc.perform(putRequest).andExpect(status().isCreated()); }
+
+    @Test
+    void scoreBoard_get_request() throws Exception {
+
+
+        Game game = new Game();
+        game.setId(2L);
+        game.setRoundId(5L);
+
+        ArrayList<String> players = new ArrayList<String>();
+        players.add("Player 1");
+        players.add("Player 2");
+        players.add("Player 3");
+        players.add("Player 4");
+
+        game.setPlayers(players);
+        BrushStroke brushStroke= new BrushStroke();
+        brushStroke.setId(3L);
+        brushStroke.setY(4);
+        brushStroke.setSize(15);
+        brushStroke.setColour("Black");
+        brushStroke.setX(5);
+        brushStroke.setTimeStamp("2021-05-17 14:52:10:000");
+        List<BrushStroke> brush = new ArrayList<>();
+        brush.add(brushStroke);
+        Drawing drawing = new Drawing();
+        drawing.setDrawerName("Player1");
+        drawing.setId(1L);
+        drawing.setBrushStrokes(brush);
+
+        List<Drawing> picture = new ArrayList<>();
+        picture.add(drawing);
+
+
+
+
+        Round round = new Round();
+        round.setId(5L);
+        round.setStatus(RoundStatus.DRAWING);
+        round.setWord("abc");
+        round.setDrawings(picture);
+
+
+        given(gameService.getGame(Mockito.any())).willReturn(game);
+
+
+        MockHttpServletRequestBuilder putRequest = get("/games/2/score")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(game));
+
+
+        mockMvc.perform(putRequest).andExpect(status().isOk()); }
+
+
+    @Test
+    void Choice_PutRequest() throws Exception {
+
+
+        Game game = new Game();
+        game.setId(2L);
+        game.setRoundId(5L);
+
+        ArrayList<String> players = new ArrayList<String>();
+        players.add("Player 1");
+        players.add("Player 2");
+        players.add("Player 3");
+        players.add("Player 4");
+
+        game.setPlayers(players);
+
+
+
+        BrushStroke brushStroke= new BrushStroke();
+        brushStroke.setId(3L);
+        brushStroke.setY(4);
+        brushStroke.setSize(15);
+        brushStroke.setColour("Black");
+        brushStroke.setX(5);
+        brushStroke.setTimeStamp("2021-05-17 14:52:10:000");
+        List<BrushStroke> brush = new ArrayList<>();
+        brush.add(brushStroke);
+        Drawing drawing = new Drawing();
+        drawing.setDrawerName("Player1");
+        drawing.setId(1L);
+        drawing.setBrushStrokes(brush);
+
+        List<Drawing> picture = new ArrayList<>();
+        picture.add(drawing);
+
+
+
+
+        Round round = new Round();
+        round.setId(5L);
+        round.setStatus(RoundStatus.DRAWING);
+        round.setWord("abc");
+        round.setDrawings(picture);
+
+
+
+        given(gameService.getGame(Mockito.any())).willReturn(game);
+        given(roundService.getRound(Mockito.any())).willReturn(round);
+
+
+
+
+        MockHttpServletRequestBuilder putRequest = get("/games/2/score")
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+        mockMvc.perform(putRequest).andExpect(status().isOk()); }
+
+
+
+    @Test
+    void Round_GET_TEST() throws Exception {
+
+
+        Game game = new Game();
+        game.setId(2L);
+        game.setRoundId(5L);
+
+        ArrayList<String> players = new ArrayList<String>();
+        players.add("Player 1");
+        players.add("Player 2");
+        players.add("Player 3");
+        players.add("Player 4");
+
+        game.setPlayers(players);
+
+
+
+        BrushStroke brushStroke= new BrushStroke();
+        brushStroke.setId(3L);
+        brushStroke.setY(4);
+        brushStroke.setSize(15);
+        brushStroke.setColour("Black");
+        brushStroke.setX(5);
+        brushStroke.setTimeStamp("2021-05-17 14:52:10:000");
+        List<BrushStroke> brush = new ArrayList<>();
+        brush.add(brushStroke);
+        Drawing drawing = new Drawing();
+        drawing.setDrawerName("Player1");
+        drawing.setId(1L);
+        drawing.setBrushStrokes(brush);
+
+        List<Drawing> picture = new ArrayList<>();
+        picture.add(drawing);
+
+
+
+
+        Round round = new Round();
+        round.setId(5L);
+        round.setStatus(RoundStatus.DRAWING);
+        round.setWord("abc");
+        round.setDrawings(picture);
+
+        ArrayList<String> choices= new ArrayList<>();
+        choices.add("a");
+        choices.add("b");
+        choices.add("c");
+
+
+        given(gameService.getGame(Mockito.any())).willReturn(game);
+        given(roundService.getRound(Mockito.any())).willReturn(round);
+        given(roundService.getChoices(Mockito.any(), Mockito.any())).willReturn(choices);
+
+
+
+
+        MockHttpServletRequestBuilder putRequest = get("/games/2/update")
+                .contentType(MediaType.APPLICATION_JSON);
+
+
+        mockMvc.perform(putRequest).andExpect(status().isOk()); }
 
 
 
